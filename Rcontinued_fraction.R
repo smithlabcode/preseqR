@@ -1,3 +1,5 @@
+MAXLENGTH = 10000000
+
 R_read_hist <- function(hist_file)
 {
 	hist_table = read.table(hist_file);
