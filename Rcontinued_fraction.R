@@ -58,7 +58,7 @@ R_CAL_ContinueFraction <- function(CF, value)
 	return(out$r);
 }
 
-R_ADVANCE_extrapolate_distinct <- function(hist_count, CF, start_size, step_size, max_size)
+R_ADVANCE_extrapolate_distinct <- function(hist_count, CF, start_size = NULL, step_size = NULL, max_size = 100)
 {
 	cf_coeffs = as.double(CF$cf_coeffs);
 	cf_coeffs_l = as.integer(length(CF$cf_coeffs));
@@ -66,9 +66,22 @@ R_ADVANCE_extrapolate_distinct <- function(hist_count, CF, start_size, step_size
 	di = as.integer(CF$diagonal_idx);
 	de = as.integer(CF$degree);
 	hist_count = as.double(hist_count);
+	total_reads = 0.0;
+	for (i in 1:length(hist_count))
+		total_reads <- total_reads + i * as.integer(hist_count[i]);
 	hist_count = c(0, hist_count);
 	hist_count_l = as.integer(length(hist_count));
-	estimate = as.double(vector(mode = 'numeric', length = max_size / step_size + 1));
+
+	if (is.null(start_size))
+		start_size = total_reads;
+	if (start_size > max_size)
+	{
+		write("start position has already beyond the maximum prediction", stderr);
+		return(NULL);
+	}
+	if (is.null(step_size))
+		step_size = total_reads;
+	estimate = as.double(vector(mode = 'numeric', length = as.integer((max_size - start_size) / step_size) + 1));
 	estimate_l = as.integer(1);
 	.C("R_Advance_extrapolate_distinct", cf_coeffs, cf_coeffs_l, offset_coeffs, di, de, hist_count, hist_count_l, as.double(start_size), as.double(step_size), as.double(max_size), estimate, estimate_l);
 	length(estimate) = estimate_l;
@@ -137,7 +150,7 @@ sample2hist_count <- function(vec)
 	return(hist_count)
 }
 
-R_continuedfraction_estimate <- function(hist_count, di, mt, ss, mv)
+R_continuedfraction_estimate <- function(hist_count, di, mt, ss, mv, max_extrapolation)
 {
 	total_sample = 0.0;
 	for (i in 1:length(hist_count))
@@ -175,7 +188,7 @@ R_continuedfraction_estimate <- function(hist_count, di, mt, ss, mv)
 		write("Fail to construct and need to bootstrap to obtain estimates", stderr);
 		return;
 	}
-	est = R_ADVANCE_extrapolate_distinct(hist_count, CF, sample / total_sample, step_size / total_sample, max_size / total_sample);
+	est = R_ADVANCE_extrapolate_distinct(hist_count, CF, sample / total_sample, step_size / total_sample, (max_extrapolation - sample) / total_sample);
 	yield_estimate = c(yield_estimate, est);
 	length(ps_coeffs) = ps_coeffs_l;
 	length(cf_coeffs) = cf_coeffs_l;
