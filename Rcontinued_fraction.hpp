@@ -26,11 +26,10 @@
 #include <cassert>
 #include <iostream>
 
-struct SMITHLABException 
-{
-	SMITHLABException(std::string m) : message(m) {}
-	std::string what() const {return message;}
-	std::string message;
+struct SMITHLABException {
+  SMITHLABException(std::string m) : message(m) {}
+  std::string what() const {return message;}
+  std::string message;
 };
 
 
@@ -64,7 +63,8 @@ struct ContinuedFraction {
   static ContinuedFraction truncate_degree(const ContinuedFraction &fullCF,
 					   const size_t truncated_degree);
   
-  void copy2pointers(double * ps, int * ps_l, double * cf, int * cf_l, double * off, int * di, int * de);
+  void copy2pointers(double *ps, int *ps_l, 
+		     double *cf, int *cf_l, double *off, int *di, int *de);
   
   std::vector<double> ps_coeffs;
   std::vector<double> cf_coeffs;
@@ -83,7 +83,7 @@ public:
   //find best cont frac approx for estimating distinct
   ContinuedFraction
   optimal_cont_frac_distinct(const std::vector<double> &counts_hist) const;
-
+  
 private:
   
   int diagonal_idx; // the diagonal to work with for estimates
@@ -102,4 +102,3 @@ private:
 };
 
 #endif
- 
