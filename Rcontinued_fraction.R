@@ -128,15 +128,11 @@ sample2hist_count <- function(vec)
 	{
 		V = V[-1];
 	}
-	index = as.integer(names(V));
 	value = as.vector(V);
-	hist_count = vector(mode = 'numeric', length = 0);
-	pre_pos = 0
-	for (i in 1:length(index))
+	hist_count = vector(mode = 'numeric', length = max(value));
+	for (v in value)
 	{
-		hist_count = c(hist_count, rep(0, index[i] - pre_pos));
-		hist_count[index[i]] = value[i];
-		pre_pos = index[i];
+		hist_count[v] <- hist_count[v] + 1;
 	}
 	return(hist_count)
 }
