@@ -1,7 +1,7 @@
-/*    Copyright (C) 2013 University of Southern California and
- *                       Andrew D. Smith and Timothy Daley
+/*    Copyright (C) 2014 University of Southern California and
+ *                       Andrew D. Smith, Timothy Daley and Jake Deng
  *
- *    Authors: Andrew D. Smith and Timothy Daley
+ *    Authors: Andrew D. Smith, Timothy Daley and Jake Deng
  *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -29,20 +29,19 @@ using std::min;
 const double TOLERANCE = 1e-20;
 const double DERIV_DELTA = 1e-8;
 
-
 static double
 GoodToulmin2xExtrap(const vector<double> &counts_hist){
-    double two_fold_extrap = 0.0;
-    for(size_t i = 0; i < counts_hist.size(); i++)
-        two_fold_extrap += pow(-1.0, i + 1)*counts_hist[i];
+  double two_fold_extrap = 0.0;
+  for(size_t i = 0; i < counts_hist.size(); i++)
+    two_fold_extrap += pow(-1.0, i + 1)*counts_hist[i];
     
-    return two_fold_extrap;
+  return two_fold_extrap;
 }
 
 static bool
 check_yield_estimates_stability(const vector<double> &estimates) {
-// make sure that the estimate is increasing in the time_step and
-// is below the initial distinct per step_size
+  // make sure that the estimate is increasing in the time_step and
+  // is below the initial distinct per step_size
   for (size_t i = 1; i < estimates.size(); ++i){
     if (estimates[i] < estimates[i - 1] ){
       return false;
@@ -76,7 +75,12 @@ get_rescale_value(const double numerator, const double denominator) {
    coefficients
 */ 
 static void
-quotdiff_algorithm(const vector<double> &ps_coeffs, vector<double> &cf_coeffs) { //vector for power series coefficients & vector for continued fraction coefficients
+quotdiff_algorithm(const vector<double> &ps_coeffs, 
+		   vector<double> &cf_coeffs //vector for power series
+					     //coefficients & vector
+					     //for continued fraction
+					     //coefficients
+		   ) { 
   
   const size_t depth = ps_coeffs.size(); //degree of power series
   vector< vector<double> > q_table(depth, vector<double>(depth+1, 0.0));
@@ -88,18 +92,24 @@ quotdiff_algorithm(const vector<double> &ps_coeffs, vector<double> &cf_coeffs) {
   for (size_t j = 0; j < depth-1; j++) 
     e_table[1][j] = q_table[1][j + 1] - q_table[1][j] + e_table[0][j + 1];
     
-  //using intial values of E(i)(j)'s and Q(i)(j)'s, fill rest of the q table and e table
+  // using intial values of E(i)(j)'s and Q(i)(j)'s, fill rest of the
+  // q table and e table
   for (size_t i = 2; i < depth; i++) {
     for (size_t j = 0; j < depth; j++)
-      q_table[i][j] = q_table[i - 1][j + 1]*e_table[i - 1][j + 1]/e_table[i - 1][j];
+      q_table[i][j] = 
+	q_table[i - 1][j + 1]*e_table[i - 1][j + 1]/e_table[i - 1][j];
     
     for (size_t j = 0; j < depth; j++)
-      e_table[i][j] = q_table[i][j + 1] - q_table[i][j] + e_table[i - 1][j + 1];
+      e_table[i][j] = 
+	q_table[i][j + 1] - q_table[i][j] + e_table[i - 1][j + 1];
   }
-
-  cf_coeffs.push_back(ps_coeffs[0]); //add first power series coefficient to end of vector for continued fraction coefficients
-
-  //setting coefficients for continued fraction 
+  
+  cf_coeffs.push_back(ps_coeffs[0]); // add first power series
+				     // coefficient to end of vector
+				     // for continued fraction
+				     // coefficients
+  
+  // setting coefficients for continued fraction
   for (size_t i = 1; i < depth; ++i) {
     if (i % 2 == 0) 
       cf_coeffs.push_back(-e_table[i/2][0]);
@@ -109,11 +119,16 @@ quotdiff_algorithm(const vector<double> &ps_coeffs, vector<double> &cf_coeffs) {
 }  
 
 
-// compute CF coeffs when upper_offset > 0
-//above the diagonal referring to degree of polynomial in numerator of Pade approximant is greater than degree of polynomial in the denominator 
+//// compute CF coeffs when upper_offset > 0
+// above the diagonal referring to degree of polynomial in numerator
+// of Pade approximant is greater than degree of polynomial in the
+// denominator
 static void
-quotdiff_above_diagonal(const vector<double> &coeffs, const size_t offset,
-                        vector<double> &cf_coeffs, vector<double> &offset_coeffs) {  
+quotdiff_above_diagonal(const vector<double> &coeffs, 
+			const size_t offset,
+                        vector<double> &cf_coeffs, 
+			vector<double> &offset_coeffs) {  
+
   //first offset coefficients set to first offset coeffs
   vector<double> holding_coeffs; 
   for (size_t i = offset; i < coeffs.size(); i++)
@@ -129,7 +144,8 @@ quotdiff_above_diagonal(const vector<double> &coeffs, const size_t offset,
 // calculate CF coeffs when lower_offset > 0
 static void
 quotdiff_below_diagonal(const vector<double> &coeffs, const size_t offset, 
-                        vector<double> &cf_coeffs, vector<double> &offset_coeffs) {
+                        vector<double> &cf_coeffs, 
+			vector<double> &offset_coeffs) {
   
   //need to work with reciprocal series g = 1/f, then invert
   vector<double> reciprocal_coeffs;
@@ -189,17 +205,15 @@ ContinuedFraction::truncate_degree(const ContinuedFraction &CF,
   if(CF.degree < n_terms){
     cerr << "current CF degree   = " << CF.degree << endl;
     cerr << "truncated CF degree = " << n_terms << endl; 
-	try
-	{
-    	throw SMITHLABException("degree of truncate CF must be at least as large as current");
-	}
-	catch(SMITHLABException &e)
-	{
-		cerr << e.what() << endl;
-		return truncated_CF;
-	}
+    try {
+      throw SMITHLABException("degree of truncate CF must be at least as large as current");
+    }
+    catch (SMITHLABException &e) {
+      cerr << e.what() << endl;
+      return truncated_CF;
+    }
   }
-
+  
   vector<double> truncated_ps_coeffs(CF.ps_coeffs);
   vector<double> truncated_cf_coeffs(CF.cf_coeffs);
   vector<double> truncated_offset_coeffs(CF.offset_coeffs);
@@ -229,48 +243,52 @@ ContinuedFraction::ContinuedFraction(const vector<double> &ps_cf,
   // notice the "-" above so that -diagonal_idx > 0
 }
 
-void ContinuedFraction::copy2pointers(double * ps, int * ps_l, double * cf, int * cf_l, double * off, int * di, int * de)
-{
-	*ps_l = ps_coeffs.size();
-	for (size_t i = 0; i != ps_coeffs.size(); i++)
-		ps[i] = ps_coeffs[i];
-	*cf_l = cf_coeffs.size();
-	for (size_t i = 0; i != cf_coeffs.size(); i++)
-		cf[i] = cf_coeffs[i];
-	for (size_t i = 0; i != offset_coeffs.size(); i++)
-		off[i] = offset_coeffs[i];
-	*di = diagonal_idx;
-	*de = degree;
-	return;
+void 
+ContinuedFraction::copy2pointers(double *ps, int *ps_l, double *cf, 
+				 int *cf_l, double *off, int *di, int *de) {
+  *ps_l = ps_coeffs.size();
+  for (size_t i = 0; i != ps_coeffs.size(); i++)
+    ps[i] = ps_coeffs[i];
+
+  *cf_l = cf_coeffs.size();
+  for (size_t i = 0; i != cf_coeffs.size(); i++)
+    cf[i] = cf_coeffs[i];
+
+  for (size_t i = 0; i != offset_coeffs.size(); i++)
+    off[i] = offset_coeffs[i];
+
+  *di = diagonal_idx;
+  *de = degree;
+  return;
 }
 
 /*
-extern "C"
-{
-	void R_Advance_ContinueFraction(double * ps_cf, int * ps_cf_l, int * di, int * dg, double * PS_COEFFS, int * PS_COEFFS_L, double * CF_COEFFS, int * CF_COEFFS_L, double * OFFSET_COEFFS)
-	{
-		if (*ps_cf_length > 0 && *dg >= 0)
-		{
-			int last_nonzero = 0; // The number of continuous nonzero items in histogram from beginning
-			for (int i = 0; i != *ps_cf_l; i++)
-				if (ps_cf[i] != 0)
-					last_nonzero++;
-			vector<double> ps_coeffs(ps_cf, ps_cf + last_nonzero);
-			ContinuedFraction::ContinuedFraction CF(ps_coeffs, *di, *dg);
-			*di = CF::diagonal_idx;
-			*dg = CF::degree;
-			*PS_COEFFS_l = CF::ps_coeffs;
-			for (int i = 0; i != *PS_COEFFS_L; i++)
-				PS_COEFFS[i] = CF::ps_coeffs[i];
-			*CF_COEFFS_L = CF:cf_coeffs.size();
-			for (int i = 0; i != *CF_COEFFS_L; i++)
-				CF_COEFFS[i] = CF::cf_coeffs[i];
-			if (CP::offset_coeffs.size() > 0)
-				for (int i = 0; i != CF::offset_coeffs.size(); i++)
-					OFFSET_COEFFS[i] = CF::offset_coeffs[i];
-		}
-	}
-}
+  extern "C"
+  {
+  void R_Advance_ContinueFraction(double * ps_cf, int * ps_cf_l, int * di, int * dg, double * PS_COEFFS, int * PS_COEFFS_L, double * CF_COEFFS, int * CF_COEFFS_L, double * OFFSET_COEFFS)
+  {
+  if (*ps_cf_length > 0 && *dg >= 0)
+  {
+  int last_nonzero = 0; // The number of continuous nonzero items in histogram from beginning
+  for (int i = 0; i != *ps_cf_l; i++)
+  if (ps_cf[i] != 0)
+  last_nonzero++;
+  vector<double> ps_coeffs(ps_cf, ps_cf + last_nonzero);
+  ContinuedFraction::ContinuedFraction CF(ps_coeffs, *di, *dg);
+  *di = CF::diagonal_idx;
+  *dg = CF::degree;
+  *PS_COEFFS_l = CF::ps_coeffs;
+  for (int i = 0; i != *PS_COEFFS_L; i++)
+  PS_COEFFS[i] = CF::ps_coeffs[i];
+  *CF_COEFFS_L = CF:cf_coeffs.size();
+  for (int i = 0; i != *CF_COEFFS_L; i++)
+  CF_COEFFS[i] = CF::cf_coeffs[i];
+  if (CP::offset_coeffs.size() > 0)
+  for (int i = 0; i != CF::offset_coeffs.size(); i++)
+  OFFSET_COEFFS[i] = CF::offset_coeffs[i];
+  }
+  }
+  }
 */
 
 
@@ -399,13 +417,13 @@ evaluate_on_diagonal(const vector<double> &cf_coeffs,
     // recursion
     current_num = prev_num1 + cf_coeffs[i]*val*prev_num2;
     current_denom = prev_denom1 + cf_coeffs[i]*val*prev_denom2;
-
+    
     prev_num2 = prev_num1;
     prev_num1 = current_num;
-
+    
     prev_denom2= prev_denom1;
     prev_denom1 = current_denom;
-
+    
     const double rescale_val = get_rescale_value(current_num, current_denom);
     
     current_num = current_num*rescale_val;
@@ -413,7 +431,7 @@ evaluate_on_diagonal(const vector<double> &cf_coeffs,
     
     prev_num1 = prev_num1*rescale_val;
     prev_num2 = prev_num2*rescale_val;
-
+    
     prev_denom1 = prev_denom1*rescale_val;
     prev_denom2 = prev_denom2*rescale_val;
   }
@@ -434,24 +452,25 @@ ContinuedFraction::operator()(const double val) const {
 }
 
 
-extern "C"
-{
-	void R_Calculate_ContinuedFraction(double * cf_coeffs, int * cf_coeffs_l, double * offset_coeffs, int * di, int * de, double * coordinate, double * result)
-	{
-		vector<double> cf(cf_coeffs, cf_coeffs + *cf_coeffs_l);
-		if (*di > 0)
-		{
-			vector<double> off(offset_coeffs, offset_coeffs + *di);
-			*result = evaluate_above_diagonal(cf, off, *coordinate, *de);
-		}
-		else if (*di < 0)
-		{
-			vector<double> off(offset_coeffs, offset_coeffs - *di);
-			*result = evaluate_below_diagonal(cf, off, *coordinate, *de);
-		}		
-		else
-			*result = evaluate_on_diagonal(cf, *coordinate, *de);
-	}
+extern "C" {
+  void R_Calculate_ContinuedFraction(double *cf_coeffs, 
+				     int *cf_coeffs_l, 
+				     double *offset_coeffs, 
+				     int *di, 
+				     int *de, 
+				     double *coordinate, 
+				     double *result) {
+    vector<double> cf(cf_coeffs, cf_coeffs + *cf_coeffs_l);
+    if (*di > 0) {
+      vector<double> off(offset_coeffs, offset_coeffs + *di);
+      *result = evaluate_above_diagonal(cf, off, *coordinate, *de);
+    }
+    else if (*di < 0) {
+      vector<double> off(offset_coeffs, offset_coeffs - *di);
+      *result = evaluate_below_diagonal(cf, off, *coordinate, *de);
+    }		
+    else *result = evaluate_on_diagonal(cf, *coordinate, *de);
+  }
 }
 
 
@@ -469,25 +488,34 @@ ContinuedFraction::extrapolate_distinct(const vector<double> &counts_hist,
     estimates.push_back(hist_sum + t*operator()(t));
 }
 
-extern "C"
-{
-	void R_Advance_extrapolate_distinct(double * cf_coeffs, int * cf_coeffs_l, double * offset_coeffs, int * di, int * de, double * hist, int * hist_l, double * start_size, double * step_size, double * max_size, double * estimate, int * estimate_l)
-	{
-		double hist_sum = 0;
-		for (int i = 0; i != *hist_l; i++)
-			hist_sum += hist[i];
-		double result = 0;
-		vector<double> est;
-		est.push_back(hist_sum);
-		for (double t = *start_size; t <= *max_size; t += *step_size)
-		{
-			R_Calculate_ContinuedFraction(cf_coeffs, cf_coeffs_l, offset_coeffs, di, de, &t, &result);
-			est.push_back(hist_sum + t * result);
-		}
-		*estimate_l = est.size();
-		for (int i = 0; i != *estimate_l; i++)
-			estimate[i] = est[i];
-	}
+extern "C" {
+  void R_Advance_extrapolate_distinct(double *cf_coeffs, 
+				      int *cf_coeffs_l, 
+				      double *offset_coeffs, 
+				      int *di, 
+				      int *de, 
+				      double *hist, 
+				      int *hist_l, 
+				      double *start_size, 
+				      double *step_size, 
+				      double *max_size, 
+				      double *estimate, 
+				      int *estimate_l) {
+    double hist_sum = 0;
+    for (int i = 0; i != *hist_l; i++)
+      hist_sum += hist[i];
+    double result = 0;
+    vector<double> est;
+    est.push_back(hist_sum);
+    for (double t = *start_size; t <= *max_size; t += *step_size) {
+      R_Calculate_ContinuedFraction(cf_coeffs, cf_coeffs_l, 
+				    offset_coeffs, di, de, &t, &result);
+      est.push_back(hist_sum + t * result);
+    }
+    *estimate_l = est.size();
+    for (int i = 0; i != *estimate_l; i++)
+      estimate[i] = est[i];
+  }
 }
 
 
@@ -507,18 +535,21 @@ extern "C"
 /////////////
 ////////////
 
-const size_t ContinuedFractionApproximation::MIN_ALLOWED_DEGREE = 4;
+typedef ContinuedFractionApproximation ConFraApprox;
 
-const double ContinuedFractionApproximation::SEARCH_MAX_VAL = 100;
+const size_t ConFraApprox::MIN_ALLOWED_DEGREE = 4;
 
-const double ContinuedFractionApproximation::SEARCH_STEP_SIZE = 0.05;
+const double ConFraApprox::SEARCH_MAX_VAL = 100;
+
+const double ConFraApprox::SEARCH_STEP_SIZE = 0.05;
 
 
 // calculate cf_coeffs depending on offset
-ContinuedFractionApproximation::ContinuedFractionApproximation(const int di, const size_t mt, 
-                                                               const double ss, const double mv) :
+ConFraApprox::ContinuedFractionApproximation(const int di,
+					     const size_t mt,
+					     const double ss,
+					     const double mv) :
   diagonal_idx(di), max_terms(mt), step_size(ss), max_value(mv) {}
-
 
 /* Finds the optimal number of terms (i.e. degree, depth, etc.) of the
  * continued fraction by checking for stability of estimates at
@@ -526,12 +557,12 @@ ContinuedFractionApproximation::ContinuedFractionApproximation(const int di, con
  */
 // New way for searching for optimal CF
 ContinuedFraction
-ContinuedFractionApproximation::optimal_cont_frac_distinct(const vector<double> &counts_hist) const {
+ConFraApprox::optimal_cont_frac_distinct(const vector<double> &counts_hist) const {
   //do this outside
   // ensure that we will use an underestimate
   //  const size_t local_max_terms = max_terms - (max_terms % 2 == 1); 
  
-  if(max_terms >= counts_hist.size()){
+  if (max_terms >= counts_hist.size()) {
     cerr << "max terms = " << max_terms << endl;
     cerr << "hist size = " << counts_hist.size() << endl;
   } 
@@ -547,17 +578,17 @@ ContinuedFractionApproximation::optimal_cont_frac_distinct(const vector<double> 
     full_ps_coeffs.push_back(counts_hist[j]*pow(-1, j + 1));
 
   ContinuedFraction full_CF(full_ps_coeffs, -1, max_terms);  
-
+  
   // if max terms = 4, check only that degree
-  if(max_terms == 4 || max_terms == 3 || max_terms == 5 || max_terms == 6)
-  {   
+  if (max_terms == 4 || max_terms == 3 || max_terms == 5 || max_terms == 6) {
     vector<double> estimates;
-    full_CF.extrapolate_distinct(counts_hist, SEARCH_MAX_VAL, SEARCH_STEP_SIZE, estimates);
+    full_CF.extrapolate_distinct(counts_hist, SEARCH_MAX_VAL, 
+				 SEARCH_STEP_SIZE, estimates);
     // return the continued fraction if it is stable
     if (check_yield_estimates_stability(estimates))
       return full_CF;
   }
-  else{
+  else {
     //if max terms >= 8, start at 8 and check increasing cont frac's
     size_t curr_terms = 0;
     if(max_terms % 2 == 0)
@@ -565,37 +596,47 @@ ContinuedFractionApproximation::optimal_cont_frac_distinct(const vector<double> 
     else
       curr_terms = 7;
     while (curr_terms <= max_terms) {    
-      ContinuedFraction curr_cf 
-	= ContinuedFraction::truncate_degree(full_CF, curr_terms);
+      ContinuedFraction curr_cf =
+	ContinuedFraction::truncate_degree(full_CF, curr_terms);
       vector<double> estimates;
-      curr_cf.extrapolate_distinct(counts_hist, SEARCH_MAX_VAL, SEARCH_STEP_SIZE, estimates);
-          
-    // return the continued fraction if it is stable
+      curr_cf.extrapolate_distinct(counts_hist, SEARCH_MAX_VAL, 
+				   SEARCH_STEP_SIZE, estimates);
+      
+      // return the continued fraction if it is stable
       if (check_yield_estimates_stability(estimates))
 	return curr_cf;
-    
+      
       curr_terms += 2;
-    // if not cf not acceptable, increase degree
+      // if not cf not acceptable, increase degree
     }
   }
-   // no stable continued fraction: return null
+  // no stable continued fraction: return null
   return ContinuedFraction();  
 }
 
-extern "C"
-{
-	void continuedfraction_estimate(double * hist_count, int * hist_count_l, int * di, int * mt, double * ss, double * mv, double * ps_coeffs, int * ps_coeffs_l, double * cf_coeffs, int * cf_coeffs_l, double * offset_coeffs, int * diagonal_idx, int * degree, int * is_valid)
-	{				
-		ContinuedFractionApproximation CFA(*di, *mt, *ss, *mv);
-		const vector<double> counts_hist(hist_count, hist_count + *hist_count_l);
-		ContinuedFraction CF = CFA.optimal_cont_frac_distinct(counts_hist);
-		if (CF.is_valid())
-			*is_valid = 1;
-		else
-			*is_valid = 0;
-		CF.copy2pointers(ps_coeffs, ps_coeffs_l, cf_coeffs, cf_coeffs_l, offset_coeffs, diagonal_idx, degree);
-		return;
-	}
+extern "C" {
+  void 
+  continuedfraction_estimate(double *hist_count, 
+			     int *hist_count_l, 
+			     int *di, 
+			     int *mt, 
+			     double *ss, 
+			     double *mv, 
+			     double *ps_coeffs, 
+			     int *ps_coeffs_l, 
+			     double *cf_coeffs, 
+			     int *cf_coeffs_l, 
+			     double *offset_coeffs, 
+			     int *diagonal_idx, 
+			     int *degree, 
+			     int *is_valid) {				
+    ConFraApprox CFA(*di, *mt, *ss, *mv);
+    const vector<double> counts_hist(hist_count, hist_count + *hist_count_l);
+    ContinuedFraction CF(CFA.optimal_cont_frac_distinct(counts_hist));
+    *is_valid = CF.is_valid();
+    CF.copy2pointers(ps_coeffs, ps_coeffs_l, 
+		     cf_coeffs, cf_coeffs_l, 
+		     offset_coeffs, diagonal_idx, degree);
+    return;
+  }
 }
-
-
