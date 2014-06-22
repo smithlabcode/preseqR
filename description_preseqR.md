@@ -9,14 +9,15 @@ could call c++ functions to archieve capture and re-capture.
 
 ##Interface of the preseqR
 Four functions are supported by preseqR for common users:
-1. preseqR_continuedfraction_estimate(): given a histogram, preseqR produces a 
-continued rational function (CRF); 
-2. preseqR_complex_curve(): given a histogram, preseqR produces a complexity 
-curve of the library;
-3. preseqR_print_continuedfraction(): print out the continued rational function 
-in a friendly way such that user knows what it is; 
-4. preseqR_calculate_ContinueFraction(): given a CRF and the coordinates, 
-preseqR calculates the function values.
+
+  1.  preseqR_continuedfraction_estimate(): given a histogram, preseqR produces a 
+      continued rational function (CRF);
+  2.  preseqR_complex_curve(): given a histogram, preseqR produces a complexity 
+      curve of the library;
+  3.  preseqR_print_continuedfraction(): print out the continued rational function 
+      in a friendly way such that user knows what it is;
+  4.  preseqR_calculate_ContinueFraction(): given a CRF and the coordinates, 
+      preseqR calculates the function values.
 
 Two functions are supported by preseqR for advanced users:
 1. preseqR_extrapolate_distinct(): extrapolate distinct molecules given a CRF;
