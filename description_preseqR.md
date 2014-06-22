@@ -29,9 +29,10 @@ may call c++ function during implementation.
 
 Other functions in Rcontinuedfraction.R are helpers, which should be used by no 
 one except other functions.
-1. R_read_hist(): read a histogram file and output a histogram count vector;
-2. preseqR_sample(): do with/without replacement sampling based on a histogram;
-3. sample2hist_count(): convert a sample vector into a histogram count vector;
+
+  1.  R_read_hist(): read a histogram file and output a histogram count vector;
+  2.  preseqR_sample(): do with/without replacement sampling based on a histogram;
+  3.  sample2hist_count(): convert a sample vector into a histogram count vector;
 
 ##Principles and implementation
 1. In order to pack all functions and make an available R package, all 
