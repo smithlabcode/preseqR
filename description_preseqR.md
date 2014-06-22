@@ -56,29 +56,30 @@ constructs all parameters required by the c++ function and call the function.
 Results of the c++ function are recorded in all pointers of the c function. 
 Finally the R function gets all results through the pointers. 
 
-Two tools are provided by R to imply this process. *Extern "C"* is to tell the
-compile the following code is a c function. *.C* is used by R to call a function
-encoded by c language. All c functions should title with *Extern "C"*. See the 
-code for the usage. 
+Two tools are provided by R to imply this process. ```Extern "C"{ }``` is to
+tell the compile the following code is a c function. ```.C( )``` is used by R
+to call a function encoded by c language. All c functions should title with 
+```Extern "C"```. See the code for the usage. 
 
 It is trivial to call a c function through R. But one should notice that you 
 still need to explicitly convert parameters in R to data types which can be 
-recognized by the c code. In R, I use *as.datatype* to convert. The reason for 
-this is that, unlike R, each data type of the parameter should be predetermined
-in a c-encoded function. Since I do not find a way to convert the data type 
-*struct* in c, all c functions I wrote can only take primitive data types.
+recognized by the c code. In R, I use ```as.datatype``` to convert. The reason
+for this is that, unlike R, each data type of the parameter should be 
+predetermined in a c-encoded function. Since I do not find a way to convert 
+the data type ```struct``` in c, all c functions I wrote can only take 
+primitive data types.
 
 Calling a c++ function through a c function involves two problems. One is how to
 call c++ function, which contains non-trivial parameter data types. The other is
 how to store results after calling a c++ function. In continuedfraction.cpp file
 , the only parameter type that can not be directly converted into a c-encoded 
-type is the class *vector* derived from standard c++ library. My strategy is to
-set two parameters in the c function, one parameter is the pointer to an array,
-the other parameter is the length of the array. Then I used these two parameters
-to construct the vector and call the c++ function. The drawback of this strategy
-is that the number of parameters in the c function could be unnecessarily
-extended. Using *struct pointer* should solve this problem, but I do 
-not know how to do it yet. 
+type is the class ```vector``` derived from standard c++ library. My strategy is 
+to set two parameters in the c function, one parameter is the pointer to an 
+array, the other parameter is the length of the array. Then I used these two 
+parameters to construct the vector and call the c++ function. The drawback of 
+this strategy is that the number of parameters in the c function could be 
+unnecessarily extended. Using ```struct pointer``` should solve this problem, but
+I do not know how to do it yet. 
 
 Extra parameters are also needed in a c-encoded function in order to store 
 returning results from a c++ function. The same as above, they will further 
@@ -113,6 +114,6 @@ would suggest that create a different Makefile file corresponding to compile
 preseqR, coupling with adding some macros in the continuedfraction.cpp file, 
 which can skip all functions that require gsl for compiling. It could make the 
 structure dense and less duplicated codes. But it is more like a pesudo 
-sub-module. *preseqR* is still an independent sub module in preseq. Downsample
-in preseq is written through gsl, while downsample in preseqR is written through
-R libraries. 
+sub-module. ```preseqR``` is still an independent sub module in preseq. 
+Downsample in preseq is written through gsl, while downsample in preseqR is 
+written through R libraries. 
