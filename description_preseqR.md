@@ -96,7 +96,7 @@ method is that it wastes memory.
 ##Difficulties
 I am not clear which types of pointers in a c-encoded function can pass to R 
 except some primary types. For example, a data type size_t in c++, I do not know
-which the type of pointer corresponds in c language. Currently I just use int *
+which the type of pointer corresponds in c language. Currently I just use int`*`
 type to point the size_t type. Memory allocation is also an issue. Whether c 
 function or R function should manager memory still bothers me. The last thing is
 to make interfaces written in the c code neat and clean. How to pass struct 
