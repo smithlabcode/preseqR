@@ -35,28 +35,29 @@ one except other functions.
   3.  sample2hist_count(): convert a sample vector into a histogram count vector;
 
 ##Principles and implementation
-1. In order to pack all functions and make an available R package, all 
-platform-dependent codes should be removed or rewritten. For example codes call 
-*gsl library* or *unistd.h*. I am not sure whether smithlab_cpp requires any extra 
-libraries. So I just grabbed the piece of codes required by the
-Rcontinuedfraction.cpp to make sure that the Rcontinuedfraction.cpp can be 
-compiled properly and no other plat-specific libraries are needed. The only reason
-I do it this way is that it is simple and easy. We can discuss about how to 
-design. The sampling function based on *gsl library* has been rewritten in R 
-language. Thus gsl is not a required library for continuedfraction class.
 
-2. R functions could only call functions from the c code. To explain it from 
-what I learn, R could only call the function written in c with the format
-```
-void * function(type1 *pointer, type2 *pointer, type3 *pointer, ...)
-```	
-and each type should be valid in c. In order to call a c++ function through R, 
-extra functions encoded in c language are required to achieve a bridge between
-c++ and R. The basic strategy I followed is like this: first, the R function calls
-the c function and pass R's parameters to the c function; then the c function 
-constructs all parameters required by the c++ function and call the function. 
-Results of the c++ function are recorded in all pointers of the c function. 
-Finally the R function gets all results through the pointers. 
+1.	In order to pack all functions and make an available R package, all 
+	platform-dependent codes should be removed or rewritten. For example codes call 
+	*gsl library* or *unistd.h*. I am not sure whether smithlab_cpp requires any extra 
+	libraries. So I just grabbed the piece of codes required by the
+	Rcontinuedfraction.cpp to make sure that the Rcontinuedfraction.cpp can be 
+	compiled properly and no other plat-specific libraries are needed. The only reason
+	I do it this way is that it is simple and easy. We can discuss about how to 
+	design. The sampling function based on *gsl library* has been rewritten in R 
+	language. Thus gsl is not a required library for continuedfraction class.
+
+2.	R functions could only call functions from the c code. To explain it from 
+	what I learn, R could only call the function written in c with the format
+	```
+		void * function(type1 *pointer, type2 *pointer, type3 *pointer, ...)
+	```
+	and each type should be valid in c. In order to call a c++ function through R, 
+	extra functions encoded in c language are required to achieve a bridge between
+	c++ and R. The basic strategy I followed is like this: first, the R function calls
+	the c function and pass R's parameters to the c function; then the c function 
+	constructs all parameters required by the c++ function and call the function. 
+	Results of the c++ function are recorded in all pointers of the c function. 
+	Finally the R function gets all results through the pointers. 
 
 Two tools are provided by R to imply this process. ```Extern "C"{ }``` is to
 tell the compile the following code is a c function. ```.C( )``` is used by R
