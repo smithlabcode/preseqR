@@ -47,8 +47,9 @@ language. Thus gsl is not a required library for continuedfraction class.
 
 2. R functions could only call functions from the c code. To explain it from 
 what I learn, R could only call the function written in c with the format
-
-        ```void * function(type1 *pointer, type2 *pointer, type3 *pointer, ...)```,
+	
+	void * function(type1 *pointer, type2 *pointer, type3 *pointer, ...)
+	
 and each type should be valid in c. In order to call a c++ function through R, 
 extra functions encoded in c language are required to achieve a bridge between
 c++ and R. The basic strategy I followed is like this: first, the R function calls
