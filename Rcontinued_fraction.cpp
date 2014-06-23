@@ -1,7 +1,7 @@
 /*    Copyright (C) 2014 University of Southern California and
- *                       Andrew D. Smith, Timothy Daley and Jake Deng
+ *                       Andrew D. Smith, Timothy Daley and Chao Deng
  *
- *    Authors: Andrew D. Smith, Timothy Daley and Jake Deng
+ *    Authors: Andrew D. Smith, Timothy Daley and Chao Deng
  *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -262,37 +262,6 @@ ContinuedFraction::copy2pointers(double *ps, int *ps_l, double *cf,
   return;
 }
 
-/*
-  extern "C"
-  {
-  void R_Advance_ContinueFraction(double * ps_cf, int * ps_cf_l, int * di, int * dg, double * PS_COEFFS, int * PS_COEFFS_L, double * CF_COEFFS, int * CF_COEFFS_L, double * OFFSET_COEFFS)
-  {
-  if (*ps_cf_length > 0 && *dg >= 0)
-  {
-  int last_nonzero = 0; // The number of continuous nonzero items in histogram from beginning
-  for (int i = 0; i != *ps_cf_l; i++)
-  if (ps_cf[i] != 0)
-  last_nonzero++;
-  vector<double> ps_coeffs(ps_cf, ps_cf + last_nonzero);
-  ContinuedFraction::ContinuedFraction CF(ps_coeffs, *di, *dg);
-  *di = CF::diagonal_idx;
-  *dg = CF::degree;
-  *PS_COEFFS_l = CF::ps_coeffs;
-  for (int i = 0; i != *PS_COEFFS_L; i++)
-  PS_COEFFS[i] = CF::ps_coeffs[i];
-  *CF_COEFFS_L = CF:cf_coeffs.size();
-  for (int i = 0; i != *CF_COEFFS_L; i++)
-  CF_COEFFS[i] = CF::cf_coeffs[i];
-  if (CP::offset_coeffs.size() > 0)
-  for (int i = 0; i != CF::offset_coeffs.size(); i++)
-  OFFSET_COEFFS[i] = CF::offset_coeffs[i];
-  }
-  }
-  }
-*/
-
-
-
 ////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////
 ////
@@ -451,24 +420,28 @@ ContinuedFraction::operator()(const double val) const {
   return evaluate_on_diagonal(cf_coeffs, val, degree);
 }
 
-
+/* 
+ * the c-encode interface to calculate the value of a continued fraction given 
+ * the coordinate
+ */
 extern "C" {
-  void R_Calculate_ContinuedFraction(double *cf_coeffs, 
-				     int *cf_coeffs_l, 
-				     double *offset_coeffs, 
-				     int *di, 
-				     int *de, 
-				     double *coordinate, 
-				     double *result) {
+  void c_calculate_continued_fraction( \
+        double *cf_coeffs, // coefficients of the continued fraction (CF)
+		int *cf_coeffs_l,  // the number of coefficients
+        double *offset_coeffs,  // the offset coefficients of the CF
+        int *di,  // the diagonal diagonal value of the CF
+		int *de,  // the degree of the CF
+        double *coordinate, // the coordinate 
+        double *result) { // store the function value given the coordinate
     vector<double> cf(cf_coeffs, cf_coeffs + *cf_coeffs_l);
-    if (*di > 0) {
+	if (*di > 0) {
       vector<double> off(offset_coeffs, offset_coeffs + *di);
       *result = evaluate_above_diagonal(cf, off, *coordinate, *de);
     }
     else if (*di < 0) {
       vector<double> off(offset_coeffs, offset_coeffs - *di);
       *result = evaluate_below_diagonal(cf, off, *coordinate, *de);
-    }		
+	}
     else *result = evaluate_on_diagonal(cf, *coordinate, *de);
   }
 }
@@ -488,27 +461,36 @@ ContinuedFraction::extrapolate_distinct(const vector<double> &counts_hist,
     estimates.push_back(hist_sum + t*operator()(t));
 }
 
-extern "C" {
-  void R_Advance_extrapolate_distinct(double *cf_coeffs, 
-				      int *cf_coeffs_l, 
-				      double *offset_coeffs, 
-				      int *di, 
-				      int *de, 
-				      double *hist, 
-				      int *hist_l, 
-				      double *start_size, 
-				      double *step_size, 
-				      double *max_size, 
-				      double *estimate, 
-				      int *estimate_l) {
+/* 
+ * the c-encoded interface to extralate from a continued fraction
+ */
+extern "C" 
+{
+  void c_extrapolate_distinct( \
+        double *cf_coeffs, // coefficients of the continued fraction (CF)
+        int *cf_coeffs_l, // the number of coefficients
+        double *offset_coeffs, // the offset coefficients of the CF
+        int *di, // the diagonal diagonal value of the continued fraction
+        int *de, // the degree of the continued fraction
+        double *hist, // the count vector of the histogram
+        int *hist_l, // the length the count vector
+        // start_size, step_size, max_size set the number of points sampled from
+		// the continued fraction
+        double *start_size,
+        double *step_size, 
+        double *max_size, 
+        double *estimate, // store values of the continued fraction
+        int *estimate_l) { // the number of stored values
+	//the number of distinct molecules
     double hist_sum = 0;
     for (int i = 0; i != *hist_l; i++)
       hist_sum += hist[i];
+
     double result = 0;
     vector<double> est;
     est.push_back(hist_sum);
     for (double t = *start_size; t <= *max_size; t += *step_size) {
-      R_Calculate_ContinuedFraction(cf_coeffs, cf_coeffs_l, 
+      c_calculate_continued_fraction(cf_coeffs, cf_coeffs_l, 
 				    offset_coeffs, di, de, &t, &result);
       est.push_back(hist_sum + t * result);
     }
@@ -614,25 +596,31 @@ ConFraApprox::optimal_cont_frac_distinct(const vector<double> &counts_hist) cons
   return ContinuedFraction();  
 }
 
+/*
+ * a c-encoded interface to construct continued fraction given the histogram
+ */
 extern "C" {
-  void 
-  continuedfraction_estimate(double *hist_count, 
-			     int *hist_count_l, 
-			     int *di, 
-			     int *mt, 
-			     double *ss, 
-			     double *mv, 
-			     double *ps_coeffs, 
-			     int *ps_coeffs_l, 
-			     double *cf_coeffs, 
-			     int *cf_coeffs_l, 
-			     double *offset_coeffs, 
-			     int *diagonal_idx, 
-			     int *degree, 
-			     int *is_valid) {				
+  void c_continued_fraction_estimate( \
+        double *hist_count, // the count vector of the histogram
+        int *hist_count_l, // the length of the count vector
+        int *di, // the diagonal to work with for estimates
+        int *mt, // the maximum number of terms to try for a CF
+        double *ss, // the step size to use when training
+        double *mv, // the largest value to check when training
+		// all variables below are used to store the constructed CF
+        double *ps_coeffs, 
+        int *ps_coeffs_l, 
+        double *cf_coeffs, 
+        int *cf_coeffs_l, 
+        double *offset_coeffs, 
+        int *diagonal_idx, 
+        int *degree, 
+        int *is_valid) { // an indicator to show the validness of CF
     ConFraApprox CFA(*di, *mt, *ss, *mv);
     const vector<double> counts_hist(hist_count, hist_count + *hist_count_l);
     ContinuedFraction CF(CFA.optimal_cont_frac_distinct(counts_hist));
+
+	// store informatin relevent to the constructed continued fraction
     *is_valid = CF.is_valid();
     CF.copy2pointers(ps_coeffs, ps_coeffs_l, 
 		     cf_coeffs, cf_coeffs_l, 

@@ -63,6 +63,8 @@ struct ContinuedFraction {
   static ContinuedFraction truncate_degree(const ContinuedFraction &fullCF,
 					   const size_t truncated_degree);
   
+  // copy all components from a continued fraction class into pointers
+  // the function only works for making R package
   void copy2pointers(double *ps, int *ps_l, 
 		     double *cf, int *cf_l, double *off, int *di, int *de);
   

@@ -10,13 +10,13 @@ can call c++ functions, providing tools for capture and re-capture model.
 ##Interface of the preseqR
 Four functions are supported by preseqR for common users:
 
-  1.  preseqR_continuedfraction_estimate(): given a histogram, preseqR produces 
+  1.  preseqR_continued_fraction_estimate(): given a histogram, preseqR produces 
 	  a continued rational function (CRF);
   2.  preseqR_complex_curve(): given a histogram, preseqR produces a complexity 
       curve of the library;
-  3.  preseqR_print_continuedfraction(): print out the construct continued 
+  3.  preseqR_print_continued_fraction(): print out the construct continued 
 	  rational function in a friendly way;
-  4.  preseqR_calculate_ContinueFraction(): given a CRF and its coordinates, 
+  4.  preseqR_calculate_continued_fraction(): given a CRF and its coordinates, 
       preseqR calculates the function value.
 
 Two functions are supported by preseqR for advanced users:
@@ -30,7 +30,7 @@ may call c++ function during implementation.
 Other functions in the Rcontinuedfraction.R are helpers, which should be used by no 
 one except other functions.
 
-  1.  R_read_hist(): read a histogram file and output a histogram count vector;
+  1.  preseqR_read_hist(): read a histogram file and output a histogram count vector;
   2.  preseqR_sample(): do with/without replacement sampling based on a histogram;
   3.  sample2hist_count(): convert a sample vector into a histogram count vector;
 
