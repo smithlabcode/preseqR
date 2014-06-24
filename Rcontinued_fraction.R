@@ -197,7 +197,7 @@ preseqR.interpolate.distinct <- function(hist.count, ss)
 	sample = step;
 	# l is the number of interpolation points
 	l = as.integer(upper.limit / sample);
-	yield.estimates = as.doule(vector(mode = 'numeric', length = l));
+	yield.estimates = as.double(vector(mode = 'numeric', length = l));
 	for (i in 1:l)
 	{
 		s = preseqR.hist.sample(hist.count, sample);
