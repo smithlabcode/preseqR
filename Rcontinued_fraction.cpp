@@ -29,15 +29,6 @@ using std::min;
 const double TOLERANCE = 1e-20;
 const double DERIV_DELTA = 1e-8;
 
-static double
-GoodToulmin2xExtrap(const vector<double> &counts_hist){
-  double two_fold_extrap = 0.0;
-  for(size_t i = 0; i < counts_hist.size(); i++)
-    two_fold_extrap += pow(-1.0, i + 1)*counts_hist[i];
-    
-  return two_fold_extrap;
-}
-
 static bool
 check_yield_estimates_stability(const vector<double> &estimates) {
   // make sure that the estimate is increasing in the time_step and

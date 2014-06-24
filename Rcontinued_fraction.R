@@ -185,7 +185,8 @@ preseqR.sample2hist.count <- function(sample.points)
 	return(hist.count)
 }
 
-
+# interpolate when the sample size is no more than the size of 
+# the initial experiment
 preseqR.interpolate.distinct <- function(hist.count, ss)
 {
 	total.sample = 0.0;
@@ -208,15 +209,35 @@ preseqR.interpolate.distinct <- function(hist.count, ss)
 	return(yield.estimates);
 }
 
+#check the goodness of the sample based on good Good & Toulmin's model
+goodtoulmin.2x.extrap <- function(hist.count)
+{
+	two_fold_extrap = 0.0;
+	for ( i in 1:length(hist.count) )
+		two_fold_extrap <- two_fold_extrap + (-1.0)^(i + 1) * hist.count[i];
+    return(two_fold_extrap);
+}
 
 ## estimate a continued fraction given a the count vector of the histogram
+## di = diagonal, mt = max_terms, ss = step_size, 
+## mv = max_value for training
 preseqR.continued.fraction.estimate <- function(hist.count, di, mt, ss, mv, 
 										 max.extrapolation)
 {
+	MIN_REQUIRED_TERMS = 4
 	total.sample = 0.0;
 	for (i in 1:length(hist.count))
 		total.sample <- total.sample + i * hist.count[i];
-	#interpolation when sample size is no more than total sample size
+	# interpolation when sample size is no more than total sample size
+	# adjust step_size when it is too small
+	if (ss < (total.sample / 20))
+	{
+		ss = as.integer(total.sample / 20);
+		# output the adjusted step size to stderr
+		m = paste("adjust step size to", toString(ss), '\n', sep = ' ');
+		write(m, stderr());
+	}
+
 	yield.estimates = preseqR.interpolate.distinct(hist.count, ss)
 
 	counts.before.first.zero = 1;
@@ -230,6 +251,25 @@ preseqR.continued.fraction.estimate <- function(hist.count, di, mt, ss, mv,
 	mt = min(mt, counts.before.first.zero - 1);
 	mt = mt - (mt %% 2);
 
+	# pre-check to make sure the sample is good for prediction
+	if (mt < MIN_REQUIRED_TERMS)
+	{
+		m = paste("max count before zero is les than min required count (4), ",
+				  "sample not sufficiently deep or duplicates removed",
+				  sep = '')
+		write(m, stderr());
+		return();
+	}
+	if(goodtoulmin.2x.extrap(hist.count) < 0.0)
+	{
+		m = paste("Library expected to saturate in doubling of size, ",
+				  "unable to extrapolate", sep = '');
+		write(m, stderr());
+		return();
+	}
+
+	# adjust the format of count vector of the histogram in order to
+	# call c-encoded function
 	hist.count = c(0, hist.count);
 	# allocate spaces to store constructed continued fraction
 	ps.coeffs = as.double(vector(mode = 'numeric', length = MAXLENGTH));
@@ -249,7 +289,7 @@ preseqR.continued.fraction.estimate <- function(hist.count, di, mt, ss, mv,
 	{
 		write("Fail to construct and need to bootstrap to obtain estimates", 
 			  stderr());
-		return;
+		return();
 	}
 	length(ps.coeffs) = out$ps.coeffs.l;
 	length(cf.coeffs) = out$cf.coeffs.l;
