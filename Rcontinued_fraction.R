@@ -1,8 +1,8 @@
 MAXLENGTH = 10000000
 
-#read a histogram file; return the histogram count vector
-#count vector represent frequencies of indexes. For those indexes not showing
-#in the histogram file, use zeros to represent their values
+## read a histogram file; return the histogram count vector
+## count vector represent frequencies of indexes. For those indexes not showing
+## in the histogram file, use zeros to represent their values
 preseqR_read_hist <- function(hist_file)
 {
 	#the first column is the index of the histogram
@@ -54,21 +54,23 @@ preseqR_read_hist <- function(hist_file)
 #	return(CF);
 #}
 
-#calculate the value of the continued fraction CF given the coordinate x 
+## calculate the value of the continued fraction CF given the coordinate x 
+## call c-encoded function "c_calculate_continued_fraction()" through 
+## preseqR_calculate_continue_fraction
 preseqR_calculate_continue_fraction <- function(CF, x)
 {
-	cf = as.double(CF$cf_coeffs);
-	cf_l = as.integer(length(cf));
-	off = as.double(CF$offset_coeffs);
-	di = as.integer(CF$diagonal_idx);
-	de = as.integer(CF$degree);
-	coordinate = as.double(x);
-	.C("c_calculate_continued_fraction", cf, cf_l, off, di, de, coordinate, 
-	  	result = as.double(1));
-	return(result);
+	out <- .C("c_calculate_continued_fraction", 
+			  cf = as.double(CF$cf_coeffs), 
+	   		  cf_l = as.integer(length(CF$cf_coeffs)),
+			  off = as.double(CF$offset_coeffs), 
+			  di = as.integer(CF$diagonal_idx), 
+			  de = as.integer(CF$degree), 
+			  coordinate = as.double(x), 
+		  	  result = as.double(0));
+	return(out$result);
 }
 
-#extrapolate given a histogram and a continued fraction
+## extrapolate given a histogram and a continued fraction
 preseqR_extrapolate_distinct <- function(hist_count, CF, start_size = NULL,
 		 step_size = NULL, max_size = 100)
 {
@@ -78,39 +80,41 @@ preseqR_extrapolate_distinct <- function(hist_count, CF, start_size = NULL,
 	di = as.integer(CF$diagonal_idx);
 	de = as.integer(CF$degree);
 	hist_count = as.double(hist_count);
-	#record the size of the sample based on the histogram count
+	# record the size of the sample based on the histogram count
 	total_reads = 0.0;
 	for (i in 1:length(hist_count))
 		total_reads <- total_reads + i * as.integer(hist_count[i]);
 
-	#the styles of the histogram count vector are different between R code and \
-	#c++ code; The first line of the histogram is always {0	0} in c++ but the \
-	#line is removed in R-encoded function
+	# the styles of the histogram count vector are different between R code 
+	# and c++ code; The first line of the histogram is always [0  0] in c++ 
+	# but the line is removed in R-encoded function
 	hist_count = c(0, hist_count);
 	hist_count_l = as.integer(length(hist_count));
 
-	#set start_size and step_size if they are not defined by user
+	# set start_size and step_size if they are not defined by user
 	if (is.null(start_size))
 		start_size = total_reads;
 	if (start_size > max_size)
 	{
 		write("start position has already beyond the maximum prediction",
-			  stderr);
+			  stderr());
 		return(NULL);
 	}
 	if (is.null(step_size))
 		step_size = total_reads;
 
-	#allocate memory to store extrapolation results
-	estimate = as.double(vector(mode = 'numeric', 
-				length = as.integer((max_size - start_size) / step_size) + 1));
-	estimate_l = as.integer(1);
-
-	.C("c_extrapolate_distinct", cf_coeffs, cf_coeffs_l, offset_coeffs,
+	# allocate memory to store extrapolation results
+	# first "c_extrapolate_distinct" stores the observed number of distinct 
+	# molecules into estimate, then it stores the extrapolation values
+	# thus the allocated memory size is 1 plus the size of extrapolation values,
+	# which is (max_size - start_size) / step_size) + 1
+	extrap_size = as.integer((max_size - start_size) / step_size) + 1;
+	out <- .C("c_extrapolate_distinct", cf_coeffs, cf_coeffs_l, offset_coeffs,
 	   di, de, hist_count, hist_count_l, as.double(start_size), 
-	   as.double(step_size), as.double(max_size), estimate, estimate_l);
-	length(estimate) = estimate_l;
-	return(estimate);
+	   as.double(step_size), as.double(max_size), 
+	   estimate = as.double(vector(mode = 'numeric', extrap_size + 1)), 
+	   estimate_l = as.integer(0), DUP = FALSE);
+	return(out$estimate[ 1: out$estimate_l ]);
 }
 	
 #do with/without replacement of random sampling given a histogram count vector
@@ -126,8 +130,8 @@ preseqR_hist_sample <- function(hist_count, size, replace = FALSE)
 			total_reads = i * as.integer(hist_count[i]);
 			i <- i + 1;
 		}
-		#construct a sample space 
-		x = vector(mode = 'numeric', length = as.integer(total_reads));
+		#construct a sample space X 
+		X = vector(mode = 'numeric', length = as.integer(total_reads));
 		pos = 1;
 		p = 1;
 		value = 1;
@@ -135,14 +139,14 @@ preseqR_hist_sample <- function(hist_count, size, replace = FALSE)
 		{
 			if (as.integer(l) > 0)
 			{
-				x[pos: (pos + as.integer(l) * p - 1)] <- 
+				X[pos: (pos + as.integer(l) * p - 1)] <- 
 					rep(value: (value + as.integer(l) - 1), p);
 				value <- value + as.integer(l);
 				pos <- pos + as.integer(l) * p;
 			}
 			p <- p + 1;
 		}
-		return(sample(x, size, replace = FALSE));
+		return(sample(X, size, replace = FALSE));
 	}
 	else
 	{
@@ -195,8 +199,8 @@ preseqR_continued_fraction_estimate <- function(hist_count, di, mt, ss, mv,
 	yield_estimate = as.double(vector(mode = 'numeric', length = 0));
 	while(sample <= upper_limit)
 	{
-		s = R_ADVANCE_sample(hist_count, sample);
-		yield = sum(sample2hist_count(s));
+		s = preseqR_hist_sample(hist_count, sample);
+		yield = sum(preseqR_sample2hist_count(s));
 		yield_estimate = c(yield_estimate, yield);
 		sample <- sample + step;
 	}
@@ -220,24 +224,24 @@ preseqR_continued_fraction_estimate <- function(hist_count, di, mt, ss, mv,
 	out <- .C('c_continued_fraction_estimate', as.double(hist_count), 
 			  as.integer(length(hist_count)), as.integer(di), as.integer(mt), 
 			  as.double(ss), as.double(mv), ps_coeffs, 
-			  ps_coeffs_l <- as.integer(length(ps_coeffs)), cf_coeffs, 
-			  cf_coeffs_l <- as.integer(length(cf_coeffs)), offset_coeffs, 
-			  diagonal_idx, degree, is_valid);
+			  ps_coeffs_l = as.integer(0), cf_coeffs, 
+			  cf_coeffs_l = as.integer(0), offset_coeffs, 
+			  diagonal_idx, degree, is_valid, DUP = FALSE);
 	if (!is_valid)
 	{
 		write("Fail to construct and need to bootstrap to obtain estimates", 
-			  stderr);
+			  stderr());
 		return;
 	}
-	est <- R_ADVANCE_extrapolate_distinct(hist_count, CF, sample / total_sample,
-		 step_size / total_sample, (max_extrapolation - sample) / total_sample);
-	yield_estimate = c(yield_estimate, est);
 	length(ps_coeffs) = ps_coeffs_l;
 	length(cf_coeffs) = cf_coeffs_l;
 	length(offset_coeffs) = as.integer(abs(diagonal_idx));
 	CF = list(ps_coeffs, cf_coeffs, offset_coeffs, diagonal_idx, degree);
 	names(CF) = c('ps_coeffs', 'cf_coeffs', 'offset_coeffs', 'diagonal_idx', 
 				  'degree');
+	est <- preseqR_extrapolate_distinct(hist_count, CF, sample / total_sample,
+		 step_size / total_sample, max_extrapolation / total_sample);
+	yield_estimate = c(yield_estimate, est);
 	result = c(CF, yield_estimate)
 	return(result);
 }
