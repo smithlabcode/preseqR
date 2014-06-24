@@ -185,9 +185,8 @@ preseqR.sample2hist.count <- function(sample.points)
 	return(hist.count)
 }
 
-#estimate a continued fraction given a the count vector of the histogram
-preseqR.continued.fraction.estimate <- function(hist.count, di, mt, ss, mv, 
-										 max.extrapolation)
+
+preseqR.interpolate.distinct <- function(hist.count, ss)
 {
 	total.sample = 0.0;
 	for (i in 1:length(hist.count))
@@ -196,31 +195,48 @@ preseqR.continued.fraction.estimate <- function(hist.count, di, mt, ss, mv,
 	upper.limit = as.integer(total.sample)
 	step = ss;
 	sample = step;
-	yield.estimate = as.double(vector(mode = 'numeric', length = 0));
-	while(sample <= upper.limit)
+	# l is the number of interpolation points
+	l = as.integer(upper.limit / sample);
+	yield.estimates = as.doule(vector(mode = 'numeric', length = l));
+	for (i in 1:l)
 	{
 		s = preseqR.hist.sample(hist.count, sample);
 		yield = sum(preseqR.sample2hist.count(s));
-		yield.estimate = c(yield.estimate, yield);
+		yield.estimates[i] = yield;
 		sample <- sample + step;
 	}
+	return(yield.estimates);
+}
+
+
+## estimate a continued fraction given a the count vector of the histogram
+preseqR.continued.fraction.estimate <- function(hist.count, di, mt, ss, mv, 
+										 max.extrapolation)
+{
+	total.sample = 0.0;
+	for (i in 1:length(hist.count))
+		total.sample <- total.sample + i * hist.count[i];
+	#interpolation when sample size is no more than total sample size
+	yield.estimates = preseqR.interpolate.distinct(hist.count, ss)
+
 	counts.before.first.zero = 1;
 	while (as.integer(counts.before.first.zero) <= length(hist.count) && 
 		   			  hist.count[counts.before.first.zero] != 0)
 		counts.before.first.zero <- counts.before.first.zero + 1;
 
-	## continued fraction with even degree conservatively estimates
+	# continued fraction with even degree conservatively estimates
 	mt = min(mt, counts.before.first.zero - 1);
 	mt = mt - (mt %% 2);
 
 	hist.count = c(0, hist.count);
-	## allocate spaces to store constructed continued fraction
+	# allocate spaces to store constructed continued fraction
 	ps.coeffs = as.double(vector(mode = 'numeric', length = MAXLENGTH));
 	cf.coeffs = as.double(vector(mode = 'numeric', length = MAXLENGTH));
 	offset.coeffs = as.double(vector(mode = 'numeric', length = MAXLENGTH));
 	diagonal.idx = as.integer(0);
 	degree = as.integer(0);
 	is.valid = as.integer(0);
+	# construct a continued fraction with minimum degree
 	out <- .C('c_continued_fraction_estimate', as.double(hist.count), 
 			  as.integer(length(hist.count)), as.integer(di), as.integer(mt), 
 			  as.double(ss), as.double(mv), ps.coeffs, 
@@ -240,11 +256,12 @@ preseqR.continued.fraction.estimate <- function(hist.count, di, mt, ss, mv,
 	names(CF) = c('ps.coeffs', 'cf.coeffs', 'offset.coeffs', 'diagonal.idx', 
 				  'degree');
 	# the value of the step.size is equal to the size of the sample from the 
-    # histogram
+    # histogram. thus set step.size equal to one
+	# extrapolation when sample size is larger than the inital experiment
 	est <- preseqR.extrapolate.distinct(hist.count, CF, sample / total.sample,
 		 step.size = 1, max.extrapolation / total.sample);
-	yield.estimate = c(yield.estimate, est);
-	result = list(CF, yield.estimate)
+	yield.estimates = c(yield.estimates, est);
+	result = list(CF, yield.estimates)
 	names(result) = c("continued.fraction", "yield.estimates");
 	return(result);
 }
