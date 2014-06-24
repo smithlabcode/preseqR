@@ -224,6 +224,8 @@ preseqR.continued.fraction.estimate <- function(hist.count, di, mt, ss, mv,
 		   			  hist.count[counts.before.first.zero] != 0)
 		counts.before.first.zero <- counts.before.first.zero + 1;
 
+	# starting sample size for extrapolation
+	sample = ss * as.integer(total.sample / ss) + ss;
 	# continued fraction with even degree conservatively estimates
 	mt = min(mt, counts.before.first.zero - 1);
 	mt = mt - (mt %% 2);
