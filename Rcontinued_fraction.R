@@ -244,7 +244,8 @@ preseqR_continued_fraction_estimate <- function(hist_count, di, mt, ss, mv,
 	est <- preseqR_extrapolate_distinct(hist_count, CF, sample / total_sample,
 		 step_size = 1, max_extrapolation / total_sample);
 	yield_estimate = c(yield_estimate, est);
-	result = c(CF, yield_estimate)
+	result = list(CF, yield_estimate)
+	names(result) = c("continued_fraction", "yield_estimates");
 	return(result);
 }
 
