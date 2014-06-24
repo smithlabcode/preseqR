@@ -233,14 +233,16 @@ preseqR_continued_fraction_estimate <- function(hist_count, di, mt, ss, mv,
 			  stderr());
 		return;
 	}
-	length(ps_coeffs) = ps_coeffs_l;
-	length(cf_coeffs) = cf_coeffs_l;
+	length(ps_coeffs) = out$ps_coeffs_l;
+	length(cf_coeffs) = out$cf_coeffs_l;
 	length(offset_coeffs) = as.integer(abs(diagonal_idx));
 	CF = list(ps_coeffs, cf_coeffs, offset_coeffs, diagonal_idx, degree);
 	names(CF) = c('ps_coeffs', 'cf_coeffs', 'offset_coeffs', 'diagonal_idx', 
 				  'degree');
+	# the value of the step_size is equal to the size of the sample from the 
+    # histogram
 	est <- preseqR_extrapolate_distinct(hist_count, CF, sample / total_sample,
-		 step_size / total_sample, max_extrapolation / total_sample);
+		 step_size = 1, max_extrapolation / total_sample);
 	yield_estimate = c(yield_estimate, est);
 	result = c(CF, yield_estimate)
 	return(result);
