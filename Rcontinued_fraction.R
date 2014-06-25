@@ -113,7 +113,7 @@ preseqR.extrapolate.distinct <- function(hist.count, CF, start.size = NULL,
 	   di, de, hist.count, hist.count.l, as.double(start.size), 
 	   as.double(step.size), as.double(max.size), 
 	   estimate = as.double(vector(mode = 'numeric', extrap.size + 1)), 
-	   estimate.l = as.integer(0), DUP = FALSE);
+	   estimate.l = as.integer(0));
 	return(out$estimate[ 1: out$estimate.l ]);
 }
 	
@@ -176,11 +176,12 @@ preseqR.sample2hist.count <- function(sample.points)
 	{
 		V = V[-1];
 	}
+	index = as.integer(names(V));
 	value = as.vector(V);
-	hist.count = vector(mode = 'numeric', length = max(value));
-	for (v in value)
+	hist.count = vector(mode = 'numeric', length = max(index));
+	for ( i in 1:length(index) )
 	{
-		hist.count[v] <- hist.count[v] + 1;
+		hist.count[ index[i] ] = value[i];
 	}
 	return(hist.count)
 }
@@ -221,9 +222,19 @@ goodtoulmin.2x.extrap <- function(hist.count)
 ## estimate a continued fraction given a the count vector of the histogram
 ## di = diagonal, mt = max_terms, ss = step_size, 
 ## mv = max_value for training
-preseqR.continued.fraction.estimate <- function(hist.count, di, mt, ss, mv, 
-										 max.extrapolation)
+preseqR.continued.fraction.estimate <- function(hist, di = -1, mt = 100,
+	   	ss = 1e6, mv = 1e10,  max.extrapolation = 1e10)
 {
+	# input could be either histogram file or count vector of the histogram
+	if (mode(hist) == "character") {
+		hist.count = preseqR.read.hist(hist);
+	}
+	else {
+		hist.count = hist;
+	}
+
+	# minimum required number of terms of power series in order to construct
+	# continued fraction
 	MIN_REQUIRED_TERMS = 4
 	total.sample = 0.0;
 	for (i in 1:length(hist.count))
@@ -304,13 +315,74 @@ preseqR.continued.fraction.estimate <- function(hist.count, di, mt, ss, mv,
 		 step.size = 1, max.extrapolation / total.sample);
 	yield.estimates = c(yield.estimates, est);
 	result = list(CF, yield.estimates)
-	names(result) = c("continued.fraction", "yield.estimates");
+	names(result) = c("continued.fraction",
+		   		  	"yield.estimates");
 	return(result);
 }
 
 print.continuedfraction <- function(CF)
-{}
+{
+	print(CF$cf.coeffs);
+}
 
-bootstrap.complex.curve <- function(hist)
-{}
-
+## generate complexity curve through bootstrap the histogram
+bootstrap.complex.curve <- function(hist.file, times = 100, di = -1, mt = 100,
+									ss = 1e6, mv = 1e10, 
+									max.extrapolation = 1e10)
+{
+	hist.count = preseqR.read.hist(hist.file);
+	total.sample = 0.0;
+	for (i in 1:length(hist.count))
+		total.sample <- total.sample + i * hist.count[i];
+	if (times == 1)
+	{
+		out <- preseqR.continued.fraction.estimate(hist.count, di, 
+				                          mt, ss, mv, max.extrapolation);
+		if (!is.null(out)) {
+			return(out$yield.estimates);
+		}
+		else {
+			return();
+		}
+	}
+	else if (times > 1)
+	{
+		estimates = matrix(data = NA, nrow = max.extrapolation / ss, 
+				           ncol = times, byrow = FALSE);
+		for (i in 1:as.integer(times))
+		{
+			# do sampling with replacement 
+			sample = preseqR.hist.sample(hist.count, as.integer(total.sample), 
+								replace = TRUE);
+			# build count vector of the histogram based on sampling results
+			hist = preseqR.sample2hist.count(sample);
+			out <- preseqR.continued.fraction.estimate(hist, di, mt, ss,
+				                                    	mv, max.extrapolation);
+			if (!is.null(out))
+			{
+				l = length(out$yield.estimates);
+				estimates[, i][1: l] = out$yield.estimates
+			}
+		}
+		# mean values are used as complexity curve
+		mean = apply(estimates, 1, mean, na.rm = TRUE)
+		variance = apply(estimates, 1, var, na.rm = TRUE)
+		# the number of sampled points for complexity curve
+		N = as.integer(max.extrapolation / ss);
+		index = ss * ( 1:N )
+		# count the number of values not zero
+		n = as.vector(apply(estimates, 1, function(x) length(which(!is.na(x)))))
+		# 95% confident interval based on normal distribution
+		left.interval = mean - qnorm(0.975) * sqrt(variance / n);
+		right.interval = mean + qnorm(0.975) * sqrt(variance / n);
+		result = list(index, mean[1:N], left.interval[1:N], right.interval[1:N])
+		names(result) = c("indexes", "yield.estimates", "left.intervals", 
+						  "right.intervals")
+		return(result);
+	}
+	else
+	{
+		write("the paramter times should be at least one", stderr());
+		return();
+	}
+}
