@@ -188,6 +188,8 @@ preseqR.sample2hist.count <- function(sample.points)
 
 # interpolate when the sample size is no more than the size of 
 # the initial experiment
+# return the interpolated estimations and the sample size beyond 
+# the initial experiment
 preseqR.interpolate.distinct <- function(hist.count, ss)
 {
 	total.sample = 0.0;
@@ -202,12 +204,14 @@ preseqR.interpolate.distinct <- function(hist.count, ss)
 	yield.estimates = as.double(vector(mode = 'numeric', length = l));
 	for (i in 1:l)
 	{
-		s = preseqR.hist.sample(hist.count, sample);
+		s = preseqR.hist.sample(hist.count, sample, replace = FALSE);
 		yield = sum(preseqR.sample2hist.count(s));
 		yield.estimates[i] = yield;
 		sample <- sample + step;
 	}
-	return(yield.estimates);
+	out = list(yield.estimates, sample);
+	names(out) = c("yield.estimates", "sample.size")
+	return(out);
 }
 
 #check the goodness of the sample based on good Good & Toulmin's model
@@ -249,7 +253,8 @@ preseqR.continued.fraction.estimate <- function(hist, di = -1, mt = 100,
 		write(m, stderr());
 	}
 
-	yield.estimates = preseqR.interpolate.distinct(hist.count, ss)
+	out = preseqR.interpolate.distinct(hist.count, ss)
+	yield.estimates = out$yield.estimates;
 
 	counts.before.first.zero = 1;
 	while (as.integer(counts.before.first.zero) <= length(hist.count) && 
@@ -257,7 +262,7 @@ preseqR.continued.fraction.estimate <- function(hist, di = -1, mt = 100,
 		counts.before.first.zero <- counts.before.first.zero + 1;
 
 	# starting sample size for extrapolation
-	sample = ss * as.integer(total.sample / ss) + ss;
+	sample = out$sample.size
 	# continued fraction with even degree conservatively estimates
 	mt = min(mt, counts.before.first.zero - 1);
 	mt = mt - (mt %% 2);
@@ -283,36 +288,37 @@ preseqR.continued.fraction.estimate <- function(hist, di = -1, mt = 100,
 	# call c-encoded function
 	hist.count = c(0, hist.count);
 	# allocate spaces to store constructed continued fraction
-	ps.coeffs = as.double(vector(mode = 'numeric', length = MAXLENGTH));
-	cf.coeffs = as.double(vector(mode = 'numeric', length = MAXLENGTH));
-	offset.coeffs = as.double(vector(mode = 'numeric', length = MAXLENGTH));
-	diagonal.idx = as.integer(0);
-	degree = as.integer(0);
-	is.valid = as.integer(0);
 	# construct a continued fraction with minimum degree
 	out <- .C('c_continued_fraction_estimate', as.double(hist.count), 
 			  as.integer(length(hist.count)), as.integer(di), as.integer(mt), 
-			  as.double(ss), as.double(mv), ps.coeffs, 
-			  ps.coeffs.l = as.integer(0), cf.coeffs, 
-			  cf.coeffs.l = as.integer(0), offset.coeffs, 
-			  diagonal.idx, degree, is.valid, DUP = FALSE);
-	if (!is.valid)
+			  step.size = as.double(ss), as.double(mv), 
+			  ps.coeffs = as.double(vector(mode = 'numeric', length=MAXLENGTH)),
+			  ps.coeffs.l = as.integer(0), 
+			  cf.coeffs = as.double(vector(mode = 'numeric', length=MAXLENGTH)),
+			  cf.coeffs.l = as.integer(0), 
+			  offset.coeffs =as.double(vector(mode='numeric',length=MAXLENGTH)),
+			  diagonal.idx = as.integer(0), 
+			  degree = as.integer(0),
+			  is.valid = as.integer(0));
+	if (!out$is.valid)
 	{
 		write("Fail to construct and need to bootstrap to obtain estimates", 
 			  stderr());
 		return();
 	}
-	length(ps.coeffs) = out$ps.coeffs.l;
-	length(cf.coeffs) = out$cf.coeffs.l;
-	length(offset.coeffs) = as.integer(abs(diagonal.idx));
-	CF = list(ps.coeffs, cf.coeffs, offset.coeffs, diagonal.idx, degree);
+	length(out$ps.coeffs) = out$ps.coeffs.l;
+	length(out$cf.coeffs) = out$cf.coeffs.l;
+	length(out$offset.coeffs) = as.integer(abs(out$diagonal.idx));
+	CF = list(out$ps.coeffs, out$cf.coeffs, out$offset.coeffs, out$diagonal.idx,
+			  out$degree);
 	names(CF) = c('ps.coeffs', 'cf.coeffs', 'offset.coeffs', 'diagonal.idx', 
 				  'degree');
 	# the value of the step.size is equal to the size of the sample from the 
     # histogram. thus set step.size equal to one
 	# extrapolation when sample size is larger than the inital experiment
 	est <- preseqR.extrapolate.distinct(hist.count, CF, sample / total.sample,
-		 step.size = 1, max.extrapolation / total.sample);
+										out$step.size / total.sample, 
+										max.extrapolation / total.sample);
 	yield.estimates = c(yield.estimates, est);
 	result = list(CF, yield.estimates)
 	names(result) = c("continued.fraction",
