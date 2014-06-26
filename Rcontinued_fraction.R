@@ -1,4 +1,9 @@
+## MAXLENGTH the allocate size for storing complexity curve
+## BOOTSTRAP.factor the cut off ratio of success times / total bootstrap times
+## default number of times for bootstrap
 MAXLENGTH = 10000000
+BOOTSTRAP.factor = 0.7
+BOOTSTRAP.times = 100
 
 ## read a histogram file; return the histogram count vector
 ## count vector represent frequencies of indexes. For those indexes not showing
@@ -26,33 +31,6 @@ preseqR.read.hist <- function(hist.file)
 	return(hist.count);
 }
 
-
-#R.ADVANCE.ContinueFraction <- function(hist.count, diagonal.idx, degree)
-#{
-#	hist.count = as.double(hist.count);
-## For hist.count as parameter in C function, the first row should be (0, 0)
-## For hist.count as parameter in R function, the first row should be (1, x)
-#	hist.count = c(0, hist.count);
-#	l = as.integer(length(hist.count));
-#	if (l == 0) stop('empty hist.count');
-#	di = as.integer(diagonal);
-#	de = as.integer(degree);
-#	PS.COEFFS = as.double(vector(mode = 'numeric', length = l));
-#	PS.COEFFS.L = as.integer(1);
-#	CF.COEFFS = as.double(vector(mode = 'numeric', length = l));
-#	CF.COEFFS = as.integer(1);
-#	OFFSET.COEFFS = as.double(vector(mode = 'numeric', length = l));
-
-#	out <- .C("R.Advance.ContinueFraction", hist.count = c(0, hist.count), l, \
-#   di, de, PS.COEFFS, PS.COEFFS.L, CF.COEFFS, CF.COEFFS.L, OFFSET.COEFFS);
-#
-#	length(PS.COEFFS) = PS.COEFFS.L;
-#	length(CF.COEFFS) = CF.COEFFS.L;
-#	length(OFFSET.COEFFS) = as.integer(abs(di));
-#	CF = list(PS.COEFFS, CF.COEFFS, OFFSET.COEFFS, di, de);
-#	names(CF) = c(ps.coeffs, cf.coeffs, offset.coeffs, diagonal.idx, degree);
-#	return(CF);
-#}
 
 ## calculate the value of the continued fraction CF given the coordinate x 
 ## call c-encoded function "c.calculate.continued.fraction()" through 
@@ -184,7 +162,7 @@ preseqR.nonreplace.sample2hist.count <- function(sample.points)
 	return(hist.count)
 }
 
-## convert sampled points into a count vector of the histogram
+## convert points from replacement sampling into a count vector of the histogram
 preseqR.replace.sample2hist.count <- function(sample.points)
 {
 	hist.count = vector(mode = 'numeric', length = max(sample.points));
@@ -195,6 +173,8 @@ preseqR.replace.sample2hist.count <- function(sample.points)
 	return(hist.count)
 }
 
+## combine two sample2hist methods into one; repalce represents points are 
+## sampled through replacement sampling or non replacement sampling
 preseqR.sample2hist.count <- function(sample.points, replace)
 {
 	if (replace == TRUE) {
@@ -247,7 +227,7 @@ goodtoulmin.2x.extrap <- function(hist.count)
 ## estimate a continued fraction given a the count vector of the histogram
 ## di = diagonal, mt = max_terms, ss = step_size, 
 ## mv = max_value for training
-preseqR.continued.fraction.estimate <- function(hist, di = -1, mt = 100,
+preseqR.continued.fraction.estimate <- function(hist, di = 0, mt = 100,
 	   	ss = 1e6, mv = 1e10,  max.extrapolation = 1e10)
 {
 	# input could be either histogram file or count vector of the histogram
@@ -373,7 +353,7 @@ print.continuedfraction <- function(CF)
 }
 
 ## generate complexity curve through bootstrap the histogram
-bootstrap.complex.curve <- function(hist.file, times = 100, di = -1, mt = 100,
+bootstrap.complex.curve <- function(hist.file, times = 100, di = 0, mt = 100,
 									ss = 1e6, mv = 1e10, 
 									max.extrapolation = 1e10)
 {
@@ -393,6 +373,8 @@ bootstrap.complex.curve <- function(hist.file, times = 100, di = -1, mt = 100,
 	} else if (times > 1) {
 		# the number of sampled points for complexity curve
 		N = 0
+		# the number of times bootstrap success
+		count = 0
 		# the actually step.size preseqR.continued.fraction.estimate uses
 		step.size = 0
 #		estimates = list();
@@ -409,6 +391,7 @@ bootstrap.complex.curve <- function(hist.file, times = 100, di = -1, mt = 100,
 				                                    	mv, max.extrapolation);
 			if (!is.null(out))
 			{
+				count <- count + 1;
 				N = length(out$yield.estimates);
 				step.size = out$step.size
 				estimates[, i][1: N] = out$yield.estimates;
@@ -419,6 +402,11 @@ bootstrap.complex.curve <- function(hist.file, times = 100, di = -1, mt = 100,
 		{
 			write("can not make prediction based on the given histogram", stderr());
 			return()
+		}
+		if (count < BOOTSTRAP.factor * times)
+		{
+			write("fail to bootstrap since the histogram is poor", stderr());
+			return();
 		}
 		index = step.size * ( 1:N )
 		# mean values are used as complexity curve
@@ -431,7 +419,7 @@ bootstrap.complex.curve <- function(hist.file, times = 100, di = -1, mt = 100,
 		# 95% confident interval based on normal distribution
 		left.interval = mean - qnorm(0.975) * sqrt(variance / n);
 		right.interval = mean + qnorm(0.975) * sqrt(variance / n);
-		result = list(index, mean, left.interval, right.interval)
+		result = list(index, mean, left.interval, right.interval);
 		names(result) = c("indexes", "yield.estimates", "left.intervals", 
 						  "right.intervals")
 		return(result);
