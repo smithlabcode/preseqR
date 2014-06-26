@@ -1,0 +1,10 @@
+Package: preseqR
+Type: Package
+Title: Predicting Library Complexity
+Version: 1.0
+Date: 2014-06-26
+Author: Andrew D. Smith, Timothy Daley and Chao Deng
+Maintainer: Chao Deng <chaodeng@usc.edu>
+Description: This is a R package to make the functionality of Preseq available in the R statistical computing environment. 
+License: GPL-3
+Keyword: Library, Complexity, Rational Function

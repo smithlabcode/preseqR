@@ -1,0 +1,190 @@
+Hmm ... looks like a package
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013)
+ restricted \write18 enabled.
+entering extended mode
+(./Rd2.tex
+LaTeX2e <2011/06/27>
+Babel <3.9k> and hyphenation patterns for 78 languages loaded.
+
+(/usr/local/texlive/2013/texmf-dist/tex/latex/base/book.cls
+Document Class: book 2007/10/19 v1.4h Standard LaTeX document class
+(/usr/local/texlive/2013/texmf-dist/tex/latex/base/bk10.clo))
+(/usr/share/R/share/texmf/tex/latex/Rd.sty
+(/usr/local/texlive/2013/texmf-dist/tex/latex/base/ifthen.sty)
+(/usr/local/texlive/2013/texmf-dist/tex/latex/tools/longtable.sty)
+(/usr/local/texlive/2013/texmf-dist/tex/latex/tools/bm.sty)
+(/usr/local/texlive/2013/texmf-dist/tex/latex/base/alltt.sty)
+(/usr/local/texlive/2013/texmf-dist/tex/latex/tools/verbatim.sty)
+(/usr/local/texlive/2013/texmf-dist/tex/latex/url/url.sty)
+(/usr/share/R/share/texmf/tex/latex/upquote.sty
+(/usr/local/texlive/2013/texmf-dist/tex/latex/base/textcomp.sty
+(/usr/local/texlive/2013/texmf-dist/tex/latex/base/ts1enc.def)))
+NOT loading ae (/usr/local/texlive/2013/texmf-dist/tex/latex/base/fontenc.sty
+(/usr/local/texlive/2013/texmf-dist/tex/latex/base/t1enc.def))
+(/usr/local/texlive/2013/texmf-dist/tex/latex/psnfss/times.sty)
+NOT loading lmodern)
+(/usr/local/texlive/2013/texmf-dist/tex/latex/base/inputenc.sty
+(/usr/local/texlive/2013/texmf-dist/tex/latex/base/utf8.def
+(/usr/local/texlive/2013/texmf-dist/tex/latex/base/t1enc.dfu)
+(/usr/local/texlive/2013/texmf-dist/tex/latex/base/ot1enc.dfu)
+(/usr/local/texlive/2013/texmf-dist/tex/latex/base/omsenc.dfu)
+(/usr/local/texlive/2013/texmf-dist/tex/latex/base/ts1enc.dfu))
+(/usr/local/texlive/2013/texmf-dist/tex/latex/base/latin1.def))
+No file Rd2.aux.
+(/usr/local/texlive/2013/texmf-dist/tex/latex/base/ts1cmr.fd)
+(/usr/local/texlive/2013/texmf-dist/tex/latex/psnfss/t1ptm.fd)
+(/usr/local/texlive/2013/texmf-dist/tex/latex/psnfss/t1pcr.fd)
+(/usr/local/texlive/2013/texmf-dist/tex/latex/psnfss/t1phv.fd)
+No file Rd2.toc.
+(/usr/local/texlive/2013/texmf-dist/tex/latex/base/utf8.def)
+Overfull \hbox (36.78088pt too wide) in paragraph at lines 38--38
+ []\T1/pcr/m/n/10 bootstrap.complex.curve(hist, times = 100, di = 0, mt = 100, 
+ss = 1e+06,[] 
+[1{/usr/local/texlive/2013/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
+[2]
+Overfull \hbox (25.98041pt too wide) in paragraph at lines 128--128
+ []            \T1/pcr/m/n/9 sample = preseqR.hist.sample(hist.count, as.intege
+r(total.sample),[] 
+
+Overfull \hbox (36.7804pt too wide) in paragraph at lines 153--153
+ []        \T1/pcr/m/n/9 n = as.vector(apply(estimates, 1, function(x) length(w
+hich(!is.na(x)))))[] 
+
+Overfull \hbox (20.58041pt too wide) in paragraph at lines 157--157
+ []        \T1/pcr/m/n/9 yield.estimates = list(sample.size = index, yields = y
+ield.estimates)[] 
+
+Overfull \hbox (20.58041pt too wide) in paragraph at lines 159--159
+ []        \T1/pcr/m/n/9 names(result) = c("yield.estimates", "LOWER_0.95CI", "
+UPPER_0.95CI");[] 
+
+Underfull \vbox (badness 10000) has occurred while \output is active [3]
+(/usr/local/texlive/2013/texmf-dist/tex/latex/base/utf8.def)
+Overfull \hbox (30.78088pt too wide) in paragraph at lines 182--182
+ []\T1/pcr/m/n/10 preseqR.continued.fraction.estimate(hist, di = 0, mt = 100, s
+s = 1e+06,[] 
+[4]
+Overfull \hbox (58.38037pt too wide) in paragraph at lines 241--241
+ []\T1/pcr/m/n/9 function (hist, di = 0, mt = 100, ss = 1e+06, mv = 1e+10, max.
+extrapolation = 1e+10)[] 
+
+Overfull \hbox (9.78043pt too wide) in paragraph at lines 260--260
+ []            \T1/pcr/m/n/9 step.size = max(step.size, step.size * round(total
+.sample/(20 *[] 
+
+Overfull \hbox (31.3804pt too wide) in paragraph at lines 277--277
+ []        \T1/pcr/m/n/9 m = paste("max count before zero is les than min requi
+red count (4), ",[] 
+[5]
+Overfull \hbox (15.18042pt too wide) in paragraph at lines 295--295
+ []        \T1/pcr/m/n/9 cf.coeffs = as.double(vector(mode = "numeric", length 
+= MAXLENGTH)),[] 
+
+Overfull \hbox (15.18042pt too wide) in paragraph at lines 301--301
+ []        \T1/pcr/m/n/9 write("Fail to construct and need to bootstrap to obta
+in estimates",[] 
+[6] (./Rd2.aux) )
+(see the transcript file for additional information){/usr/local/texlive/2013/te
+xmf-dist/fonts/enc/dvips/base/8r.enc}</usr/local/texlive/2013/texmf-dist/fonts/
+type1/urw/courier/ucrr8a.pfb></usr/local/texlive/2013/texmf-dist/fonts/type1/ur
+w/helvetic/uhvr8a.pfb></usr/local/texlive/2013/texmf-dist/fonts/type1/urw/times
+/utmb8a.pfb></usr/local/texlive/2013/texmf-dist/fonts/type1/urw/times/utmr8a.pf
+b></usr/local/texlive/2013/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/lo
+cal/texlive/2013/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
+Output written on Rd2.pdf (6 pages, 78037 bytes).
+Transcript written on Rd2.log.
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013)
+ restricted \write18 enabled.
+entering extended mode
+(./Rd2.tex
+LaTeX2e <2011/06/27>
+Babel <3.9k> and hyphenation patterns for 78 languages loaded.
+
+(/usr/local/texlive/2013/texmf-dist/tex/latex/base/book.cls
+Document Class: book 2007/10/19 v1.4h Standard LaTeX document class
+(/usr/local/texlive/2013/texmf-dist/tex/latex/base/bk10.clo))
+(/usr/share/R/share/texmf/tex/latex/Rd.sty
+(/usr/local/texlive/2013/texmf-dist/tex/latex/base/ifthen.sty)
+(/usr/local/texlive/2013/texmf-dist/tex/latex/tools/longtable.sty)
+(/usr/local/texlive/2013/texmf-dist/tex/latex/tools/bm.sty)
+(/usr/local/texlive/2013/texmf-dist/tex/latex/base/alltt.sty)
+(/usr/local/texlive/2013/texmf-dist/tex/latex/tools/verbatim.sty)
+(/usr/local/texlive/2013/texmf-dist/tex/latex/url/url.sty)
+(/usr/share/R/share/texmf/tex/latex/upquote.sty
+(/usr/local/texlive/2013/texmf-dist/tex/latex/base/textcomp.sty
+(/usr/local/texlive/2013/texmf-dist/tex/latex/base/ts1enc.def)))
+NOT loading ae (/usr/local/texlive/2013/texmf-dist/tex/latex/base/fontenc.sty
+(/usr/local/texlive/2013/texmf-dist/tex/latex/base/t1enc.def))
+(/usr/local/texlive/2013/texmf-dist/tex/latex/psnfss/times.sty)
+NOT loading lmodern)
+(/usr/local/texlive/2013/texmf-dist/tex/latex/base/inputenc.sty
+(/usr/local/texlive/2013/texmf-dist/tex/latex/base/utf8.def
+(/usr/local/texlive/2013/texmf-dist/tex/latex/base/t1enc.dfu)
+(/usr/local/texlive/2013/texmf-dist/tex/latex/base/ot1enc.dfu)
+(/usr/local/texlive/2013/texmf-dist/tex/latex/base/omsenc.dfu)
+(/usr/local/texlive/2013/texmf-dist/tex/latex/base/ts1enc.dfu))
+(/usr/local/texlive/2013/texmf-dist/tex/latex/base/latin1.def)) (./Rd2.aux)
+(/usr/local/texlive/2013/texmf-dist/tex/latex/base/ts1cmr.fd)
+(/usr/local/texlive/2013/texmf-dist/tex/latex/psnfss/t1ptm.fd)
+(/usr/local/texlive/2013/texmf-dist/tex/latex/psnfss/t1pcr.fd)
+(/usr/local/texlive/2013/texmf-dist/tex/latex/psnfss/t1phv.fd) (./Rd2.toc)
+(/usr/local/texlive/2013/texmf-dist/tex/latex/base/utf8.def)
+Overfull \hbox (36.78088pt too wide) in paragraph at lines 38--38
+ []\T1/pcr/m/n/10 bootstrap.complex.curve(hist, times = 100, di = 0, mt = 100, 
+ss = 1e+06,[] 
+[1{/usr/local/texlive/2013/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
+[2]
+Overfull \hbox (25.98041pt too wide) in paragraph at lines 128--128
+ []            \T1/pcr/m/n/9 sample = preseqR.hist.sample(hist.count, as.intege
+r(total.sample),[] 
+
+Overfull \hbox (36.7804pt too wide) in paragraph at lines 153--153
+ []        \T1/pcr/m/n/9 n = as.vector(apply(estimates, 1, function(x) length(w
+hich(!is.na(x)))))[] 
+
+Overfull \hbox (20.58041pt too wide) in paragraph at lines 157--157
+ []        \T1/pcr/m/n/9 yield.estimates = list(sample.size = index, yields = y
+ield.estimates)[] 
+
+Overfull \hbox (20.58041pt too wide) in paragraph at lines 159--159
+ []        \T1/pcr/m/n/9 names(result) = c("yield.estimates", "LOWER_0.95CI", "
+UPPER_0.95CI");[] 
+
+Underfull \vbox (badness 10000) has occurred while \output is active [3]
+(/usr/local/texlive/2013/texmf-dist/tex/latex/base/utf8.def)
+Overfull \hbox (30.78088pt too wide) in paragraph at lines 182--182
+ []\T1/pcr/m/n/10 preseqR.continued.fraction.estimate(hist, di = 0, mt = 100, s
+s = 1e+06,[] 
+[4]
+Overfull \hbox (58.38037pt too wide) in paragraph at lines 241--241
+ []\T1/pcr/m/n/9 function (hist, di = 0, mt = 100, ss = 1e+06, mv = 1e+10, max.
+extrapolation = 1e+10)[] 
+
+Overfull \hbox (9.78043pt too wide) in paragraph at lines 260--260
+ []            \T1/pcr/m/n/9 step.size = max(step.size, step.size * round(total
+.sample/(20 *[] 
+
+Overfull \hbox (31.3804pt too wide) in paragraph at lines 277--277
+ []        \T1/pcr/m/n/9 m = paste("max count before zero is les than min requi
+red count (4), ",[] 
+[5]
+Overfull \hbox (15.18042pt too wide) in paragraph at lines 295--295
+ []        \T1/pcr/m/n/9 cf.coeffs = as.double(vector(mode = "numeric", length 
+= MAXLENGTH)),[] 
+
+Overfull \hbox (15.18042pt too wide) in paragraph at lines 301--301
+ []        \T1/pcr/m/n/9 write("Fail to construct and need to bootstrap to obta
+in estimates",[] 
+[6] (./Rd2.aux) )
+(see the transcript file for additional information){/usr/local/texlive/2013/te
+xmf-dist/fonts/enc/dvips/base/8r.enc}</usr/local/texlive/2013/texmf-dist/fonts/
+type1/urw/courier/ucrr8a.pfb></usr/local/texlive/2013/texmf-dist/fonts/type1/ur
+w/helvetic/uhvr8a.pfb></usr/local/texlive/2013/texmf-dist/fonts/type1/urw/times
+/utmb8a.pfb></usr/local/texlive/2013/texmf-dist/fonts/type1/urw/times/utmr8a.pf
+b></usr/local/texlive/2013/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/lo
+cal/texlive/2013/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
+Output written on Rd2.pdf (6 pages, 78111 bytes).
+Transcript written on Rd2.log.
+Saving output to 'preseqR-manual.pdf' ...
+Done
+You may want to clean up by 'rm -rf /tmp/RtmpBtYgS1/Rd2pdf79b2158c5f6f'

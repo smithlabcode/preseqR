@@ -1,0 +1,3 @@
+useDynLib(preseqR)
+export(preseqR.continued.fraction.estimate)
+export(bootstrap.complex.curve)
