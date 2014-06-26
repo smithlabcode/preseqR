@@ -57,7 +57,7 @@ preseqR.read.hist <- function(hist.file)
 ## calculate the value of the continued fraction CF given the coordinate x 
 ## call c-encoded function "c.calculate.continued.fraction()" through 
 ## preseqR.calculate.continue.fraction
-preseqR.calculate.continue.fraction <- function(CF, x)
+preseqR.calculate.continued.fraction <- function(CF, x)
 {
 	out <- .C("c_calculate_continued_fraction", 
 			  cf = as.double(CF$cf.coeffs), 
@@ -119,7 +119,7 @@ preseqR.extrapolate.distinct <- function(hist.count, CF, start.size = NULL,
 	
 #do with/without replacement of random sampling given a histogram count vector
 #size is a user defined sample size
-preseqR.hist.sample <- function(hist.count, size, replace = FALSE)
+preseqR.hist.sample <- function(hist.count, size, replace)
 {
 	if (replace == FALSE)
 	{
@@ -148,8 +148,7 @@ preseqR.hist.sample <- function(hist.count, size, replace = FALSE)
 		}
 		return(sample(X, size, replace = FALSE));
 	}
-	else
-	{
+	else if (replace == TRUE) {
 		distinct.reads = as.integer(sum(hist.count));
 		#construct the pdf of the multinomial distribution
 		prob = vector(mode = 'numeric', length = distinct.reads);
@@ -165,27 +164,45 @@ preseqR.hist.sample <- function(hist.count, size, replace = FALSE)
 			p <- p + 1;
 		}
 		return(rmultinom(1, size, prob));
+	} else {
+		write("Specify the sampling methods(wit/without replacement)", stderr())
+		return();
 	}
 }
 
-#convert sampled points into a count vector of the histogram 
-preseqR.sample2hist.count <- function(sample.points)
+## convert points from without replacement sampling into a count vector of the 
+## histogram 
+preseqR.nonreplace.sample2hist.count <- function(sample.points)
 {
 	V = table(sample.points);
-	if (names(V)[1] == '0')
-	{
-		V = V[-1];
-	}
-	index = as.integer(names(V));
 	value = as.vector(V);
-	hist.count = vector(mode = 'numeric', length = max(index));
-	for ( i in 1:length(index) )
+	hist.count = vector(mode = 'numeric', length = max(value));
+	for (i in value)
 	{
-		hist.count[ index[i] ] = value[i];
+		hist.count[i] <- hist.count[i] + 1;
 	}
 	return(hist.count)
 }
 
+## convert sampled points into a count vector of the histogram
+preseqR.replace.sample2hist.count <- function(sample.points)
+{
+	hist.count = vector(mode = 'numeric', length = max(sample.points));
+	for (v in sample.points)
+	{
+		if (v != 0) hist.count[v] <- hist.count[v] + 1
+	}
+	return(hist.count)
+}
+
+preseqR.sample2hist.count <- function(sample.points, replace)
+{
+	if (replace == TRUE) {
+		preseqR.replace.sample2hist.count(sample.points);
+	} else {
+		preseqR.nonreplace.sample2hist.count(sample.points);
+	}
+}
 # interpolate when the sample size is no more than the size of 
 # the initial experiment
 # return the interpolated estimations and the sample size beyond 
@@ -201,11 +218,15 @@ preseqR.interpolate.distinct <- function(hist.count, ss)
 	sample = step;
 	# l is the number of interpolation points
 	l = as.integer(upper.limit / sample);
+	# if the sample size is larger than the size of experiment, return NULL
+	if (l == 0)
+		return();
+
 	yield.estimates = as.double(vector(mode = 'numeric', length = l));
 	for (i in 1:l)
 	{
 		s = preseqR.hist.sample(hist.count, sample, replace = FALSE);
-		yield = sum(preseqR.sample2hist.count(s));
+		yield = sum(preseqR.sample2hist.count(s, replace = FALSE));
 		yield.estimates[i] = yield;
 		sample <- sample + step;
 	}
@@ -243,18 +264,30 @@ preseqR.continued.fraction.estimate <- function(hist, di = -1, mt = 100,
 	total.sample = 0.0;
 	for (i in 1:length(hist.count))
 		total.sample <- total.sample + i * hist.count[i];
-	# interpolation when sample size is no more than total sample size
-	# adjust step_size when it is too small
-	if (ss < (total.sample / 20))
+	step.size = ss;
+	# no interpolation if step.size is larger than the size of experiment
+	# set the starting sample size as the step.size
+	if (step.size > total.sample)
 	{
-		ss = as.integer(total.sample / 20);
-		# output the adjusted step size to stderr
-		m = paste("adjust step size to", toString(ss), '\n', sep = ' ');
-		write(m, stderr());
+		yield.estimates = vector(mode = 'numeric', length = 0);
+		starting.size = step.size;
 	}
-
-	out = preseqR.interpolate.distinct(hist.count, ss)
-	yield.estimates = out$yield.estimates;
+	# interpolation when sample size is no more than total sample size
+	else 
+	{
+		# adjust step.size when it is too small
+		if (step.size < (total.sample / 20))
+		{
+			step.size = max(step.size, step.size*round(total.sample/(20*step.size)));
+			# output the adjusted step size to stderr
+			m = paste("adjust step size to", toString(step.size), '\n', sep = ' ');
+			write(m, stderr());
+		}
+		# interpolate and set the size of sample for initial extrapolation
+		out = preseqR.interpolate.distinct(hist.count, step.size)
+		yield.estimates = out$yield.estimates;
+		starting.size = out$sample.size
+	}
 
 	counts.before.first.zero = 1;
 	while (as.integer(counts.before.first.zero) <= length(hist.count) && 
@@ -262,7 +295,7 @@ preseqR.continued.fraction.estimate <- function(hist, di = -1, mt = 100,
 		counts.before.first.zero <- counts.before.first.zero + 1;
 
 	# starting sample size for extrapolation
-	sample = out$sample.size
+
 	# continued fraction with even degree conservatively estimates
 	mt = min(mt, counts.before.first.zero - 1);
 	mt = mt - (mt %% 2);
@@ -291,7 +324,7 @@ preseqR.continued.fraction.estimate <- function(hist, di = -1, mt = 100,
 	# construct a continued fraction with minimum degree
 	out <- .C('c_continued_fraction_estimate', as.double(hist.count), 
 			  as.integer(length(hist.count)), as.integer(di), as.integer(mt), 
-			  step.size = as.double(ss), as.double(mv), 
+			  step.size = as.double(step.size), as.double(mv), 
 			  ps.coeffs = as.double(vector(mode = 'numeric', length=MAXLENGTH)),
 			  ps.coeffs.l = as.integer(0), 
 			  cf.coeffs = as.double(vector(mode = 'numeric', length=MAXLENGTH)),
@@ -313,16 +346,24 @@ preseqR.continued.fraction.estimate <- function(hist, di = -1, mt = 100,
 			  out$degree);
 	names(CF) = c('ps.coeffs', 'cf.coeffs', 'offset.coeffs', 'diagonal.idx', 
 				  'degree');
-	# the value of the step.size is equal to the size of the sample from the 
-    # histogram. thus set step.size equal to one
-	# extrapolation when sample size is larger than the inital experiment
-	est <- preseqR.extrapolate.distinct(hist.count, CF, sample / total.sample,
-										out$step.size / total.sample, 
-										max.extrapolation / total.sample);
+	# if the sample size is larger than max.extrapolation
+	# stop extrapolation
+	if (starting.size > max.extrapolation)
+	{
+		result = list(CF, yield.estimates, out$step.size);
+		names(result) = c("continued.fraction","yield.estimates", "step.size");
+		return(result);
+	}
+	est <- preseqR.extrapolate.distinct(
+				hist.count, CF, (starting.size - total.sample) / total.sample,
+				out$step.size / total.sample, 
+				(max.extrapolation - total.sample) / total.sample);
+	# est[1] is the number of the distinct molecules from experiments
+	# est[-1] are extrapolation results
+	est = est[-1]
 	yield.estimates = c(yield.estimates, est);
-	result = list(CF, yield.estimates)
-	names(result) = c("continued.fraction",
-		   		  	"yield.estimates");
+	result = list(CF, yield.estimates, out$step.size)
+	names(result) = c("continued.fraction",	"yield.estimates", "step.size");
 	return(result);
 }
 
@@ -340,8 +381,7 @@ bootstrap.complex.curve <- function(hist.file, times = 100, di = -1, mt = 100,
 	total.sample = 0.0;
 	for (i in 1:length(hist.count))
 		total.sample <- total.sample + i * hist.count[i];
-	if (times == 1)
-	{
+	if (times == 1) {
 		out <- preseqR.continued.fraction.estimate(hist.count, di, 
 				                          mt, ss, mv, max.extrapolation);
 		if (!is.null(out)) {
@@ -350,9 +390,12 @@ bootstrap.complex.curve <- function(hist.file, times = 100, di = -1, mt = 100,
 		else {
 			return();
 		}
-	}
-	else if (times > 1)
-	{
+	} else if (times > 1) {
+		# the number of sampled points for complexity curve
+		N = 0
+		# the actually step.size preseqR.continued.fraction.estimate uses
+		step.size = 0
+#		estimates = list();
 		estimates = matrix(data = NA, nrow = max.extrapolation / ss, 
 				           ncol = times, byrow = FALSE);
 		for (i in 1:as.integer(times))
@@ -361,33 +404,38 @@ bootstrap.complex.curve <- function(hist.file, times = 100, di = -1, mt = 100,
 			sample = preseqR.hist.sample(hist.count, as.integer(total.sample), 
 								replace = TRUE);
 			# build count vector of the histogram based on sampling results
-			hist = preseqR.sample2hist.count(sample);
+			hist = preseqR.sample2hist.count(sample, replace = TRUE);
 			out <- preseqR.continued.fraction.estimate(hist, di, mt, ss,
 				                                    	mv, max.extrapolation);
 			if (!is.null(out))
 			{
-				l = length(out$yield.estimates);
-				estimates[, i][1: l] = out$yield.estimates
+				N = length(out$yield.estimates);
+				step.size = out$step.size
+				estimates[, i][1: N] = out$yield.estimates;
 			}
 		}
+		# return NULL if all bootstrap failed to construct a continued fraction
+		if (N == 0)
+		{
+			write("can not make prediction based on the given histogram", stderr());
+			return()
+		}
+		index = step.size * ( 1:N )
 		# mean values are used as complexity curve
-		mean = apply(estimates, 1, mean, na.rm = TRUE)
-		variance = apply(estimates, 1, var, na.rm = TRUE)
-		# the number of sampled points for complexity curve
-		N = as.integer(max.extrapolation / ss);
-		index = ss * ( 1:N )
+		mean = apply(estimates[1:N, ], 1, mean, na.rm = TRUE)
+		variance = apply(estimates[1:N, ], 1, var, na.rm = TRUE)
 		# count the number of values not zero
 		n = as.vector(apply(estimates, 1, function(x) length(which(!is.na(x)))))
+		n = n[1: N]
+		# sample size list
 		# 95% confident interval based on normal distribution
 		left.interval = mean - qnorm(0.975) * sqrt(variance / n);
 		right.interval = mean + qnorm(0.975) * sqrt(variance / n);
-		result = list(index, mean[1:N], left.interval[1:N], right.interval[1:N])
+		result = list(index, mean, left.interval, right.interval)
 		names(result) = c("indexes", "yield.estimates", "left.intervals", 
 						  "right.intervals")
 		return(result);
-	}
-	else
-	{
+	} else {
 		write("the paramter times should be at least one", stderr());
 		return();
 	}
