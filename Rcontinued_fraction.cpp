@@ -22,7 +22,6 @@
 #include <numeric>
 
 using std::vector;
-using std::cerr;
 using std::endl;
 using std::min;
 
