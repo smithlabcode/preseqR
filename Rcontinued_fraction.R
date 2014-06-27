@@ -330,7 +330,7 @@ preseqR.continued.fraction.estimate <- function(hist, di = 0, mt = 100,
 	# stop extrapolation
 	if (starting.size > max.extrapolation)
 	{
-		index = as.integer(ss) * (1:length(yield.estimates));
+		index = as.double(ss) * (1:length(yield.estimates));
 		yield.estimates = list(sample.size = index, yields = yield.estimates);
 		result = list(CF, yield.estimates, out$step.size);
 		names(result) = c("continued.fraction","yield.estimates", "step.size");
@@ -344,7 +344,7 @@ preseqR.continued.fraction.estimate <- function(hist, di = 0, mt = 100,
 	# est[-1] are extrapolation results
 	est = est[-1]
 	yield.estimates = c(yield.estimates, est);
-	index = as.integer(out$step.size) * (1: length(yield.estimates));
+	index = as.double(out$step.size) * (1: length(yield.estimates));
 	yield.estimates = list(sample.size = index, yields = yield.estimates);
 	result = list(CF, yield.estimates, out$step.size)
 	names(result) = c("continued.fraction",	"yield.estimates", "step.size");
@@ -418,7 +418,7 @@ bootstrap.complex.curve <- function(hist, times = 100, di = 0, mt = 100,
 			write("fail to bootstrap since the histogram is poor", stderr());
 			return();
 		}
-		index = step.size * ( 1:N )
+		index = as.double(step.size) * ( 1:N )
 		# mean values are used as complexity curve
 		mean = apply(estimates[1:N, ], 1, mean, na.rm = TRUE)
 		variance = apply(estimates[1:N, ], 1, var, na.rm = TRUE)
