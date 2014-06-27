@@ -26,7 +26,6 @@ using std::endl;
 using std::min;
 
 const double TOLERANCE = 1e-20;
-const double DERIV_DELTA = 1e-8;
 
 static bool
 check_yield_estimates_stability(const vector<double> &estimates) {
