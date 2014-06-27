@@ -24,7 +24,6 @@
 #include <vector>
 #include <complex>
 #include <cassert>
-#include <iostream>
 
 
 struct ContinuedFraction {
