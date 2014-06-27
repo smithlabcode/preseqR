@@ -26,13 +26,6 @@
 #include <cassert>
 #include <iostream>
 
-struct SMITHLABException {
-  SMITHLABException(std::string m) : message(m) {}
-  std::string what() const {return message;}
-  std::string message;
-};
-
-
 
 struct ContinuedFraction {
   // Constructors

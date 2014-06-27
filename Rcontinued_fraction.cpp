@@ -194,15 +194,7 @@ ContinuedFraction::truncate_degree(const ContinuedFraction &CF,
 				   const size_t n_terms){
   ContinuedFraction truncated_CF;
   if(CF.degree < n_terms){
-    cerr << "current CF degree   = " << CF.degree << endl;
-    cerr << "truncated CF degree = " << n_terms << endl; 
-    try {
-      throw SMITHLABException("degree of truncate CF must be at least as large as current");
-    }
-    catch (SMITHLABException &e) {
-      cerr << e.what() << endl;
       return truncated_CF;
-    }
   }
   
   vector<double> truncated_ps_coeffs(CF.ps_coeffs);
@@ -535,10 +527,6 @@ ConFraApprox::optimal_cont_frac_distinct(const vector<double> &counts_hist) cons
   // ensure that we will use an underestimate
   //  const size_t local_max_terms = max_terms - (max_terms % 2 == 1); 
  
-  if (max_terms >= counts_hist.size()) {
-    cerr << "max terms = " << max_terms << endl;
-    cerr << "hist size = " << counts_hist.size() << endl;
-  } 
   assert(max_terms < counts_hist.size());
   
   // counts_sum = number of total captures
