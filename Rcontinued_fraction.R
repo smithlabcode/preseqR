@@ -97,50 +97,31 @@ preseqR.extrapolate.distinct <- function(hist.count, CF, start.size = NULL,
 	
 #do with/without replacement of random sampling given a histogram count vector
 #size is a user defined sample size
-preseqR.hist.sample <- function(hist.count, size, replace)
+preseqR.hist.sample <- function(hist.count, size, replace = NULL)
 {
 	if (replace == FALSE)
 	{
-		total.reads = 0;
+		total.sample = 0;
 		i = 1;
-		while (i <= length(hist.count))
-		{
-			total.reads = i * as.integer(hist.count[i]);
-			i <- i + 1;
-		}
+		# calculate total number of sample
+		freq = 1:length(hist.count);
+		total.sample = freq %*% hist.count;
 		#construct a sample space X 
-		X = vector(mode = 'numeric', length = as.integer(total.reads));
-		pos = 1;
-		p = 1;
-		value = 1;
-		for (l in hist.count)
-		{
-			if (as.integer(l) > 0)
-			{
-				X[pos: (pos + as.integer(l) * p - 1)] <- 
-					rep(value: (value + as.integer(l) - 1), p);
-				value <- value + as.integer(l);
-				pos <- pos + as.integer(l) * p;
-			}
-			p <- p + 1;
-		}
+		distinct.sample = sum(hist.count);
+		# identities for each distinct read
+		ind = 1:as.integer(distinct.sample);
+		# the size of each read in the library
+		n = rep(freq, as.integer(hist.count))
+		# the whole library represents by its indexes. If a read presents t
+		# times in the library, its indexes presents t times in X
+		X = rep(ind, n); 
 		return(sample(X, size, replace = FALSE));
 	}
 	else if (replace == TRUE) {
-		distinct.reads = as.integer(sum(hist.count));
+		distinct.sample = sum(hist.count);
 		#construct the pdf of the multinomial distribution
-		prob = vector(mode = 'numeric', length = distinct.reads);
-		p = 1;
-		pos = 1;
-		for (l in hist.count)
-		{
-			if (as.integer(l) > 0)
-			{
-				prob[pos: (pos + as.integer(l) - 1)] = p;
-				pos <- pos + as.integer(l);
-			}
-			p <- p + 1;
-		}
+		freq = 1:length(hist.count);
+		prob = rep(freq, as.integer(hist.count))
 		return(rmultinom(1, size, prob));
 	} else {
 		write("Specify the sampling methods(wit/without replacement)", stderr())
@@ -148,50 +129,39 @@ preseqR.hist.sample <- function(hist.count, size, replace)
 	}
 }
 
-## convert points from without replacement sampling into a count vector of the 
-## histogram 
-preseqR.nonreplace.sample2hist.count <- function(sample.points)
+## convert sample points into a count vector
+## for different sampling methods, the form of sampled points are different
+## thus the preprocesses are different between two methods.
+preseqR.sample2hist.count <- function(sample.points, replace = NULL)
 {
-	V = table(sample.points);
-	value = as.vector(V);
-	hist.count = vector(mode = 'numeric', length = max(value));
-	for (i in value)
-	{
-		hist.count[i] <- hist.count[i] + 1;
-	}
-	return(hist.count)
-}
-
-## convert points from replacement sampling into a count vector of the histogram
-preseqR.replace.sample2hist.count <- function(sample.points)
-{
-	hist.count = vector(mode = 'numeric', length = max(sample.points));
-	for (v in sample.points)
-	{
-		if (v != 0) hist.count[v] <- hist.count[v] + 1
-	}
-	return(hist.count)
-}
-
-## combine two sample2hist methods into one; repalce represents points are 
-## sampled through replacement sampling or non replacement sampling
-preseqR.sample2hist.count <- function(sample.points, replace)
-{
+	# V is the correponding histogram
 	if (replace == TRUE) {
-		preseqR.replace.sample2hist.count(sample.points);
-	} else {
-		preseqR.nonreplace.sample2hist.count(sample.points);
+		V = table(sample.points);
+	    # index "0" corresponds to the number of molecules not being sampled. 
+	    # remove this term if it exists
+	    if (names(V)[1] == '0')
+			V = V[-1]
 	}
+	else if (replace == FALSE) {
+		V = table(table(sample.points));
+	}
+	# convert the histogram to its count vector
+	freq = as.integer(names(V));
+	hist.count = vector(mode = 'numeric', length = max(freq));
+	hist.count[freq] = as.integer(V);
+	return(hist.count);
 }
+
 # interpolate when the sample size is no more than the size of 
 # the initial experiment
 # return the interpolated estimations and the sample size beyond 
 # the initial experiment
 preseqR.interpolate.distinct <- function(hist.count, ss)
 {
-	total.sample = 0.0;
-	for (i in 1:length(hist.count))
-		total.sample <- total.sample + i * hist.count[i];
+	# calculate total number of sample
+	freq = 1:length(hist.count);
+	total.sample = freq %*% hist.count;
+
 	inital.distint = sum(hist.count);
 	upper.limit = as.integer(total.sample)
 	step = ss;
@@ -201,7 +171,6 @@ preseqR.interpolate.distinct <- function(hist.count, ss)
 	# if the sample size is larger than the size of experiment, return NULL
 	if (l == 0)
 		return();
-
 	yield.estimates = as.double(vector(mode = 'numeric', length = l));
 	for (i in 1:l)
 	{
@@ -241,9 +210,9 @@ preseqR.continued.fraction.estimate <- function(hist, di = 0, mt = 100,
 	# minimum required number of terms of power series in order to construct
 	# continued fraction
 	MIN_REQUIRED_TERMS = 4
-	total.sample = 0.0;
-	for (i in 1:length(hist.count))
-		total.sample <- total.sample + i * hist.count[i];
+	# calculate total number of sample
+	freq = 1:length(hist.count);
+	total.sample = freq %*% hist.count;
 	step.size = ss;
 	# no interpolation if step.size is larger than the size of experiment
 	# set the starting sample size as the step.size
@@ -368,9 +337,9 @@ bootstrap.complex.curve <- function(hist, times = 100, di = 0, mt = 100,
 	else {
 		hist.count = hist;
 	}
-	total.sample = 0.0;
-	for (i in 1:length(hist.count))
-		total.sample <- total.sample + i * hist.count[i];
+	# calculate total number of sample
+	freq = 1:length(hist.count);
+	total.sample = freq %*% hist.count;
 	if (times == 1) {
 		out <- preseqR.continued.fraction.estimate(hist.count, di, 
 				                          mt, ss, mv, max.extrapolation);
@@ -381,15 +350,10 @@ bootstrap.complex.curve <- function(hist, times = 100, di = 0, mt = 100,
 			return();
 		}
 	} else if (times > 1) {
-		# the number of sampled points for complexity curve
-		N = 0
-		# the number of times bootstrap success
-		count = 0
 		# the actually step.size preseqR.continued.fraction.estimate uses
 		step.size = 0
-#		estimates = list();
-		estimates = matrix(data = NA, nrow = max.extrapolation / ss, 
-				           ncol = times, byrow = FALSE);
+
+		yield.estimates = vector(mode = "numeric", length = 0);
 		for (i in 1:as.integer(times))
 		{
 			# do sampling with replacement 
@@ -401,31 +365,23 @@ bootstrap.complex.curve <- function(hist, times = 100, di = 0, mt = 100,
 				                                    	mv, max.extrapolation);
 			if (!is.null(out))
 			{
-				count <- count + 1;
-				N = length(out$yield.estimates$yields);
 				step.size = out$step.size
-				estimates[, i][1: N] = out$yield.estimates$yields;
+				yield.estimates = cbind(yield.estimates, out$yield.estimates$yields);
 			}
 		}
-		# return NULL if all bootstrap failed to construct a continued fraction
-		if (N == 0)
-		{
-			write("can not make prediction based on the given histogram", stderr());
-			return()
-		}
-		if (count < BOOTSTRAP.factor * times)
+		# check the number times of success beyond a threshond
+		if (dim(yield.estimates)[2] < BOOTSTRAP.factor * times)
 		{
 			write("fail to bootstrap since the histogram is poor", stderr());
 			return();
 		}
-		index = as.double(step.size) * ( 1:N )
+		# the number of sampled points for complexity curve
+		n = dim(yield.estimates)[1];
+		# sample sizes
+		index = as.double(step.size) * ( 1:n )
 		# mean values are used as complexity curve
-		mean = apply(estimates[1:N, ], 1, mean, na.rm = TRUE)
-		variance = apply(estimates[1:N, ], 1, var, na.rm = TRUE)
-		# count the number of values not zero
-		n = as.vector(apply(estimates, 1, function(x) length(which(!is.na(x)))))
-		n = n[1: N]
-		# sample size list
+		mean = apply(yield.estimates, 1, mean)
+		variance = apply(yield.estimates, 1, var)
 		# 95% confident interval based on normal distribution
 		left.interval = mean - qnorm(0.975) * sqrt(variance / n);
 		right.interval = mean + qnorm(0.975) * sqrt(variance / n);
