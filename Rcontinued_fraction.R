@@ -2,7 +2,7 @@
 ## BOOTSTRAP.factor the cut off ratio of success times / total bootstrap times
 ## default number of times for bootstrap
 MAXLENGTH = 10000000
-BOOTSTRAP.factor = 0.7
+BOOTSTRAP.factor = 0.1
 BOOTSTRAP.times = 100
 
 ## read a histogram file; return the histogram count vector
@@ -370,7 +370,7 @@ bootstrap.complex.curve <- function(hist, times = 100, di = 0, mt = 100,
 			}
 		}
 		# check the number times of success beyond a threshond
-		if (dim(yield.estimates)[2] < BOOTSTRAP.factor * times)
+		if (is.null(dim(yield.estimates)) || dim(yield.estimates)[2] < BOOTSTRAP.factor * times)
 		{
 			write("fail to bootstrap since the histogram is poor", stderr());
 			return();
@@ -385,7 +385,7 @@ bootstrap.complex.curve <- function(hist, times = 100, di = 0, mt = 100,
 		# 95% confident interval based on normal distribution
 		left.interval = mean - qnorm(0.975) * sqrt(variance / n);
 		right.interval = mean + qnorm(0.975) * sqrt(variance / n);
-		yield.estimates = list(sample.size = index, yields = yield.estimates)
+		yield.estimates = list(sample.size = index, yields = mean)
 		result = list(yield.estimates, left.interval, right.interval);
 		names(result) = c("yield.estimates", "LOWER_0.95CI", 
 						  "UPPER_0.95CI")
