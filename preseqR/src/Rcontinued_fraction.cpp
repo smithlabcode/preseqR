@@ -524,7 +524,7 @@ ConFraApprox::optimal_cont_frac_distinct(const vector<double> &counts_hist) cons
   //  const size_t local_max_terms = max_terms - (max_terms % 2 == 1); 
  
   // return empty continued fraction if condition is not satisfied
-  if(max_terms < counts_hist.size())
+  if(max_terms >= counts_hist.size())
   {
 	  ContinuedFraction empty;
 	  return empty;
