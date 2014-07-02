@@ -1,4 +1,4 @@
-sample.size	distinct.reads
+frequencies	distinct.reads
 1	47879524
 2	16751354
 3	7193291
