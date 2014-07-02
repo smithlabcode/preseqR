@@ -52,7 +52,7 @@ preseqR.continued.fraction.estimate(hist, di = 0, mt = 100, ss = 1e+06,
   as the first column}
 }
 \references{
-	http://smithlabresearch.org/software/preseq/
+	\url{http://smithlabresearch.org/software/preseq/}
 }
 \author{
 	Chao Deng

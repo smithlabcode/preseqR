@@ -17,17 +17,13 @@
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "Rcontinued_fraction.hpp"
-#include <cassert>
+#include "Rcontinued_fraction.h"
 #include <numeric>
 
 using std::vector;
-using std::cerr;
-using std::endl;
 using std::min;
 
 const double TOLERANCE = 1e-20;
-const double DERIV_DELTA = 1e-8;
 
 static bool
 check_yield_estimates_stability(const vector<double> &estimates) {
@@ -194,15 +190,7 @@ ContinuedFraction::truncate_degree(const ContinuedFraction &CF,
 				   const size_t n_terms){
   ContinuedFraction truncated_CF;
   if(CF.degree < n_terms){
-    cerr << "current CF degree   = " << CF.degree << endl;
-    cerr << "truncated CF degree = " << n_terms << endl; 
-    try {
-      throw SMITHLABException("degree of truncate CF must be at least as large as current");
-    }
-    catch (SMITHLABException &e) {
-      cerr << e.what() << endl;
       return truncated_CF;
-    }
   }
   
   vector<double> truncated_ps_coeffs(CF.ps_coeffs);
@@ -535,11 +523,12 @@ ConFraApprox::optimal_cont_frac_distinct(const vector<double> &counts_hist) cons
   // ensure that we will use an underestimate
   //  const size_t local_max_terms = max_terms - (max_terms % 2 == 1); 
  
-  if (max_terms >= counts_hist.size()) {
-    cerr << "max terms = " << max_terms << endl;
-    cerr << "hist size = " << counts_hist.size() << endl;
-  } 
-  assert(max_terms < counts_hist.size());
+  // return empty continued fraction if condition is not satisfied
+  if(max_terms < counts_hist.size())
+  {
+	  ContinuedFraction empty;
+	  return empty;
+  }
   
   // counts_sum = number of total captures
   double counts_sum  = 0.0;
@@ -550,7 +539,7 @@ ConFraApprox::optimal_cont_frac_distinct(const vector<double> &counts_hist) cons
   for (size_t j = 1; j <= max_terms; j++)
     full_ps_coeffs.push_back(counts_hist[j]*pow(-1, j + 1));
 
-  ContinuedFraction full_CF(full_ps_coeffs, -1, max_terms);  
+  ContinuedFraction full_CF(full_ps_coeffs, diagonal_idx, max_terms);  
   
   // if max terms = 4, check only that degree
   if (max_terms == 4 || max_terms == 3 || max_terms == 5 || max_terms == 6) {

@@ -51,7 +51,7 @@ bootstrap.complex.curve(hist, times = 100, di = 0, mt = 100, ss = 1e+06,
   \item{UPPER_0.95CI}{Upper bound for a 96\% confident interval}
 }
 \references{
-http://smithlabresearch.org/software/preseq/
+\url{http://smithlabresearch.org/software/preseq/}
 }
 \author{
 	Chao Deng

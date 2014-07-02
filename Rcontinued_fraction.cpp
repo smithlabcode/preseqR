@@ -17,12 +17,10 @@
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "Rcontinued_fraction.hpp"
-#include <cassert>
+#include "Rcontinued_fraction.h"
 #include <numeric>
 
 using std::vector;
-using std::endl;
 using std::min;
 
 const double TOLERANCE = 1e-20;
@@ -525,7 +523,12 @@ ConFraApprox::optimal_cont_frac_distinct(const vector<double> &counts_hist) cons
   // ensure that we will use an underestimate
   //  const size_t local_max_terms = max_terms - (max_terms % 2 == 1); 
  
-  assert(max_terms < counts_hist.size());
+  // return empty continued fraction if condition is not satisfied
+  if(max_terms < counts_hist.size())
+  {
+	  ContinuedFraction empty;
+	  return empty;
+  }
   
   // counts_sum = number of total captures
   double counts_sum  = 0.0;
