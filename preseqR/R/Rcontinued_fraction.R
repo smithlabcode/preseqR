@@ -171,14 +171,17 @@ preseqR.interpolate.distinct <- function(hist.count, ss)
 	# if the sample size is larger than the size of experiment, return NULL
 	if (l == 0)
 		return();
-	yield.estimates = as.double(vector(mode = 'numeric', length = l));
-	for (i in 1:l)
-	{
-		s = preseqR.hist.sample(hist.count, sample, replace = FALSE);
-		yield = sum(preseqR.sample2hist.count(s, replace = FALSE));
-		yield.estimates[i] = yield;
-		sample <- sample + step;
-	}
+	# sample size vector
+	x = sample * ( 1:l );
+	# dimesion must be defined in order to use R apply
+	dim(x) = length(x);
+	# do sampling without replacement 
+	s = apply(x, 1, function(x) preseqR.hist.sample(hist.count, x, replace=FALSE));
+	# calculate the number of distinct reads based on each sample
+	dim(s) = length(s);
+	yield.estimates = apply(s, 1, function(x) sum(preseqR.sample2hist.count(x, replace=FALSE)))
+	# sample stores the starting sample size for extrapolation
+	sample <- sample + sample * l
 	out = list(yield.estimates, sample);
 	names(out) = c("yield.estimates", "sample.size")
 	return(out);
