@@ -118,11 +118,7 @@ preseqR.hist.sample <- function(hist.count, size, replace = NULL)
 		return(sample(X, size, replace = FALSE));
 	}
 	else if (replace == TRUE) {
-		distinct.sample = sum(hist.count);
-		#construct the pdf of the multinomial distribution
-		freq = 1:length(hist.count);
-		prob = rep(freq, as.integer(hist.count))
-		return(rmultinom(1, size, prob));
+		return(rmultinom(1, size, hist.count));
 	} else {
 		write("Specify the sampling methods(wit/without replacement)", stderr())
 		return();
@@ -351,6 +347,12 @@ bootstrap.complex.curve <- function(hist, times = 100, di = 0, mt = 100,
 	# calculate total number of sample
 	freq = 1:length(hist.count);
 	total.sample = freq %*% hist.count;
+	# calculate the distinct number of sample
+	distinct.sample = sum(hist.count)
+	# resampled vector count of a histogram
+	re.hist.count = vector(mode = "numeric", length = length(hist.count));
+	# index of nonzero items in hist.count
+	index.hist.count = which(hist.count != 0);
 	if (times == 1) {
 		out <- preseqR.continued.fraction.estimate(hist.count, di, 
 				                          mt, ss, mv, max.extrapolation);
@@ -368,11 +370,11 @@ bootstrap.complex.curve <- function(hist, times = 100, di = 0, mt = 100,
 		for (i in 1:as.integer(times))
 		{
 			# do sampling with replacement 
-			sample = preseqR.hist.sample(hist.count, as.integer(total.sample), 
+			sample = preseqR.hist.sample(hist.count, as.integer(distinct.sample), 
 								replace = TRUE);
+			re.hist.count[index.hist.count] = sample;
 			# build count vector of the histogram based on sampling results
-			hist = preseqR.sample2hist.count(sample, replace = TRUE);
-			out <- preseqR.continued.fraction.estimate(hist, di, mt, ss,
+			out <- preseqR.continued.fraction.estimate(re.hist.count, di, mt, ss,
 				                                    	mv, max.extrapolation);
 			if (!is.null(out))
 			{
