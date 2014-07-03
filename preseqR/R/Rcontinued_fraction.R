@@ -152,6 +152,14 @@ preseqR.sample2hist.count <- function(sample.points, replace = NULL)
 	return(hist.count);
 }
 
+# given a sample vector, the function counts the number of distinct molecules
+count.distinct <- function(sample)
+{
+	max.value = max(sample);
+	sample.table = vector(mode = "numeric", length = max.value);
+	sample.table[sample] = 1;
+	return(sum(sample.table));
+}
 # interpolate when the sample size is no more than the size of 
 # the initial experiment
 # return the interpolated estimations and the sample size beyond 
@@ -179,7 +187,7 @@ preseqR.interpolate.distinct <- function(hist.count, ss)
 	s = apply(x, 1, function(x) preseqR.hist.sample(hist.count, x, replace=FALSE));
 	# calculate the number of distinct reads based on each sample
 	dim(s) = length(s);
-	yield.estimates = apply(s, 1, function(x) sum(preseqR.sample2hist.count(x, replace=FALSE)))
+	yield.estimates = sapply(s, count.distinct);
 	# sample stores the starting sample size for extrapolation
 	sample <- sample + sample * l
 	out = list(yield.estimates, sample);
