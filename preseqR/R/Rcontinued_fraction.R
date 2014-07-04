@@ -415,7 +415,7 @@ bootstrap.complexity.curve <- function(hist, bootstrap.times = 100, di = 0,
 									  max.extrapolation = 1e10)
 {
 	if (mode(hist) == 'character') {
-		hist.count = presqR.read.hist(hist);
+		hist.count = preseqR.read.hist(hist);
 	} else {
 		hist.count = hist;
 	}
