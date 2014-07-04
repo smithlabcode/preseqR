@@ -1,7 +1,9 @@
 ## MAXLENGTH the allocate size for storing complexity curve
+## MULTINOMIAL.SAMPLE.TIMES number of random vectors to draw each time
 ## BOOTSTRAP.factor the cut off ratio of success times / total bootstrap times
-## default number of times for bootstrap
+## BOOTSTRAP.times default number of times for bootstrap
 MAXLENGTH = 10000000
+MULTINOMIAL.SAMPLE.TIMES = 10
 BOOTSTRAP.factor = 0.1
 BOOTSTRAP.times = 100
 
@@ -118,7 +120,7 @@ preseqR.hist.sample <- function(hist.count, size, replace = NULL)
 		return(sample(X, size, replace = FALSE));
 	}
 	else if (replace == TRUE) {
-		return(rmultinom(1, size, hist.count));
+		return(rmultinom(MULTINOMIAL.SAMPLE.TIMES, size, hist.count));
 	} else {
 		write("Specify the sampling methods(wit/without replacement)", stderr())
 		return();
@@ -291,8 +293,7 @@ preseqR.continued.fraction.estimate <- function(hist, di = 0, mt = 100,
 			  is.valid = as.integer(0));
 	if (!out$is.valid)
 	{
-		write("Fail to construct and need to bootstrap to obtain estimates", 
-			  stderr());
+		write("Fail to construct continued fraction", stderr());
 		return();
 	}
 	length(out$ps.coeffs) = out$ps.coeffs.l;
@@ -408,3 +409,76 @@ bootstrap.complex.curve <- function(hist, times = 100, di = 0, mt = 100,
 		return();
 	}
 }
+
+bootstrap.complexity.curve <- function(hist, bootstrap.times = 100, di = 0, 
+									  mt = 100, ss = 1e6, mv = 1e10,
+									  max.extrapolation = 1e10)
+{
+	if (mode(hist) == 'character') {
+		hist.count = presqR.read.hist(hist);
+	} else {
+		hist.count = hist;
+	}
+	# calculate the total number of sample
+	freq = 1:length(hist.count);
+	total.sample = freq %*% hist.count;
+	# calculate the distinct number of sample
+	distinct.sample = sum(hist.count)
+	# record count vector of a resampled histogram
+	re.hist.count = matrix(data = 0, nrow = length(hist.count), 
+						   ncol = MULTINOMIAL.SAMPLE.TIMES)
+	# nonzero indexes in the hist.count
+	nonzero.index = which(hist.count != 0);
+	# nonzero values in the hist.count
+	nonzero.hist.count = hist.count[nonzero.index];
+	# record the step.size preseqR.continued.fraction.estimate uses
+	step.size = 0;
+	# the number of resampling times
+	counter = 0;
+	yield.estimates = vector(mode = "numeric", length = 0);
+	# upperbound of times of iterations for bootstrapping
+	upper.limit = bootstrap.times / BOOTSTRAP.factor
+	while (bootstrap.times > 0) {
+		# do sampling with replacement
+		resample = preseqR.hist.sample(nonzero.hist.count, as.integer(distinct.sample), 
+									   replace = TRUE);
+		re.hist.count[ nonzero.index, 1:MULTINOMIAL.SAMPLE.TIMES ] = resample;
+		out = apply(re.hist.count, 2, function(x) 
+					preseqR.continued.fraction.estimate(x, di, mt, ss, mv, max.extrapolation))
+		out[sapply(out, is.null)] <- NULL
+		yields = sapply(out, function(x) x$yield.estimates$yields)
+		success.times = dim(yields)[2]
+		if (!is.null(success.times) && success.times > 0) {
+			bootstrap.times <- bootstrap.times - success.times;
+			yield.estimates = cbind(yield.estimates, yields);
+			# setting the actual step.size 
+			step.size = out[1]$step.size
+		}
+		counter <- counter + MULTINOMIAL.SAMPLE.TIMES;
+		if (counter > upper.limit)
+			break;
+	}
+	# boostrap succeeds 
+	if (bootstrap.times <= 0) {
+		# the number of sampled points for complexity curve
+		n = dim(yield.estimates)[1];
+		# sample sizes
+		index = as.double(step.size) * ( 1:n )
+		# mean values are used as complexity curve
+		mean = apply(yield.estimates, 1, mean)
+		variance = apply(yield.estimates, 1, var)
+		# 95% confident interval based on normal distribution
+		left.interval = mean - qnorm(0.975) * sqrt(variance / n);
+		right.interval = mean + qnorm(0.975) * sqrt(variance / n);
+		yield.estimates = list(sample.size = index, yields = mean)
+		result = list(yield.estimates, left.interval, right.interval);
+		names(result) = c("yield.estimates", "LOWER_0.95CI", 
+						  "UPPER_0.95CI")
+		return(result);
+	} else {
+		write("fail to bootstrap!", stderr());
+		return();
+	}
+}
+
+
