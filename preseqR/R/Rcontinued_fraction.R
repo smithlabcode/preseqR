@@ -5,7 +5,7 @@
 ## BOOTSTRAP.factor the cut off ratio of success times / total bootstrap times
 ## BOOTSTRAP.times default number of times for bootstrap
 MAXLENGTH = 10000000
-MULTINOMIAL.SAMPLE.TIMES = 10
+MULTINOMIAL.SAMPLE.TIMES = 19
 MINOR.correction = 1e-1
 BOOTSTRAP.factor = 0.1
 BOOTSTRAP.times = 100
@@ -130,29 +130,6 @@ preseqR.hist.sample <- function(hist.count, size, replace = NULL)
 	}
 }
 
-## convert sample points into a count vector
-## for different sampling methods, the form of sampled points are different
-## thus the preprocesses are different between two methods.
-preseqR.sample2hist.count <- function(sample.points, replace = NULL)
-{
-	# V is the correponding histogram
-	if (replace == TRUE) {
-		V = table(sample.points);
-	    # index "0" corresponds to the number of molecules not being sampled. 
-	    # remove this term if it exists
-	    if (names(V)[1] == '0')
-			V = V[-1]
-	}
-	else if (replace == FALSE) {
-		V = table(table(sample.points));
-	}
-	# convert the histogram to its count vector
-	freq = as.integer(names(V));
-	hist.count = vector(mode = 'numeric', length = max(freq));
-	hist.count[freq] = as.integer(V);
-	return(hist.count);
-}
-
 # given a sample vector, the function counts the number of distinct molecules
 count.distinct <- function(sample)
 {
@@ -192,7 +169,7 @@ preseqR.interpolate.distinct <- function(hist.count, ss)
 	# sample stores the starting sample size for extrapolation
 	sample <- sample + sample * l
 	out = list(yield.estimates, sample);
-	names(out) = c("yield.estimates", "sample.size")
+	names(out) = c("yield.estimates", "starting.sample.size")
 	return(out);
 }
 
@@ -248,7 +225,7 @@ preseqR.continued.fraction.estimate <- function(hist, di = 0, mt = 100,
 		# interpolate and set the size of sample for initial extrapolation
 		out = preseqR.interpolate.distinct(hist.count, step.size)
 		yield.estimates = out$yield.estimates;
-		starting.size = out$sample.size
+		starting.size = out$starting.sample.size
 	}
 
 	counts.before.first.zero = 1;
@@ -419,4 +396,4 @@ bootstrap.complexity.curve <- function(hist, bootstrap.times = 100, di = 0,
 	}
 }
 
-
+preseqR.print <- function(X, file.name = NULL) {}
