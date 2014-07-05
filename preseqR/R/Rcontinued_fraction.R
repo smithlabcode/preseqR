@@ -6,7 +6,7 @@
 ## BOOTSTRAP.times default number of times for bootstrap
 MAXLENGTH = 10000000
 MULTINOMIAL.SAMPLE.TIMES = 10
-MINOR.correction = 1e-5
+MINOR.correction = 1e-1
 BOOTSTRAP.factor = 0.1
 BOOTSTRAP.times = 100
 
@@ -336,91 +336,6 @@ print.continuedfraction <- function(CF)
 }
 
 ## generate complexity curve through bootstrap the histogram
-bootstrap.complex.curve <- function(hist, times = 100, di = 0, mt = 100,
-									ss = 1e6, mv = 1e10, 
-									max.extrapolation = 1e10, step.adjust=TRUE)
-{
-	# input could be either histogram file or count vector of the histogram
-	if (mode(hist) == "character") {
-		hist.count = preseqR.read.hist(hist);
-	}
-	else {
-		hist.count = hist;
-	}
-	# calculate total number of sample
-	freq = 1:length(hist.count);
-	total.sample = freq %*% hist.count;
-	# adjust step.size for sampling complexity curve
-	step.size = ss;
-	if (step.adjust == TRUE && step.size < (total.sample / 20))
-	{
-		step.size = max(step.size, step.size*round(total.sample/(20*step.size)));
-		# output the adjusted step size to stderr
-		m = paste("adjust step size to", toString(step.size), '\n', sep = ' ');
-		write(m, stderr());
-	}
-	# calculate the distinct number of sample
-	distinct.sample = sum(hist.count)
-	# resampled vector count of a histogram
-	re.hist.count = vector(mode = "numeric", length = length(hist.count));
-	# index of nonzero items in hist.count
-	index.hist.count = which(hist.count != 0);
-	if (times == 1) {
-		out <- preseqR.continued.fraction.estimate(hist.count, di, 
-				                          mt, ss, mv, max.extrapolation);
-		if (!is.null(out)) {
-			return(out$yield.estimates);
-		}
-		else {
-			return();
-		}
-	} else if (times > 1) {
-		# the actually step.size preseqR.continued.fraction.estimate uses
-		step.size = 0
-
-		yield.estimates = vector(mode = "numeric", length = 0);
-		for (i in 1:as.integer(times))
-		{
-			# do sampling with replacement 
-			sample = preseqR.hist.sample(hist.count, as.integer(distinct.sample), 
-								replace = TRUE);
-			re.hist.count[index.hist.count] = sample;
-			# build count vector of the histogram based on sampling results
-			out <- preseqR.continued.fraction.estimate(re.hist.count, di, mt, ss,
-				                                    	mv, max.extrapolation);
-			if (!is.null(out))
-			{
-				step.size = out$step.size
-				yield.estimates = cbind(yield.estimates, out$yield.estimates$yields);
-			}
-		}
-		# check the number times of success beyond a threshond
-		if (is.null(dim(yield.estimates)) || dim(yield.estimates)[2] < BOOTSTRAP.factor * times)
-		{
-			write("fail to bootstrap since the histogram is poor", stderr());
-			return();
-		}
-		# the number of sampled points for complexity curve
-		n = dim(yield.estimates)[1];
-		# sample sizes
-		index = as.double(step.size) * ( 1:n )
-		# mean values are used as complexity curve
-		mean = apply(yield.estimates, 1, mean)
-		variance = apply(yield.estimates, 1, var)
-		# 95% confident interval based on normal distribution
-		left.interval = mean - qnorm(0.975) * sqrt(variance / n);
-		right.interval = mean + qnorm(0.975) * sqrt(variance / n);
-		yield.estimates = list(sample.size = index, yields = mean)
-		result = list(yield.estimates, left.interval, right.interval);
-		names(result) = c("yield.estimates", "LOWER_0.95CI", 
-						  "UPPER_0.95CI")
-		return(result);
-	} else {
-		write("the paramter times should be at least one", stderr());
-		return();
-	}
-}
-
 bootstrap.complexity.curve <- function(hist, bootstrap.times = 100, di = 0, 
 									   mt = 100, ss = 1e6, mv = 1e10,
 									   max.extrapolation = 1e10, step.adjust=TRUE)
