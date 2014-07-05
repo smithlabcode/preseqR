@@ -1,9 +1,12 @@
 ## MAXLENGTH the allocate size for storing complexity curve
 ## MULTINOMIAL.SAMPLE.TIMES number of random vectors to draw each time
+## MINOR.correction a very small number to correct comparison result between
+## two double type numbers when precisions can bias the result
 ## BOOTSTRAP.factor the cut off ratio of success times / total bootstrap times
 ## BOOTSTRAP.times default number of times for bootstrap
 MAXLENGTH = 10000000
 MULTINOMIAL.SAMPLE.TIMES = 10
+MINOR.correction = 1e-5
 BOOTSTRAP.factor = 0.1
 BOOTSTRAP.times = 100
 
@@ -205,8 +208,9 @@ goodtoulmin.2x.extrap <- function(hist.count)
 ## estimate a continued fraction given a the count vector of the histogram
 ## di = diagonal, mt = max_terms, ss = step_size, 
 ## mv = max_value for training
+## step.adjust is an indicator for whether or not to adjust step.size
 preseqR.continued.fraction.estimate <- function(hist, di = 0, mt = 100,
-	   	ss = 1e6, mv = 1e10,  max.extrapolation = 1e10)
+	   	ss = 1e6, mv = 1e10,  max.extrapolation = 1e10, step.adjust=TRUE)
 {
 	# input could be either histogram file or count vector of the histogram
 	if (mode(hist) == "character") {
@@ -234,7 +238,7 @@ preseqR.continued.fraction.estimate <- function(hist, di = 0, mt = 100,
 	else 
 	{
 		# adjust step.size when it is too small
-		if (step.size < (total.sample / 20))
+		if (step.adjust == TRUE && step.size < (total.sample / 20))
 		{
 			step.size = max(step.size, step.size*round(total.sample/(20*step.size)));
 			# output the adjusted step size to stderr
@@ -282,7 +286,7 @@ preseqR.continued.fraction.estimate <- function(hist, di = 0, mt = 100,
 	# construct a continued fraction with minimum degree
 	out <- .C('c_continued_fraction_estimate', as.double(hist.count), 
 			  as.integer(length(hist.count)), as.integer(di), as.integer(mt), 
-			  step.size = as.double(step.size), as.double(mv), 
+			  as.double(step.size), as.double(mv), 
 			  ps.coeffs = as.double(vector(mode = 'numeric', length=MAXLENGTH)),
 			  ps.coeffs.l = as.integer(0), 
 			  cf.coeffs = as.double(vector(mode = 'numeric', length=MAXLENGTH)),
@@ -305,26 +309,24 @@ preseqR.continued.fraction.estimate <- function(hist, di = 0, mt = 100,
 				  'degree');
 	# if the sample size is larger than max.extrapolation
 	# stop extrapolation
-	if (starting.size > max.extrapolation)
+	# prevent machinary precision from biasing comparison result
+	if (starting.size > (max.extrapolation + MINOR.correction))
 	{
-		index = as.double(ss) * (1:length(yield.estimates));
+		index = as.double(step.size) * (1:length(yield.estimates));
 		yield.estimates = list(sample.size = index, yields = yield.estimates);
-		result = list(CF, yield.estimates, out$step.size);
-		names(result) = c("continued.fraction","yield.estimates", "step.size");
+		result = list(continued.fraction = CF, yield.estimates = yield.estimates);
 		return(result);
 	}
-	est <- preseqR.extrapolate.distinct(
-				hist.count, CF, (starting.size - total.sample) / total.sample,
-				out$step.size / total.sample, 
-				(max.extrapolation - total.sample) / total.sample);
+	est <- preseqR.extrapolate.distinct( hist.count, CF, 
+		       (starting.size - total.sample) / total.sample, step.size / total.sample, 
+		       (max.extrapolation + MINOR.correction- total.sample) / total.sample);
 	# est[1] is the number of the distinct molecules from experiments
 	# est[-1] are extrapolation results
 	est = est[-1]
 	yield.estimates = c(yield.estimates, est);
-	index = as.double(out$step.size) * (1: length(yield.estimates));
+	index = as.double(step.size) * (1: length(yield.estimates));
 	yield.estimates = list(sample.size = index, yields = yield.estimates);
-	result = list(CF, yield.estimates, out$step.size)
-	names(result) = c("continued.fraction",	"yield.estimates", "step.size");
+	result = list(continued.fraction = CF, yield.estimates = yield.estimates)
 	return(result);
 }
 
@@ -336,7 +338,7 @@ print.continuedfraction <- function(CF)
 ## generate complexity curve through bootstrap the histogram
 bootstrap.complex.curve <- function(hist, times = 100, di = 0, mt = 100,
 									ss = 1e6, mv = 1e10, 
-									max.extrapolation = 1e10)
+									max.extrapolation = 1e10, step.adjust=TRUE)
 {
 	# input could be either histogram file or count vector of the histogram
 	if (mode(hist) == "character") {
@@ -348,6 +350,15 @@ bootstrap.complex.curve <- function(hist, times = 100, di = 0, mt = 100,
 	# calculate total number of sample
 	freq = 1:length(hist.count);
 	total.sample = freq %*% hist.count;
+	# adjust step.size for sampling complexity curve
+	step.size = ss;
+	if (step.adjust == TRUE && step.size < (total.sample / 20))
+	{
+		step.size = max(step.size, step.size*round(total.sample/(20*step.size)));
+		# output the adjusted step size to stderr
+		m = paste("adjust step size to", toString(step.size), '\n', sep = ' ');
+		write(m, stderr());
+	}
 	# calculate the distinct number of sample
 	distinct.sample = sum(hist.count)
 	# resampled vector count of a histogram
@@ -411,8 +422,8 @@ bootstrap.complex.curve <- function(hist, times = 100, di = 0, mt = 100,
 }
 
 bootstrap.complexity.curve <- function(hist, bootstrap.times = 100, di = 0, 
-									  mt = 100, ss = 1e6, mv = 1e10,
-									  max.extrapolation = 1e10)
+									   mt = 100, ss = 1e6, mv = 1e10,
+									   max.extrapolation = 1e10, step.adjust=TRUE)
 {
 	if (mode(hist) == 'character') {
 		hist.count = preseqR.read.hist(hist);
@@ -424,6 +435,15 @@ bootstrap.complexity.curve <- function(hist, bootstrap.times = 100, di = 0,
 	total.sample = freq %*% hist.count;
 	# calculate the distinct number of sample
 	distinct.sample = sum(hist.count)
+	# adjust step.size for sampling complexity curve
+	step.size = ss;
+	if (step.adjust == TRUE && step.size < (total.sample / 20))
+	{
+		step.size = max(step.size, step.size*round(total.sample/(20*step.size)));
+		# output the adjusted step size to stderr
+		m = paste("adjust step size to", toString(step.size), '\n', sep = ' ');
+		write(m, stderr());
+	}
 	# record count vector of a resampled histogram
 	re.hist.count = matrix(data = 0, nrow = length(hist.count), 
 						   ncol = MULTINOMIAL.SAMPLE.TIMES)
@@ -431,8 +451,6 @@ bootstrap.complexity.curve <- function(hist, bootstrap.times = 100, di = 0,
 	nonzero.index = which(hist.count != 0);
 	# nonzero values in the hist.count
 	nonzero.hist.count = hist.count[nonzero.index];
-	# record the step.size preseqR.continued.fraction.estimate uses
-	step.size = 0;
 	# the number of resampling times
 	counter = 0;
 	yield.estimates = vector(mode = "numeric", length = 0);
@@ -442,17 +460,22 @@ bootstrap.complexity.curve <- function(hist, bootstrap.times = 100, di = 0,
 		# do sampling with replacement
 		resample = preseqR.hist.sample(nonzero.hist.count, as.integer(distinct.sample), 
 									   replace = TRUE);
+		# reconstruct count vectors of histograms
 		re.hist.count[ nonzero.index, 1:MULTINOMIAL.SAMPLE.TIMES ] = resample;
-		out = apply(re.hist.count, 2, function(x) 
-					preseqR.continued.fraction.estimate(x, di, mt, ss, mv, max.extrapolation))
+		# make estimation for each histogram
+		out = apply(re.hist.count, 2, function(x) preseqR.continued.fraction.estimate(
+					  x, di, mt, step.size, mv, max.extrapolation + MINOR.correction, 
+					  step.adjust=FALSE))
+		# eliminate NULL items in results
 		out[sapply(out, is.null)] <- NULL
+		# extract yields estimation from each estimation result. 
 		yields = sapply(out, function(x) x$yield.estimates$yields)
-		success.times = dim(yields)[2]
-		if (!is.null(success.times) && success.times > 0) {
+		# the number of successful estimation time
+		if ( !is.null( dim(yields) ) )
+		{
+			success.times = dim(yields)[2];
 			bootstrap.times <- bootstrap.times - success.times;
 			yield.estimates = cbind(yield.estimates, yields);
-			# setting the actual step.size 
-			step.size = out[1]$step.size
 		}
 		counter <- counter + MULTINOMIAL.SAMPLE.TIMES;
 		if (counter > upper.limit)
