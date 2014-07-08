@@ -152,8 +152,8 @@ written through R libraries.
   2.  preseqR.calculate.continued.fraction(CF, x): a function to calculate the
 	  value of a continued fraction given its coordinates. CF is a continued
 	  fraction with `CF` attribute. `x` is a non-negtive real number. It calls 
-	  a function ```c_calculate_continued_fraction``` from `continued_fraction.cpp`
-	  to calculate the value.
+	  a C-function ```c_calculate_continued_fraction``` to calculate the
+	  value.
   3.  preseqR.extrapolate.distinct(hist.count, CF, start.size = NULL, step.size = NULL, 
 	  max.size = NULL): a function to extrapolate through a continued fraction.
 	  It returns a list containing various sample sizes and their extrapolation 
@@ -162,16 +162,79 @@ written through R libraries.
 	  experiment. `CF` is a continued fraction. `start.size` is a starting 
 	  sample size for extrapolation. `step.size` is a increasement size in each 
 	  step for extrapolation. `max.size` is a upper bound for extrapolation. It
-	  calls a function `c_extrapolate_distinct` from `continued_fraction.cpp` to
-	  implement.
+	  calls a C-function `c_extrapolate_distinct` to implement.
   4.  replace.sampling(n, hist.count): a function to re-sample histograms given 
 	  a histogram. `n` is the number of histograms to draw. `hist.count` is a 
-	  count vector of a histogram. It calls a built-in function `rmultinomial()`
-	  in R to implement.
-
+	  count vector of a histogram. It calls a built-in R-function `rmultinomial()`
+	  to implement.
   5.  nonreplace.sampling(size, hist.count): a function to do without replacement 
 	  sampling. It returns a sample vector composed by positive number. Each 
 	  positive number is considered as a id for a distinct item. `size` is a 
 	  non-negative integer giving the number of items to choose. `hist.count` is
       a count vector of a histogram. See above for detail. It calls a built-in 
-	  function `sample()` in R to implement.
+	  R-function `sample()` to implement.
+  6.  count.distinct(sample): a function to count the number of distinct items
+	  given a sample result. `sample` is a positive number vector. Each distinct 
+	  item is uniquely represented by a number. It builds a vector and set the
+	  value to one whenever its index appears in the sample. Then `sum()` is
+	  used to get a distinct number of items.
+  7.  preseqR.interpolate.distinct(hist.count, ss): a function to interpolate
+	  given a histogram. It tells how many distinct items if the sample size is
+	  less than the initial experiment. The returning value is a list that 
+	  contains various sample sizes and their interpolation values. It also 
+	  contains a starting sample size, which is larger than the initial
+	  experiment and cannot be determined by interpolation. `hist.count` is a 
+	  count vector of a histogram. `ss` is a step size. It is a increasement 
+	  size in each step for interpolation. For each givan sample size, it do
+	  sampling without replacement. The histogram is used as an underlining
+	  distribution. Then it calls `count.distinct()` on the sample result to 
+	  to count the number of distinct items.
+  8.  goodtoulmin.2x.extrap(hist.count): a function to check quality of a
+	  given histogram. See Good, I. J., and G. H. Toulmin 1956. `hist.count` is
+	  a count vector of a histogram.
+  9.  preseqR.continued.fraction.estimate(hist, di = 0, mt = 100, ss = 1e6, 
+	  mv = 1e10,  max.extrapolation = 1e10, step.adjust=TRUE): a function to
+	  construct a continued fraction given a histogram. The continued fraction,
+	  which is based on a capture-recapture model, is used to predict the number
+	  of distinct items if additional experiment conducts. The function returns
+	  a constructed continued fraction and estimated number of distinct items
+	  given various sample sizes. `hist` could be either a histogram file or a 
+	  count vector of a histogram. `di` is the diagonal value for a continued
+	  fraction. `mt` is the maximum number of parameters allowed in a constructed
+	  continued fraction. `ss` is the step size, which defines the distance
+	  between two neighbors in a sample size vector. `mv` is the maximum value 
+	  for testing a continued fraction. `max.extrapolation` is the upper bound
+	  for extrapolation. `step.adjust` is a logic value. When it set TRUE, the 
+	  step size of sampling points could adapt in order to correspond to the size
+	  of an inital experiment. The function  calls a C-function 
+	  `c_continued_fraction_estimate` to approximaate a continued fraction. 
+	  `preseqR.interpolate.distinct` is used to count the number of distinct 
+	  items when the sample size is less than the inital experiment. 
+	  `preseqR.extrapolate.distinct` is used to predict the number of distinct
+	  items when the sample size is larger than the size of the experiment. 
+	  MINOR.correction is used to make sure for same step size and maximum 
+	  extrapolation value, the number of extrapolation points should be same.
+  10.  preseqR.bootstrap.complexity.curve(hist, bootstrap.times = 100, di = 0, 
+	   mt = 100, ss = 1e6, mv = 1e10, max.extrapolation = 1e10, step.adjust=TRUE):
+	   a function to estimate the number of distinct items given various sample
+	   sizes. Bootstrap is used to improve estimation and builds a confident
+	   interval. It returns approximated number of distinct items given various
+	   sample size plus a confident interval for each estimation. All input 
+	   parameters are same as parameters in `preseqR.continued.fraction.estimate()` 
+	   except bootstrap.times, which defines the minimal successful estimation
+	   times for bootstrapping. For each iteration, the function generates
+	   n = MULTINOMIAL.SAMPLE.TIMES histograms. Then 
+	   `preseqR.continued.fraction.estimate()` is called by each histogram to
+	   make an estimateion. Because the implementation is in a vector way, setting
+	   a proper value for MULTINOMIAL.SAMPLE.TIMES could sppedup the function. 
+	   The function will stop under two situations. One is
+	   that times of successful estimation reach a number defined by bootstrap.times.
+	   The other is that total resampling times beyond a number, defined as 
+	   ```bootstrap.times / BOOTSTRAP.factor```. 
+  11.  preseqR.printout(file.prefix = NULL, ...): a function to write down 
+	   results from other functions to a file. `file.prefix` defined the prefix 
+	   name of created files. Results include returning results from 
+	   ```preseqR.interpolation(), preseqR.extrapolate.distinct(), 
+	      preseqR.continued.fraction.estimate(), 
+		  preseqR.bootstrap.complexity.curve()```. It can also print out a 
+	   continued fraction.

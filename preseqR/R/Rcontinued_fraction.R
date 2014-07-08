@@ -189,6 +189,8 @@ preseqR.interpolate.distinct <- function(hist.count, ss)
 	yield.estimates = sapply(s, count.distinct);
 	# sample stores the starting sample size for extrapolation
 	sample <- sample + sample * l
+    # yield.estimates
+	yield.estimates = list(sample.size = x, yields = yield.estiamtes);
 	out = list(yield.estimates, sample);
 	names(out) = c("yield.estimates", "starting.sample.size")
 	return(out);
@@ -245,7 +247,7 @@ preseqR.continued.fraction.estimate <- function(hist, di = 0, mt = 100,
 		}
 		# interpolate and set the size of sample for initial extrapolation
 		out = preseqR.interpolate.distinct(hist.count, step.size)
-		yield.estimates = out$yield.estimates;
+		yield.estimates = out$yield.estimates$yields;
 		starting.size = out$starting.sample.size
 	}
 
@@ -318,7 +320,7 @@ preseqR.continued.fraction.estimate <- function(hist, di = 0, mt = 100,
 	}
 	est <- preseqR.extrapolate.distinct( hist.count, CF, 
 		       (starting.size - total.sample) / total.sample, step.size / total.sample, 
-		       (max.extrapolation + MINOR.correction- total.sample) / total.sample);
+		       (max.extrapolation+MINOR.correction-total.sample) / total.sample);
 
 	yield.estimates = c(yield.estimates, est$extrapolation.value);
 	index = as.double(step.size) * (1: length(yield.estimates));
@@ -413,4 +415,4 @@ preseqR.bootstrap.complexity.curve <- function(hist, bootstrap.times = 100, di =
 	}
 }
 
-preseqR.print <- function(X, file.name = NULL) {}
+preseqR.printout <- function(file.name = NULL, ...) {}
