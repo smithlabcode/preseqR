@@ -1,4 +1,4 @@
-\name{bootstrap.complexity.curve}
+\name{presesqR.bootstrap.complexity.curve}
 \alias{bootstrap.complexity.curve}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
@@ -11,8 +11,8 @@
 	It uses bootstrap to improve yields estimation and make a confidence interval.
 }
 \usage{
-bootstrap.complexity.curve(hist, bootstrap.times = 100, di = 0, mt = 100, ss = 1e+6, 
-		mv = 1e+10, max.extrapolation = 1e+10, step.adjust = TRUE)
+preseqR.bootstrap.complexity.curve(hist, bootstrap.times = 100, di = 0, mt = 100, 
+ss = 1e+6, mv = 1e+10, max.extrapolation = 1e+10, step.adjust = TRUE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{

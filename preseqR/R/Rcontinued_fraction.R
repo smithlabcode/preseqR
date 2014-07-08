@@ -8,12 +8,11 @@ MAXLENGTH = 10000000
 MULTINOMIAL.SAMPLE.TIMES = 19
 MINOR.correction = 1e-1
 BOOTSTRAP.factor = 0.1
-BOOTSTRAP.times = 100
 
 ## read a histogram file; return the histogram count vector
 ## count vector represent frequencies of indexes. For those indexes not showing
 ## in the histogram file, use zeros to represent their values
-preseqR.read.hist <- function(hist.file)
+read.hist <- function(hist.file)
 {
 	#the first column is the index of the histogram
 	#the second column is the frequency of indexes
@@ -42,21 +41,25 @@ preseqR.read.hist <- function(hist.file)
 ## preseqR.calculate.continue.fraction
 preseqR.calculate.continued.fraction <- function(CF, x)
 {
+	if (class(CF) != "CF")
+		return();
 	out <- .C("c_calculate_continued_fraction", 
-			  cf = as.double(CF$cf.coeffs), 
-	   		  cf.l = as.integer(length(CF$cf.coeffs)),
-			  off = as.double(CF$offset.coeffs), 
-			  di = as.integer(CF$diagonal.idx), 
-			  de = as.integer(CF$degree), 
-			  coordinate = as.double(x), 
-		  	  result = as.double(0));
+		      cf = as.double(CF$cf.coeffs), 
+   		      cf.l = as.integer(length(CF$cf.coeffs)),
+		      off = as.double(CF$offset.coeffs), 
+		      di = as.integer(CF$diagonal.idx), 
+		      de = as.integer(CF$degree), 
+		      coordinate = as.double(x), 
+	  	      result = as.double(0));
 	return(out$result);
 }
 
 ## extrapolate given a histogram and a continued fraction
 preseqR.extrapolate.distinct <- function(hist.count, CF, start.size = NULL,
-		 step.size = NULL, max.size = 100)
+		 step.size = NULL, max.size = NULL)
 {
+	if (class(CF) != "CF")
+		return();
 	cf.coeffs = as.double(CF$cf.coeffs);
 	cf.coeffs.l = as.integer(length(CF$cf.coeffs));
 	offset.coeffs = as.double(CF$offset.coeffs);
@@ -74,7 +77,7 @@ preseqR.extrapolate.distinct <- function(hist.count, CF, start.size = NULL,
 	hist.count = c(0, hist.count);
 	hist.count.l = as.integer(length(hist.count));
 
-	# set start.size and step.size if they are not defined by user
+	# set start.size, step.size, max.size if they are not defined by user
 	if (is.null(start.size))
 		start.size = total.reads;
 	if (start.size > max.size)
@@ -85,6 +88,9 @@ preseqR.extrapolate.distinct <- function(hist.count, CF, start.size = NULL,
 	}
 	if (is.null(step.size))
 		step.size = total.reads;
+	if (is.null(max.size))
+	# 1000 is a magic number; 
+		max.size = 1000 * total.reads;
 
 	# allocate memory to store extrapolation results
 	# first "c.extrapolate.distinct" stores the observed number of distinct 
@@ -97,37 +103,52 @@ preseqR.extrapolate.distinct <- function(hist.count, CF, start.size = NULL,
 	   as.double(step.size), as.double(max.size), 
 	   estimate = as.double(vector(mode = 'numeric', extrap.size + 1)), 
 	   estimate.l = as.integer(0));
-	return(out$estimate[ 1: out$estimate.l ]);
+
+	# remove the first item and include only extrapolation results
+	extrapolation = out$estimate[ 1: out$estimate.l ][-1]
+	# sample size vector for extrapolation
+	sample.size = start.size + step.size * ( 1: length(extrapolation) );
+	return(list(sample.size = sample.size, extrapolation.value = extrapolation))
 }
-	
-#do with/without replacement of random sampling given a histogram count vector
-#size is a user defined sample size
-preseqR.hist.sample <- function(hist.count, size, replace = NULL)
+
+## do withouat replacement of random sampling given a count vector of a histogram
+## size is a user defined sample size
+nonreplace.sampling <- function(size, hist.count)
 {
-	if (replace == FALSE)
-	{
-		total.sample = 0;
-		i = 1;
-		# calculate total number of sample
-		freq = 1:length(hist.count);
-		total.sample = freq %*% hist.count;
-		#construct a sample space X 
-		distinct.sample = sum(hist.count);
-		# identities for each distinct read
-		ind = 1:as.integer(distinct.sample);
-		# the size of each read in the library
-		n = rep(freq, as.integer(hist.count))
-		# the whole library represents by its indexes. If a read presents t
-		# times in the library, its indexes presents t times in X
-		X = rep(ind, n); 
-		return(sample(X, size, replace = FALSE));
-	}
-	else if (replace == TRUE) {
-		return(rmultinom(MULTINOMIAL.SAMPLE.TIMES, size, hist.count));
-	} else {
-		write("Specify the sampling methods(wit/without replacement)", stderr())
-		return();
-	}
+	total.sample = 0;
+	i = 1;
+	# calculate total number of sample
+	freq = 1:length(hist.count);
+	total.sample = freq %*% hist.count;
+	#construct a sample space X 
+	distinct.sample = sum(hist.count);
+	# identities for each distinct read
+	ind = 1:as.integer(distinct.sample);
+	# the size of each read in the library
+	n = rep(freq, as.integer(hist.count))
+	# the whole library represents by its indexes. If a read presents t
+	# times in the library, its indexes presents t times in X
+	X = rep(ind, n);
+	return(sample(X, size, replace = FALSE));
+}
+
+## the function samples n histograms given a histogram
+## it is based on sampling with replacement (the multinomial distribution)
+replace.sampling <- function(n, hist.count)
+{
+	# record count vector of a resampled histogram
+	re.hist.count = matrix(data = 0, nrow = length(hist.count), ncol = n) 
+	# nonzero indexes in the hist.count
+	nonzero.index = which(hist.count != 0);
+	# nonzero values in the hist.count
+	nonzero.hist.count = hist.count[nonzero.index];
+	# calculate the distinct number of sample
+	distinct.sample = sum(hist.count);
+	# do sampling with replacement
+	resample = rmultinom(n, as.integer(distinct.sample), hist.count);
+	# reconstruct count vectors of histograms
+	re.hist.count[ nonzero.index, 1:n ] = resample;
+	return(re.hist.count);
 }
 
 # given a sample vector, the function counts the number of distinct molecules
@@ -162,7 +183,7 @@ preseqR.interpolate.distinct <- function(hist.count, ss)
 	# dimesion must be defined in order to use R apply
 	dim(x) = length(x);
 	# do sampling without replacement 
-	s = apply(x, 1, function(x) preseqR.hist.sample(hist.count, x, replace=FALSE));
+	s = apply(x, 1, function(x) nonreplace.sampling(x, hist.count);
 	# calculate the number of distinct reads based on each sample
 	dim(s) = length(s);
 	yield.estimates = sapply(s, count.distinct);
@@ -191,7 +212,7 @@ preseqR.continued.fraction.estimate <- function(hist, di = 0, mt = 100,
 {
 	# input could be either histogram file or count vector of the histogram
 	if (mode(hist) == "character") {
-		hist.count = preseqR.read.hist(hist);
+		hist.count = read.hist(hist);
 	}
 	else {
 		hist.count = hist;
@@ -284,6 +305,7 @@ preseqR.continued.fraction.estimate <- function(hist, di = 0, mt = 100,
 			  out$degree);
 	names(CF) = c('ps.coeffs', 'cf.coeffs', 'offset.coeffs', 'diagonal.idx', 
 				  'degree');
+	class(CF) = 'CF'
 	# if the sample size is larger than max.extrapolation
 	# stop extrapolation
 	# prevent machinary precision from biasing comparison result
@@ -297,28 +319,21 @@ preseqR.continued.fraction.estimate <- function(hist, di = 0, mt = 100,
 	est <- preseqR.extrapolate.distinct( hist.count, CF, 
 		       (starting.size - total.sample) / total.sample, step.size / total.sample, 
 		       (max.extrapolation + MINOR.correction- total.sample) / total.sample);
-	# est[1] is the number of the distinct molecules from experiments
-	# est[-1] are extrapolation results
-	est = est[-1]
-	yield.estimates = c(yield.estimates, est);
+
+	yield.estimates = c(yield.estimates, est$extrapolation.value);
 	index = as.double(step.size) * (1: length(yield.estimates));
 	yield.estimates = list(sample.size = index, yields = yield.estimates);
 	result = list(continued.fraction = CF, yield.estimates = yield.estimates)
 	return(result);
 }
 
-print.continuedfraction <- function(CF)
-{
-	print(CF$cf.coeffs);
-}
-
-## generate complexity curve through bootstrap the histogram
-bootstrap.complexity.curve <- function(hist, bootstrap.times = 100, di = 0, 
+## generate complexity curve through bootstrapping the histogram
+preseqR.bootstrap.complexity.curve <- function(hist, bootstrap.times = 100, di = 0, 
 									   mt = 100, ss = 1e6, mv = 1e10,
 									   max.extrapolation = 1e10, step.adjust=TRUE)
 {
 	if (mode(hist) == 'character') {
-		hist.count = preseqR.read.hist(hist);
+		hist.count = read.hist(hist);
 	} else {
 		hist.count = hist;
 	}
@@ -350,14 +365,16 @@ bootstrap.complexity.curve <- function(hist, bootstrap.times = 100, di = 0,
 	upper.limit = bootstrap.times / BOOTSTRAP.factor
 	while (bootstrap.times > 0) {
 		# do sampling with replacement
-		resample = preseqR.hist.sample(nonzero.hist.count, as.integer(distinct.sample), 
-									   replace = TRUE);
+		# the piece of code achives the same function as nonreplace.sampling()
+		# I extend the code of the function for speedup
+		# the cleaness of code is sacrificed to trade off efficiency
+		resample = rmultinom(MULTINOMIAL.SAMPLE.TIMES, 
+							 as.integer(distinct.sample), nonzero.hist.count);
 		# reconstruct count vectors of histograms
 		re.hist.count[ nonzero.index, 1:MULTINOMIAL.SAMPLE.TIMES ] = resample;
 		# make estimation for each histogram
 		out = apply(re.hist.count, 2, function(x) preseqR.continued.fraction.estimate(
-					  x, di, mt, step.size, mv, max.extrapolation + MINOR.correction, 
-					  step.adjust=FALSE))
+					  x, di, mt, step.size, mv, max.extrapolation, step.adjust=FALSE))
 		# eliminate NULL items in results
 		out[sapply(out, is.null)] <- NULL
 		# extract yields estimation from each estimation result. 

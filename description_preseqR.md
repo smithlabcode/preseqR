@@ -12,10 +12,10 @@ Four functions are supported by preseqR for common users:
 
   1.  preseqR.continued.fraction.estimate(): given a histogram, preseqR produces 
 	  a continued rational function (CRF);
-  2.  preseqR.complex.curve(): given a histogram, preseqR produces a complexity 
-      curve of the library;
-  3.  preseqR.print.continued.fraction(): print out the construct continued 
-	  rational function in a friendly way;
+  2.  preseqR.bootstrap.complexity.curve(): given a histogram, preseqR produces
+	  a complexity curve of the library;
+  3.  preseqR.print(): write down results into a file after running functions
+	  in preseqR
   4.  preseqR.calculate.continued.fraction(): given a CRF and its coordinates, 
       preseqR calculates the function value.
 
@@ -27,12 +27,18 @@ Two functions are supported by preseqR for advanced users:
 All the functions are in the Rcontinuedfraction.R. They are written in R, but they 
 may call c++ function during implementation.
 
-Other functions in the Rcontinuedfraction.R are helpers, which should be used by no 
-one except other functions.
+Other functions in the Rcontinuedfraction.R are helpers, which supposed to be 
+used by no one.
 
-  1.  preseqR.read.hist(): read a histogram file and output a histogram count vector;
-  2.  preseqR.sample(): do with/without replacement sampling based on a histogram;
-  3.  preseqR.sample2hist.count(): convert a sample vector into a histogram count vector;
+  1.  read.hist(): read a histogram file and output the count vector of 
+	  the histogram
+  2.  replace.sampling(): re-sampling histograms givan a histogram. It is based
+	  on replacement sampling. 
+  3.  nonreplace.sampling(): do with replacement sampling given a histogram
+  4.  count.distinct(): count the number of distinct spicies/reads given
+	  a sample data
+  5.  goodtoulmin.2x.extrap() : check the goodness of the sample through its 
+	  histogram based on Good & Toulmin's model
 
 ##Principles and implementation
 
@@ -120,3 +126,52 @@ structure dense and less duplicated codes. But it is more like a pesudo
 sub-module. PreseqR is still an independent sub module in preseq. 
 Downsample in preseq is written through gsl, while downsample in preseqR is 
 written through R libraries. 
+
+##Documents of global.variables and functions in preseqR
+
+#### global.variables
+
+  1.  MAXLENGTH = 10000000: the size of each pre-allocated vector by R to store
+      results from calling C++ function
+  2.  MULTINOMIAL.SAMPLE.TIMES = 19: a number to define the number of random
+      vectors to draw from a multinomial distribution. It also defines the number
+	  of sampling times in each iteration in bootstrapping. 
+  3.  MINOR.correction = 1e-1: a small positive number to avoid randomness when
+      two double type numbers with almost identical values are compared.
+  4.  BOOTSTRAP.factor = 0.1: a number to deine the efficiency of bootstrap. See
+      `preseqR.bootstrap.complexity.curve` for details.
+
+#### functions
+
+  1.  read.hist(hist.file): a function to read a histogram file and output a 
+	  count vector of the histogram. The hisogram must have two columns and no 
+	  headers are allowed. In the first column, each number x represents a 
+	  sequencing read/species occurs x times in the experiment. The corresponding
+	  number y in the second column represents there are y reads/species, each 
+	  of which occurs x times.
+  2.  preseqR.calculate.continued.fraction(CF, x): a function to calculate the
+	  value of a continued fraction given its coordinates. CF is a continued
+	  fraction with `CF` attribute. `x` is a non-negtive real number. It calls 
+	  a function ```c_calculate_continued_fraction``` from `continued_fraction.cpp`
+	  to calculate the value.
+  3.  preseqR.extrapolate.distinct(hist.count, CF, start.size = NULL, step.size = NULL, 
+	  max.size = NULL): a function to extrapolate through a continued fraction.
+	  It returns a list containing various sample sizes and their extrapolation 
+	  values. `hist.count` is a count vector of a histogram. The ith number x in
+      the vector represents there are x reads/species occurring i times in the 
+	  experiment. `CF` is a continued fraction. `start.size` is a starting 
+	  sample size for extrapolation. `step.size` is a increasement size in each 
+	  step for extrapolation. `max.size` is a upper bound for extrapolation. It
+	  calls a function `c_extrapolate_distinct` from `continued_fraction.cpp` to
+	  implement.
+  4.  replace.sampling(n, hist.count): a function to re-sample histograms given 
+	  a histogram. `n` is the number of histograms to draw. `hist.count` is a 
+	  count vector of a histogram. It calls a built-in function `rmultinomial()`
+	  in R to implement.
+
+  5.  nonreplace.sampling(size, hist.count): a function to do without replacement 
+	  sampling. It returns a sample vector composed by positive number. Each 
+	  positive number is considered as a id for a distinct item. `size` is a 
+	  non-negative integer giving the number of items to choose. `hist.count` is
+      a count vector of a histogram. See above for detail. It calls a built-in 
+	  function `sample()` in R to implement.
