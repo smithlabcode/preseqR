@@ -1,5 +1,5 @@
 \name{presesqR.bootstrap.complexity.curve}
-\alias{bootstrap.complexity.curve}
+\alias{preseqR.bootstrap.complexity.curve}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
 	bootstrapping Complexity curve

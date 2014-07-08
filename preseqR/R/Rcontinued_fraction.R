@@ -183,14 +183,14 @@ preseqR.interpolate.distinct <- function(hist.count, ss)
 	# dimesion must be defined in order to use R apply
 	dim(x) = length(x);
 	# do sampling without replacement 
-	s = apply(x, 1, function(x) nonreplace.sampling(x, hist.count);
+	s = apply(x, 1, function(x) nonreplace.sampling(x, hist.count));
 	# calculate the number of distinct reads based on each sample
 	dim(s) = length(s);
 	yield.estimates = sapply(s, count.distinct);
 	# sample stores the starting sample size for extrapolation
 	sample <- sample + sample * l
     # yield.estimates
-	yield.estimates = list(sample.size = x, yields = yield.estiamtes);
+	yield.estimates = list(sample.size = x, yields = yield.estimates);
 	out = list(yield.estimates, sample);
 	names(out) = c("yield.estimates", "starting.sample.size")
 	return(out);
