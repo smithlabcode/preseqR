@@ -141,7 +141,7 @@ written through R libraries.
   4.  BOOTSTRAP.factor = 0.1: a number to deine the efficiency of bootstrap. See
       `preseqR.bootstrap.complexity.curve` for details.
 
-#### functions
+#### R-functions
 
   1.  read.hist(hist.file): a function to read a histogram file and output a 
 	  count vector of the histogram. The hisogram must have two columns and no 
@@ -238,3 +238,50 @@ written through R libraries.
 	      preseqR.continued.fraction.estimate(), 
 		  preseqR.bootstrap.complexity.curve()```. It can also print out a 
 	   continued fraction.
+
+#### C-functions
+
+  1.  void c_calculate_continued_fraction( double *cf_coeffs, int *cf_coeffs_l,
+	  double *offset_coeffs, int *di, int *de, double *coordinate, double *result): 
+	  a function to calculate the value of a continued fraction given its 
+	  coordinates. It is a C-encoded interface for C++ function `operator()` in
+	  `continued_fraction.cpp` and `preseqR.calculate.continued.fraction` calls 
+	  it to calculate the value. `cf_coeffs` stores coefficients of a continued
+	  fraction. `cf_coeffs_l` is the number of coefficients. `offset_coeffs` 
+	  stores offset coefficients of a continued fraction if the diagonal value
+	  of the continued fraction is nonzero. `di` is the diagonal value of the
+	  continued fraction. `de` is the degree of the continued fraction.
+	  `coordinate` is a positive real value. `result` stores calculated result.
+	  First, the function construct a continued fraction through information
+	  stored in ```cf_coeffs, cf_coeffs_l, offset_coeffs, di, de```. Then it
+	  calls a C++ function `operator()` in `continued_fraction.cpp` to calculate
+	  the value.
+
+  2.  void c_extrapolate_distinct( double *cf_coeffs, int *cf_coeffs_l,
+	  double *offset_coeffs, int *di, int *de, double *hist, int *hist_l,
+	  double *start_size, double *step_size, double *max_size, double *estimate,
+	  int *estimate_l): a function to extrapolate through a continued fraction.
+	  It calculates extrapolation values given various sample size and returns
+	  results to `estimate` and `estimate_l`. `start.size` is a starting sample 
+	  size for extrapolation. `step.size` is a increasement size in each step 
+	  for extrapolation. `max.size` is a upper bound for extrapolation. `estimate`
+	  is used to store extrapolation values. `estimate_l` stores the number of
+	  extrapolation points.	For each sample size, the function calls 
+	  `c_calculate_continued_fraction` to calculate the extrapolation value.
+	  Then it save results into `estimate` and `estimate_l`.
+	  `preseqR.extrapolate.distinct` calls the function to calculate the
+	  extrapolation values.
+
+  3.  void c_continued_fraction_estimate(double *hist_count, int *hist_count_l,
+	  int *di, int *mt, double *ss, double *mv, double *ps_coeffs, 
+	  int *ps_coeffs_l, double *cf_coeffs, int *cf_coeffs_l, 
+	  double *offset_coeffs, int *diagonal_idx, int *degree, int *is_valid)(): 
+	  a function to estimate a continued fraction given a histogram. `hist_count`
+	  stores a count vector of a histogram. `hist_count_l` is the number of
+	  items in `hist_count`. `is_valid` is a logic value to indicate the 
+	  validness of the constructed continued fraction. All the information of 
+	  the constructed continued fraction is stores in `ps_coeffs, ps_coeffs_l, 
+	  cf_coeffs, cf_coeffs_l, offset_coeffs, diagonal_idx, degree`. The function
+	  calls a c++ function `optimal_cont_frac_distinct` in `continued_fraction.cpp`
+	  for constructing a continued fraction. It is the C-interface for 
+	  constructing a continued fraction.
