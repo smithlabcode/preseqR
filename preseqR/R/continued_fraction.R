@@ -461,7 +461,7 @@ print.yield.estimates <- function(X, filename)
 	}
 }
 
-preseqR.printout <- function(X, prefix = '')
+preseqR.print2file <- function(X, prefix = '')
 {
 	# check if X is a continued fraction
 	if (class(X) == "CF") {
