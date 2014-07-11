@@ -415,4 +415,67 @@ preseqR.bootstrap.complexity.curve <- function(hist, bootstrap.times = 100, di =
 	}
 }
 
-preseqR.printout <- function(file.name = NULL, ...) {}
+print.continued.fraction(X, filename)
+{
+	# use the variable name as the name of the continued fraction
+	s = paste("the continued fraction", deparse(substitute(v1)(X), sep = ' ');
+	write(s, filename);
+	# print the degree of the continued fraction
+	s = paste("degree", toString(X$degree), sep = '\t');
+	write(s, filename);
+	# print the diagonal value
+	s = paste("diagonal", toString(X$diagonal.idx), sep = '\t');
+	write(s, filename);
+	di = abs(X$diagonal.idx); 
+	# print offset values if any
+	if (di > 0)
+	{
+		s = apply(1:di, 1, function(x)  paste('a_', toString(x), '=', 
+				               toString(X$offset.coeffs[x])));
+		write(s, filename);
+	}
+	# print coeffients if any
+	if (length(X$cf.coeffs) > 0)
+	{
+		s = apply( 1:length(X$cf.coeffs), 1,function(x) paste('a_', toString(x),
+					                            '=', toString(X$cf.offset[x])));
+		write(s, filename);
+	}
+}
+
+print.yield.estimates(X, filename)
+{
+	if (!is.null(names(X)))
+		write(names(X), filename, append = TRUE)
+	l = length(X)
+	if (l > 0)
+		for (i in 1:length(X[1]))
+			write(X[ 1:l ][i], filename, append = TRUE)
+}
+
+preseqR.printout <- function(X, prefix = NULL)
+{
+	# check if X is a continued fraction
+	if (class(X) = "CF") {
+		filename = paste(prefix, "_continued_fraction.txt");
+		print.continued.fraction(X, filename);
+	} else if (!is.null(names(X))) {
+		if ( all( names(X) == c("continued.fraction", "yield.estimates") ) )
+		{
+			filename.CF = paste(prefix, "_continued_fraction.txt");
+			filename.YE = paste(prefix, "_yield.estimates.txt");
+			print.continued.fraction(X$continued.fraction, filename.CF);
+			print.yield.estimates(X$yield.estimates, filename.YE);
+		} else if( all( names(X) == c("yield.estimates", "LOWER_0.95CI", "UPPER_0.95CI") ) )
+		{
+			filename.YE = paste(prefix, "_yield.estimates.txt");
+			print.yield.estimates(X$yield.estimates, filename.YE);
+		}
+	} else
+	{
+		write("unknown input variables!", stderr());
+	}
+}
+			
+
+
