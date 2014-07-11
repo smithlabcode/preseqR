@@ -415,64 +415,81 @@ preseqR.bootstrap.complexity.curve <- function(hist, bootstrap.times = 100, di =
 	}
 }
 
-print.continued.fraction(X, filename)
+print.continued.fraction <- function(X, filename)
 {
 	# use the variable name as the name of the continued fraction
-	s = paste("the continued fraction", deparse(substitute(v1)(X), sep = ' ');
+	s = paste("CONTINUED FRACTION ", deparse(substitute(X)), ':\n', sep = '');
 	write(s, filename);
 	# print the degree of the continued fraction
-	s = paste("degree", toString(X$degree), sep = '\t');
-	write(s, filename);
+	s = paste("DEGREE", toString(X$degree), "\n", sep = '\t');
+	write(s, filename, append = TRUE);
 	# print the diagonal value
-	s = paste("diagonal", toString(X$diagonal.idx), sep = '\t');
-	write(s, filename);
+	s = paste("DIAGONAL VALUE", toString(X$diagonal.idx), "\n", sep = '\t');
+	write(s, filename, append = TRUE);
+	write("COEFFICIENTS:", filename, append = TRUE)
 	di = abs(X$diagonal.idx); 
 	# print offset values if any
 	if (di > 0)
 	{
-		s = apply(1:di, 1, function(x)  paste('a_', toString(x), '=', 
-				               toString(X$offset.coeffs[x])));
-		write(s, filename);
+		index = 1:di;
+		dim(index) = di;
+		s = apply(index, 1, function(x)  paste('a_', toString(x - 1), ' = ', 
+				               toString(X$offset.coeffs[x]), sep = ''));
+		write(s, filename, append = TRUE);
 	}
 	# print coeffients if any
 	if (length(X$cf.coeffs) > 0)
 	{
-		s = apply( 1:length(X$cf.coeffs), 1,function(x) paste('a_', toString(x),
-					                            '=', toString(X$cf.offset[x])));
-		write(s, filename);
+		index = 1:length(X$cf.coeffs);
+		dim(index) = length(X$cf.coeffs);
+		s = apply(index, 1,function(x) paste('a_', toString(x - 1 + di),
+					              ' = ', toString(X$cf.coeffs[x]), sep = ''));
+		write(s, filename, append = TRUE);
 	}
 }
 
-print.yield.estimates(X, filename)
+print.yield.estimates <- function(X, filename)
 {
 	if (!is.null(names(X)))
-		write(names(X), filename, append = TRUE)
+		write(paste(names(X), collapse = '\t'), filename);
 	l = length(X)
 	if (l > 0)
-		for (i in 1:length(X[1]))
-			write(X[ 1:l ][i], filename, append = TRUE)
+	{
+		X = matrix(unlist(X), ncol = l, byrow = FALSE);
+		apply(X, 1, function(x) write(paste(x, collapse = '\t'), 
+								filename, append = TRUE));
+	}
 }
 
-preseqR.printout <- function(X, prefix = NULL)
+preseqR.printout <- function(X, prefix = '')
 {
 	# check if X is a continued fraction
-	if (class(X) = "CF") {
-		filename = paste(prefix, "_continued_fraction.txt");
+	if (class(X) == "CF") {
+		filename = paste(prefix, "_continued_fraction.txt", sep = '');
 		print.continued.fraction(X, filename);
 	} else if (!is.null(names(X))) {
-		if ( all( names(X) == c("continued.fraction", "yield.estimates") ) )
+		# check if X is the result from preseqR.continued.fraction.estimate
+		if ( length(names(X)) == 2 && 
+				all( names(X) == c("continued.fraction", "yield.estimates") ) )
 		{
-			filename.CF = paste(prefix, "_continued_fraction.txt");
-			filename.YE = paste(prefix, "_yield.estimates.txt");
+			filename.CF = paste(prefix, "_continued_fraction.txt", sep = '');
+			filename.YE = paste(prefix, "_yield.estimates.txt", sep = '');
 			print.continued.fraction(X$continued.fraction, filename.CF);
 			print.yield.estimates(X$yield.estimates, filename.YE);
-		} else if( all( names(X) == c("yield.estimates", "LOWER_0.95CI", "UPPER_0.95CI") ) )
+		  # check if X is the result from preseqR.bootstrap.complexity.curve
+		} else if( length(names(X)) == 3 && 
+					all( names(X) == c("yield.estimates", "LOWER_0.95CI", "UPPER_0.95CI") ) )
 		{
-			filename.YE = paste(prefix, "_yield.estimates.txt");
-			print.yield.estimates(X$yield.estimates, filename.YE);
+			X = list(SAMPLE.SIZE = X$yield.estimates$sample.size,
+					 YIELDS = X$yield.estimates$yields,
+					 LOWER_0.95CI = X$LOWER_0.95CI,
+					 UPPER_0.95CI = X$UPPER_0.95CI)
+			filename.YE = paste(prefix, "_yield.estimates.txt", sep = '');
+			print.yield.estimates(X, filename.YE);
 		}
 	} else
 	{
+		# invalid parameter X
 		write("unknown input variables!", stderr());
 	}
 }
