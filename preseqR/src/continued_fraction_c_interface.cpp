@@ -1,4 +1,4 @@
-#include "Rcontinued_fraction.h"
+#include "continued_fraction.h"
 #include <vector>
 using std::vector;
 
