@@ -451,7 +451,7 @@ print.continued.fraction <- function(X, filename)
 print.yield.estimates <- function(X, filename)
 {
 	if (!is.null(names(X)))
-		write(paste(names(X), collapse = '\t'), filename);
+		write(toupper(paste(names(X), collapse = '\t')), filename);
 	l = length(X)
 	if (l > 0)
 	{
