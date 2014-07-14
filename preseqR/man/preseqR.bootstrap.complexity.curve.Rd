@@ -101,13 +101,15 @@ ss = 1e+6, mv = 1e+10, max.extrapolation = 1e+10, step.adjust = TRUE)
 }
 \examples{
 ## import data
-	data(SRR1041830_5M_hist)
+data(SRR1041830_5M_hist)
 ## hist.count is a count vector of a histogram
-	hist.count = SRR1041830_5M_hist$distinct.reads
-	result = preseqR.bootstrap.complexity.curve(hist.count)
+hist.count = SRR1041830_5M_hist$distinct.reads
+result = preseqR.bootstrap.complexity.curve(hist.count)
 ## print the estimated yields given various sequencing sample size
-	yields = c(result$yield.estimates, result$LOWER_0.95CI, result$UPPER_0.95CI)
-	matrix(yields, ncol = 4, byrow = FALSE)
+print(c("sample.size", "yield estimates", "LOWER_0.95CI", "UPPER_0.95CI"))
+yields = c(result$yield.estimates$sample.size, result$yield.estimates$yields, 
+           result$LOWER_0.95CI, result$UPPER_0.95CI)
+matrix(yields, ncol = 4, byrow = FALSE)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
