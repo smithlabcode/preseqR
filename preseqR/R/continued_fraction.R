@@ -187,13 +187,9 @@ preseqR.interpolate.distinct <- function(hist.count, ss)
 	# calculate the number of distinct reads based on each sample
 	dim(s) = length(s);
 	yield.estimates = sapply(s, count.distinct);
-	# sample stores the starting sample size for extrapolation
-	sample <- sample + sample * l
     # yield.estimates
 	yield.estimates = list(sample.size = x, yields = yield.estimates);
-	out = list(yield.estimates, sample);
-	names(out) = c("yield.estimates", "starting.sample.size")
-	return(out);
+	return(yield.estimates);
 }
 
 #check the goodness of the sample based on good Good & Toulmin's model
@@ -246,9 +242,9 @@ preseqR.continued.fraction.estimate <- function(hist, di = 0, mt = 100,
 			write(m, stderr());
 		}
 		# interpolate and set the size of sample for initial extrapolation
-		out = preseqR.interpolate.distinct(hist.count, step.size)
-		yield.estimates = out$yield.estimates$yields;
-		starting.size = out$starting.sample.size
+		out = preseqR.interpolate.distinct(hist.count, step.size);
+		yield.estimates = out$yields;
+		starting.size = (as.integer(total.sample / step.size) + 1) * step.size;
 	}
 
 	counts.before.first.zero = 1;
