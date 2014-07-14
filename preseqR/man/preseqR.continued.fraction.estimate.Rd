@@ -92,8 +92,8 @@ vary.
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 
 \seealso{
-	  About the format of a continued fraction, See Baker, G. \& 
-	  Graves-Morris, P. \emph{Pade Approximants}
+	  See Baker, G. \& Graves-Morris, P. \emph{Pade Approximants} about the
+	  form of a continued fraction
 %% ~~objects to See Also as \code{\link{help}}, ~~~
 }
 \examples{
