@@ -55,7 +55,6 @@ extern "C"
 
     double result = 0;
     vector<double> est;
-    est.push_back(hist_sum);
     for (double t = *start_size; t <= *max_size; t += *step_size) {
       c_calculate_continued_fraction(cf_coeffs, cf_coeffs_l, 
 				    offset_coeffs, di, de, &t, &result);

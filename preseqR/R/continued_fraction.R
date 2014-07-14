@@ -104,8 +104,7 @@ preseqR.extrapolate.distinct <- function(hist.count, CF, start.size = NULL,
 	   estimate = as.double(vector(mode = 'numeric', extrap.size + 1)), 
 	   estimate.l = as.integer(0));
 
-	# remove the first item and include only extrapolation results
-	extrapolation = out$estimate[ 1: out$estimate.l ][-1]
+	extrapolation = out$estimate[ 1: out$estimate.l ]
 	# sample size vector for extrapolation
 	sample.size = start.size + step.size * ( 1: length(extrapolation) );
 	return(list(sample.size = sample.size, extrapolation.value = extrapolation))
