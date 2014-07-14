@@ -72,6 +72,7 @@ vary.
   \item{yield.estimates}{
 	  A two-columns table represents estimated number of distinct items given 
 	  various sizes of experiments.
+  }
 }
 \references{
 	\url{http://smithlabresearch.org/software/preseq/}
