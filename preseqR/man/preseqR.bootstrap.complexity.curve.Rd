@@ -61,7 +61,7 @@ ss = 1e+6, mv = 1e+10, max.extrapolation = 1e+10, step.adjust = TRUE)
 }
 \details{
 	The function resamples a histogram as the histogram of an intial experiment
-	and applies \alias{preseqR.continued.fraction.estimate}, which could return
+	and applies \code{preseqR.continued.fraction.estimate}, which could return
 	a valid estimation or NULL. When times of valid estimation are beyond the 
 	bootstrap.times, it finish resampling and returns the mean of results from
     each estimation	as final estimation. When times of total resampling are
@@ -97,7 +97,7 @@ ss = 1e+6, mv = 1e+10, max.extrapolation = 1e+10, step.adjust = TRUE)
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 
 \seealso{
-	\alias{preseqR.continued.fraction.estimate}
+	\code{\link{preseqR.continued.fraction.estimate}}
 }
 \examples{
 ## import data
