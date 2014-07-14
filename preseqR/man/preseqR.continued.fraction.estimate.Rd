@@ -108,7 +108,7 @@ result$continued.fraction
 ## print the estimated yields given various sequencing sample size
 yields = result$yield.estimates
 names(yields)
-matrix(numeric(unlist(yields)), ncol = 2, byrow = FALSE)
+matrix(as.numeric(unlist(yields)), ncol = 2, byrow = FALSE)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
