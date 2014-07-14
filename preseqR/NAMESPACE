@@ -1,7 +1,7 @@
 useDynLib(preseqR)
 export(preseqR.continued.fraction.estimate)
 export(preseqR.bootstrap.complexity.curve)
-export(preseqR.printout)
+export(preseqR.print2file)
 export(preseqR.calculate.continued.fraction)
 export(preseqR.interpolate.distinct)
 export(preseqR.extrapolate.distinct)
