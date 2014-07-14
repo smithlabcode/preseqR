@@ -106,8 +106,8 @@ preseqR.extrapolate.distinct <- function(hist.count, CF, start.size = NULL,
 
 	extrapolation = out$estimate[ 1: out$estimate.l ]
 	# sample size vector for extrapolation
-	sample.size = start.size + step.size * ( 1: length(extrapolation) );
-	return(list(sample.size = sample.size, extrapolation.value = extrapolation))
+	sample.size = start.size + step.size * ( 1:length(extrapolation) - 1 );
+	return(list(sample.size = sample.size, yield.estimates = extrapolation))
 }
 
 ## do withouat replacement of random sampling given a count vector of a histogram
@@ -317,7 +317,7 @@ preseqR.continued.fraction.estimate <- function(hist, di = 0, mt = 100,
 		       (starting.size - total.sample) / total.sample, step.size / total.sample, 
 		       (max.extrapolation+MINOR.correction-total.sample) / total.sample);
 
-	yield.estimates = c(yield.estimates, est$extrapolation.value);
+	yield.estimates = c(yield.estimates, est$yield.estimates);
 	index = as.double(step.size) * (1: length(yield.estimates));
 	yield.estimates = list(sample.size = index, yields = yield.estimates);
 	result = list(continued.fraction = CF, yield.estimates = yield.estimates)
