@@ -1,13 +1,14 @@
 % --- Source file: SRR1041830_hist.txt --- 
-\name{SRR1041830_hist} 
-\alias{SRR1041830_hist}
-\title{Data set} 
+\name{SRR1041830_hist.txt} 
+\alias{SRR1041830_hist.txt}
+\title{Histogram of A ChIP-Seq Experiment} 
 
 \description{ 
-The histogram has 319 rows and 2 columns. The first row is a header. Column 1 is
-the frequency; column 2 is the number of distinct reads. The raw sequencing data
-is from NCBI. All reads are first mapped to Human genome reference and a 
-histogram is built based on mapping results.
+SRR1041830_5M_hist is a histogram, which has 20 rows and 2 columns. The first
+row is a header. For the rest, each row (x, y) represents there are y distinct 
+reads, each of which occurs x times in the ChIP-Seq experiment. The raw 
+sequencing data is from NCBI with accession No. SRX386200. Bowtie 2 is used to
+map reads into hg19. SRR1041830_5M_hist is the histogram of all mapped reads.
 } 
 
 \usage{data(SRR1041830_hist)} 
@@ -20,4 +21,5 @@ This data contains the following variables:
 }
 }
 %\source{sequencing data see NCBI Accession: SRX386200}
-\keyword{data}
+\keyword{datasets}
+\keyword{histogram}

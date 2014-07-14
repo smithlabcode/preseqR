@@ -1,7 +1,7 @@
 % --- Source file: SRR1003759_5M_hist.txt --- 
-\name{SRR1003759_5M_hist} 
+\name{SRR1003759_5M_hist.txt} 
 \alias{SRR1003759_5M_hist.txt} 
-\title{Data set} 
+\title{A Histogram of Single-cell RNA-seq Experiment} 
 
 \description{ 
 SRR1003759_5M_hist is a histogram, which has 606 rows and 2 columns. Each row 
@@ -12,7 +12,7 @@ hg19. Then around 5M mapped reads are sampled by Picard tool
 DownsampleSam. SRR1003759_5M_hist is the histogram of the sample.
 } 
 
-\usage{SRR1003759_5M_hist} 
+\usage{SRR1003759_5M_hist.txt} 
 
 \format{
 This data contains the following variables:

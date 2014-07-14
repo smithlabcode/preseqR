@@ -1,7 +1,7 @@
 % --- Source file: SRR1003759_hist.txt --- 
-\name{SRR1003759_hist} 
+\name{SRR1003759_hist.txt} 
 \alias{SRR1003759_hist.txt} 
-\title{Data set} 
+\title{A Histogram of Single-cell RNA-seq Experiment} 
 
 \description{ 
 SRR1003759_hist is a histogram, which has 2760 rows and 2 columns. Each row 
@@ -11,7 +11,7 @@ accession No. SRX360948. The RNA-seq aligner STAR is used to map reads into
 hg19. SRR1003759_5M_hist is the histogram of all mapped reads.
 } 
 
-\usage{SRR1003759_hist} 
+\usage{SRR1003759_hist.txt} 
 
 \format{
 This data contains the following variables:
