@@ -391,14 +391,16 @@ preseqR.bootstrap.complexity.curve <- function(hist, bootstrap.times = 100, di =
 	if (bootstrap.times <= 0) {
 		# the number of sampled points for complexity curve
 		n = dim(yield.estimates)[1];
+		# successful resampling times
+		resampling.n = dim(yield.estimates)[2];
 		# sample sizes
-		index = as.double(step.size) * ( 1:n )
+		index = as.double(step.size) * ( 1:n );
 		# mean values are used as complexity curve
-		mean = apply(yield.estimates, 1, mean)
-		variance = apply(yield.estimates, 1, var)
+		mean = apply(yield.estimates, 1, mean);
+		variance = apply(yield.estimates, 1, var);
 		# 95% confident interval based on normal distribution
-		left.interval = mean - qnorm(0.975) * sqrt(variance / n);
-		right.interval = mean + qnorm(0.975) * sqrt(variance / n);
+		left.interval = mean - qnorm(0.975) * sqrt(variance / resampling.n);
+		right.interval = mean + qnorm(0.975) * sqrt(variance / resampling.n);
 		yield.estimates = list(sample.size = index, yields = mean)
 		result = list(yield.estimates, left.interval, right.interval);
 		names(result) = c("yield.estimates", "LOWER_0.95CI", 
