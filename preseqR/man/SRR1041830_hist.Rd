@@ -1,6 +1,6 @@
 % --- Source file: SRR1041830_hist.txt --- 
-\name{SRR1041830_hist.txt} 
-\alias{SRR1041830_hist.txt}
+\name{SRR1041830_hist} 
+\alias{SRR1041830_hist}
 \title{Histogram of A ChIP-Seq Experiment} 
 
 \description{ 
