@@ -1,6 +1,6 @@
 % --- Source file: SRR1003759_5M_hist.txt --- 
-\name{SRR1003759_5M_hist.txt} 
-\alias{SRR1003759_5M_hist.txt} 
+\name{SRR1003759_5M_hist} 
+\alias{SRR1003759_5M_hist} 
 \title{A Histogram of Single-cell RNA-seq Experiment} 
 
 \description{ 
