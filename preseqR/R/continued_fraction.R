@@ -413,6 +413,7 @@ preseqR.bootstrap.complexity.curve <- function(hist, bootstrap.times = 100, di =
 }
 
 ## density function of truncated zero negative binomial distribution
+## size and mu are two parameters for negative binomial
 preseqR.zerotruncated.dnbinom <- function(x, size, mu, log = FALSE)
 {
 	# the density of x in negative binomial
@@ -420,19 +421,19 @@ preseqR.zerotruncated.dnbinom <- function(x, size, mu, log = FALSE)
 	# set zeros in x with zero probability
 	p[ which(x == 0) ] = 0;
 	# the density of non-zero in negative binomial
-	q = 1 - dnbinom(0, size = size, mu = mu, log = log);
+	q = 1 - dnbinom(0, size = size, mu = mu);
 	# normalize all non-zero values in negrative binomial to generate ZTNB
 	if (log == FALSE) {
 		return(p / q);
 	} else {
-		return(log(p / q));
+		return(p - log(q));
 	}
 }
 
 ## negative loglikelyhood 
 zerotruncated.minus.log.likelyhood <- function(x, size, mu)
 {
-	prob = zerotruncated.dnbinom(1:length(x), size, mu, log = TRUE);
+	prob = preseqR.zerotruncated.dnbinom(1:length(x), size, mu, log = TRUE);
 	# minus log likelyhood
 	prob = -prob;
 	# negative loglikelyhood
@@ -448,17 +449,18 @@ preseqR.zerotruncated.mle <- function(hist, size.init = NULL,
 	} else {
 		hist.count = hist;
 	}
-	if (mu.init == NULL)
+	if (is.null(mu.init))
 	{
 		total.sample = (1:length(hist.count) %*% hist.count);
 		distinct.sample = sum(hist.count);
 		mu.init = total.sample / distinct.sample;
 	}
-	if (size.init == NULL)
+	if (is.null(size.init))
 		size.init = total.sample;
-	f <- function(size, mu) zerotruncated.minus.log.likelyhood(hist.count,size,mu);
+	f <- function(x) zerotruncated.minus.log.likelyhood(hist.count, 
+														size = x[1], mu = x[2]);
 	return(optim(c(size.init, mu.init), f, NULL, method = "L-BFGS-B", 
-				lower = c(0, 0)), upper = c(1e10, 1e10))
+				lower = c(1e-10, 1e-10), upper = c(1e10, 1e10)))
 }
 
 ## predict the number of distinct items using zero truncated negative binomial 
@@ -475,12 +477,11 @@ preseqR.zerotruncated.estimate <- function(hist.count, n)
 	# the probability of being sampled in the initial experiment
 	p = 1 - dnbinom(0, size = size, mu = mu);
 	# L is the estimated total number of distinct items
-	L = distinct / p;
-	# the parameters of negative binomial in the experiment with size n
-	size.new = size;
-	mu.new = mu * as.double(n) / total.sample;
+	L = distinct.sample / p;
+	# update parameters of negative binomial in the experiment with size n
+	mu = mu * as.double(n) / total.sample;
 	# the probability of being sampled under the new experiment
-	P = 1 - dnbinom(0, size = size.new, mu = mu.new, log);
+	P = 1 - dnbinom(0, size = size, mu = mu);
 	# the expected number of distinct items under the new experiment
 	return(L * P);
 }
@@ -497,7 +498,10 @@ preseqR.zerotruncated.complexity.curve <- function(hist, ss = 1e6,
 	n = as.integer(max.extrapolation / ss);
 	sample.size = as.double(ss) * (1: n);
 	dim(sample.size) = n;
-	return(apply(sample.size, 1, function(x) preseqR.zerotruncated.estimate(hist.count, x)));
+	yield.estimates = apply(sample.size, 1, function(x) preseqR.zerotruncated.estimate(hist.count, x));
+	yield.estimates = list(sample.size = sample.size, 
+						   yield.estimates = yield.estimates);
+	return(yield.estimates)
 }
 
 print.continued.fraction <- function(X, filename)
