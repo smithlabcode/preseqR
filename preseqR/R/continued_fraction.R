@@ -228,7 +228,7 @@ preseqR.continued.fraction.estimate <- function(hist, di = 0, mt = 100,
 	{
 		yield.estimates = vector(mode = 'numeric', length = 0);
 		starting.size = step.size;
-	
+	}
 	# interpolation when sample size is no more than total sample size
 	else 
 	{
