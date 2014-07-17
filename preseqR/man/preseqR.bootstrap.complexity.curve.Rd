@@ -103,7 +103,9 @@ ss = 1e+6, mv = 1e+10, max.extrapolation = 1e+10, step.adjust = TRUE)
 ## import data
 data(SRR1041830_5M_hist)
 ## hist.count is a count vector of a histogram
-hist.count = SRR1041830_5M_hist$distinct.reads
+hist.count = vector(mode = 'numeric', length = max(SRR1041830_5M_hist$frequencies))
+hist.count[SRR1041830_5M_hist$frequencies] = SRR1041830_5M_hist$distinct.reads
+
 result = preseqR.bootstrap.complexity.curve(hist.count)
 ## print the estimated yields given various sequencing sample size
 print(c("sample.size", "yield estimates", "LOWER_0.95CI", "UPPER_0.95CI"))

@@ -101,7 +101,8 @@ vary.
 ## import data
 data(SRR1041830_5M_hist)
 ## hist.count is a count vector of a histogram
-hist.count = SRR1041830_5M_hist$distinct.reads
+hist.count = vector(mode="numeric", length=max(SRR1041830_5M_hist$frequencies))
+hist.count[SRR1041830_5M_hist$frequencies] = SRR1041830_5M_hist$distinct.reads
 result = preseqR.continued.fraction.estimate(hist.count)
 ## print the constructed continued fraction
 result$continued.fraction
