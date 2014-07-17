@@ -228,7 +228,7 @@ preseqR.continued.fraction.estimate <- function(hist, di = 0, mt = 100,
 	{
 		yield.estimates = vector(mode = 'numeric', length = 0);
 		starting.size = step.size;
-	}
+	
 	# interpolation when sample size is no more than total sample size
 	else 
 	{
@@ -412,6 +412,94 @@ preseqR.bootstrap.complexity.curve <- function(hist, bootstrap.times = 100, di =
 	}
 }
 
+## density function of truncated zero negative binomial distribution
+preseqR.zerotruncated.dnbinom <- function(x, size, mu, log = FALSE)
+{
+	# the density of x in negative binomial
+	p = dnbinom(x, size = size, mu = mu, log = log);
+	# set zeros in x with zero probability
+	p[ which(x == 0) ] = 0;
+	# the density of non-zero in negative binomial
+	q = 1 - dnbinom(0, size = size, mu = mu, log = log);
+	# normalize all non-zero values in negrative binomial to generate ZTNB
+	if (log == FALSE) {
+		return(p / q);
+	} else {
+		return(log(p / q));
+	}
+}
+
+## negative loglikelyhood 
+zerotruncated.minus.log.likelyhood <- function(x, size, mu)
+{
+	prob = zerotruncated.dnbinom(1:length(x), size, mu, log = TRUE);
+	# minus log likelyhood
+	prob = -prob;
+	# negative loglikelyhood
+	return( x %*% prob)
+}
+
+## MLE
+preseqR.zerotruncated.mle <- function(hist, size.init = NULL, 
+									  mu.init = NULL)
+{
+	if (mode(hist) == 'character') {
+		hist.count = read.hist(hist);
+	} else {
+		hist.count = hist;
+	}
+	if (mu.init == NULL)
+	{
+		total.sample = (1:length(hist.count) %*% hist.count);
+		distinct.sample = sum(hist.count);
+		mu.init = total.sample / distinct.sample;
+	}
+	if (size.init == NULL)
+		size.init = total.sample;
+	f <- function(size, mu) zerotruncated.minus.log.likelyhood(hist.count,size,mu);
+	return(optim(c(size.init, mu.init), f, NULL, method = "L-BFGS-B", 
+				lower = c(0, 0)), upper = c(1e10, 1e10))
+}
+
+## predict the number of distinct items using zero truncated negative binomial 
+## distribution
+## n is the size of experiment
+preseqR.zerotruncated.estimate <- function(hist.count, n)
+{
+	total.sample = (1:length(hist.count) %*% hist.count);
+	distinct.sample = sum(hist.count);
+
+	opt <- preseqR.zerotruncated.mle(hist.count);
+	size = opt$par[1];
+	mu = opt$par[2];
+	# the probability of being sampled in the initial experiment
+	p = 1 - dnbinom(0, size = size, mu = mu);
+	# L is the estimated total number of distinct items
+	L = distinct / p;
+	# the parameters of negative binomial in the experiment with size n
+	size.new = size;
+	mu.new = mu * as.double(n) / total.sample;
+	# the probability of being sampled under the new experiment
+	P = 1 - dnbinom(0, size = size.new, mu = mu.new, log);
+	# the expected number of distinct items under the new experiment
+	return(L * P);
+}
+
+preseqR.zerotruncated.complexity.curve <- function(hist, ss = 1e6, 
+												max.extrapolation = 1e10)
+{
+	if (mode(hist) == 'character') {
+		hist.count = read.hist(hist);
+	} else {
+		hist.count = hist;
+	}
+	# n is the number of experiments
+	n = as.integer(max.extrapolation / ss);
+	sample.size = as.double(ss) * (1: n);
+	dim(sample.size) = n;
+	return(apply(sample.size, 1, function(x) preseqR.zerotruncated.estimate(hist.count, x)));
+}
+
 print.continued.fraction <- function(X, filename)
 {
 	# use the variable name as the name of the continued fraction
@@ -490,6 +578,3 @@ preseqR.print2file <- function(X, prefix = '')
 		write("unknown input variables!", stderr());
 	}
 }
-			
-
-
