@@ -419,7 +419,11 @@ preseqR.zerotruncated.dnbinom <- function(x, size, mu, log = FALSE)
 	# the density of x in negative binomial
 	p = dnbinom(x, size = size, mu = mu, log = log);
 	# set zeros in x with zero probability
-	p[ which(x == 0) ] = 0;
+	if (log == FALSE) {
+		p[ which(x == 0) ] = 0;
+	} else {
+		p[ which(x == 0) ] = -Inf;
+	}
 	# the density of non-zero in negative binomial
 	q = 1 - dnbinom(0, size = size, mu = mu);
 	# normalize all non-zero values in negrative binomial to generate ZTNB
