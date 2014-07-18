@@ -488,7 +488,7 @@ preseqR.zerotruncated.estimate <- function(hist.count, n)
 	# L is the estimated total number of distinct items
 	L = distinct.sample / p;
 	# update parameters of negative binomial in the experiment with size n
-	mu = mu * as.double(n) / total.sample;
+	mu = mu * n / as.double(total.sample);
 	# the probability of being sampled under the new experiment
 	P = 1 - dnbinom(0, size = size, mu = mu);
 	# the expected number of distinct items under the new experiment
@@ -521,7 +521,7 @@ preseqR.zerotruncated.complexity.curve <- function(hist, ss = 1e6,
 	# estimate the item being sampled under new experiments with different size
 	t = sample.size / as.double(total.sample);
 	dim(t) = length(t)
-	P = apply(t, 1, function(x) 1 - preseqR.zerotruncated.dnbinom(0, size, t * x))
+	P = apply(t, 1, function(x) 1 - dnbinom(0, size, mu = x * mu))
 	yield.estimates = L * P;
 	yield.estimates = list(sample.size = sample.size, 
 						   yield.estimates = yield.estimates);
