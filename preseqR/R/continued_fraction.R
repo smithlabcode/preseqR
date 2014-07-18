@@ -453,18 +453,23 @@ preseqR.zerotruncated.mle <- function(hist, size.init = NULL,
 	} else {
 		hist.count = hist;
 	}
+	total.sample = (1:length(hist.count) %*% hist.count);
+	distinct.sample = sum(hist.count);
 	if (is.null(mu.init))
 	{
-		total.sample = (1:length(hist.count) %*% hist.count);
-		distinct.sample = sum(hist.count);
-		mu.init = total.sample / distinct.sample;
+		mu.init = as.double(total.sample) / distinct.sample;
 	}
-	if (is.null(size.init))
-		size.init = total.sample;
+	if (is.null(size.init)) {
+		# based on p = size / (size + mu), use estimated p and mu to estimate size
+		# p is estiamted by total number of distinct items dividing by total 
+		# sample size
+		p = as.double(distinct.sample) / total.sample;
+		size.init = mu.init * p / (1 - p);
+	}
 	f <- function(x) zerotruncated.minus.log.likelyhood(hist.count, 
 														size = x[1], mu = x[2]);
 	return(optim(c(size.init, mu.init), f, NULL, method = "L-BFGS-B", 
-				lower = c(1e-10, 1e-10), upper = c(1e10, 1e10)))
+				lower = c(1, 1), upper = c(1000, 1000)))
 }
 
 ## predict the number of distinct items using zero truncated negative binomial 
@@ -498,11 +503,26 @@ preseqR.zerotruncated.complexity.curve <- function(hist, ss = 1e6,
 	} else {
 		hist.count = hist;
 	}
+	total.sample = (1:length(hist.count) %*% hist.count);
+	distinct.sample = sum(hist.count);
 	# n is the number of experiments
 	n = as.integer(max.extrapolation / ss);
 	sample.size = as.double(ss) * (1: n);
 	dim(sample.size) = n;
-	yield.estimates = apply(sample.size, 1, function(x) preseqR.zerotruncated.estimate(hist.count, x));
+
+	# estimate parameters
+	opt <- preseqR.zerotruncated.mle(hist.count)
+	size = opt$par[1];
+	mu = opt$par[2];
+	# the probability of being sampled in the initial experiment
+	p = 1 - dnbinom(0, size = size, mu = mu);
+	# L is the estimated total number of distinct items
+	L = distinct.sample / p;
+	# estimate the item being sampled under new experiments with different size
+	t = sample.size / as.double(total.sample);
+	dim(t) = length(t)
+	P = apply(t, 1, function(x) 1 - preseqR.zerotruncated.dnbinom(0, size, t * x))
+	yield.estimates = L * P;
 	yield.estimates = list(sample.size = sample.size, 
 						   yield.estimates = yield.estimates);
 	return(yield.estimates)
