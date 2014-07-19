@@ -561,20 +561,24 @@ print.continued.fraction <- function(X, filename)
 	}
 }
 
-print.yield.estimates <- function(X, filename)
+print.yield.estimates <- function(X, filename, digit = 0)
 {
-	if (!is.null(names(X)))
-		write(toupper(paste(names(X), collapse = '\t')), filename);
+	if (!is.null(names(X))) {
+		s = formatC(toupper( names(X) ), width = 15, format = 's', flag = '-')
+		write(paste(s, collapse = ''), filename);
+	}
 	l = length(X)
-	if (l > 0)
-	{
+	if (l > 0) {
 		X = matrix(unlist(X), ncol = l, byrow = FALSE);
-		apply(X, 1, function(x) write(paste(x, collapse = '\t'), 
-								filename, append = TRUE));
+		f <- function(x) {
+			s = formatC(x, digit, width = 15, format = 'f', flag = '-')
+			write(paste(s, collapse = ''), filename, append = TRUE);
+		}
+		apply(X, 1, function(x) f(x));
 	}
 }
 
-preseqR.print2file <- function(X, prefix = '')
+preseqR.print2file <- function(X, prefix = '', digit = 0)
 {
 	# check if X is a continued fraction
 	if (class(X) == "CF") {
@@ -588,7 +592,7 @@ preseqR.print2file <- function(X, prefix = '')
 			filename.CF = paste(prefix, "_continued_fraction.txt", sep = '');
 			filename.YE = paste(prefix, "_yield.estimates.txt", sep = '');
 			print.continued.fraction(X$continued.fraction, filename.CF);
-			print.yield.estimates(X$yield.estimates, filename.YE);
+			print.yield.estimates(X$yield.estimates, filename.YE, digit);
 		  # check if X is the result from preseqR.bootstrap.complexity.curve
 		} else if( length(names(X)) == 3 && 
 					all( names(X) == c("yield.estimates", "LOWER_0.95CI", "UPPER_0.95CI") ) )
@@ -598,7 +602,7 @@ preseqR.print2file <- function(X, prefix = '')
 					 LOWER_0.95CI = X$LOWER_0.95CI,
 					 UPPER_0.95CI = X$UPPER_0.95CI)
 			filename.YE = paste(prefix, "_yield.estimates.txt", sep = '');
-			print.yield.estimates(X, filename.YE);
+			print.yield.estimates(X, filename.YE, digit);
 		}
 	} else
 	{
