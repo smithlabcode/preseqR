@@ -9,6 +9,11 @@ MULTINOMIAL.SAMPLE.TIMES = 19
 MINOR.correction = 1e-1
 BOOTSTRAP.factor = 0.1
 
+## Initial settings of two parameters size and mu in a negative binomial 
+## distribution for a numeric optimal searching function optim in R
+SIZE.INIT = 1
+MU.INIT = 0.5
+
 ## read a histogram file; return the histogram count vector
 ## count vector represent frequencies of indexes. For those indexes not showing
 ## in the histogram file, use zeros to represent their values
@@ -444,9 +449,10 @@ zerotruncated.minus.log.likelyhood <- function(x, size, mu)
 	return( x %*% prob)
 }
 
+
 ## MLE
-preseqR.zerotruncated.mle <- function(hist, size.init = NULL, 
-									  mu.init = NULL)
+preseqR.zerotruncated.mle <- function(hist, size = SIZE.INIT, 
+									  mu = MU.INIT)
 {
 	if (mode(hist) == 'character') {
 		hist.count = read.hist(hist);
@@ -455,20 +461,9 @@ preseqR.zerotruncated.mle <- function(hist, size.init = NULL,
 	}
 	total.sample = (1:length(hist.count) %*% hist.count);
 	distinct.sample = sum(hist.count);
-	if (is.null(mu.init))
-	{
-		mu.init = as.double(total.sample) / distinct.sample;
-	}
-	if (is.null(size.init)) {
-		# based on p = size / (size + mu), use estimated p and mu to estimate size
-		# p is estiamted by total number of distinct items dividing by total 
-		# sample size
-		p = as.double(distinct.sample) / total.sample;
-		size.init = mu.init * p / (1 - p);
-	}
 	f <- function(x) zerotruncated.minus.log.likelyhood(hist.count, 
 														size = x[1], mu = x[2]);
-	return(optim(c(size.init, mu.init), f, NULL, method = "L-BFGS-B", 
+	return(optim(c(size, mu), f, NULL, method = "L-BFGS-B", 
 				lower = c(0.0001, 0.0001), upper = c(10000, 10000)))
 }
 
