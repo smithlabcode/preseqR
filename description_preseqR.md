@@ -231,14 +231,51 @@ written through R libraries.
 	   that times of successful estimation reach a number defined by bootstrap.times.
 	   The other is that total resampling times beyond a number, defined as 
 	   ```bootstrap.times / BOOTSTRAP.factor```. 
-  11.  preseqR.printout(file.prefix = NULL, ...): a function to write down 
-	   results from other functions to a file. `file.prefix` defined the prefix 
+  11.  preseqR.print2file(X, prefix = '', digit = 0): a function to write down 
+	   results from other functions to a file. `prefix` defined the prefix 
 	   name of created files. Results include returning results from 
 	   ```preseqR.interpolation(), preseqR.extrapolate.distinct(), 
 	      preseqR.continued.fraction.estimate(), 
 		  preseqR.bootstrap.complexity.curve()```. It can also print out a 
 	   continued fraction.
+  12.  zerotruncated.dnbinom(x, size, mu, log = FALSE): a density function of
+       zero truncated negative binomial. x is a vector of quantiles. size is for
+       number of successful trials, or dispersion parameter. Must be strictly 
+	   positive, need not be integer. mu is the mean value of the negative 
+	   binomial. log is a logic value. if TRUE, probabilities p are given as 
+	   log(p). Both size and mu are parameters for the negative binomial 
+	   distribution. See [negative binomial]
+	   (http://stat.ethz.ch/R-manual/R-devel/library/base/html/formatc.html) for
+	   details.
+  13.  zerotruncated.minus.log.likelyhood <- function(x, size, mu): a function
+	   to calculate the minus loglikelyhood of a zero truncated negative binomial.
+	   x is the count vector of a histogram. size and mu are parameters of 
+	   negative binomial.
+  14.  preseqR.zerotruncated.mle <- function(hist, size.init = NULL, mu.init = NULL):
+	   a function to fit a histogram with a negative binomial distribution. 
+	   Conditional maximum likelyhood is used to estiamte parameters size and mu.
+	   For a given read, assumes that the read count follows a negative binomial
+	   distribution. Then given a histogram, the observed read count follows a
+	   zero truncated negative binomial. The R function optim is used to find 
+	   the optimal solution. size.init and mu.init set the initial values of 
+	   size and mu.
+  15.  preseqR.zerotruncated.estimate((hist.count, n): a function to predict the
+	   number of distinct items if the size of the experiment is n. First, it
+	   fits a negative binomial distribution (size, mu) given the count vector
+	   of a histogram. Then for the experiment of size n, the counts of an item 
+	   follow a negative binomial distribution with parameters 
+	   (size, mu * n / the size of the inital experiment). The total number of
+	   distinct items are estimated by 
 
+	   L = distinct reads / the probability an item being sequenced. Thus the
+	   number of distinct items in new experiment is estimated by its 
+	   expectation L * (the probability an item being sequenced).
+
+  16.  preseqR.zerotruncated.complexity.curve(hist, ss = 1e6, max.extrapolation = 1e10):
+       a function to estimate the number of distinct items given various sample
+	   sizes of experiments. It returns approximated number of distinct items 
+	   for each sample size. A negative binomial distribution is used to model
+	   the read count and the distinct items are estimated by its expectation. 
 #### C-functions
 
   1.  void c_calculate_continued_fraction( double *cf_coeffs, int *cf_coeffs_l,
