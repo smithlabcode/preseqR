@@ -23,6 +23,7 @@ preseqR.print2file(X, prefix = '', digit = 0)
   }
   \item{digit}{
 	  the desired number of digits after the decimal point.
+  }
 }
 
 \details{
