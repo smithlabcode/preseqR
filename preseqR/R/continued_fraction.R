@@ -469,7 +469,7 @@ preseqR.zerotruncated.mle <- function(hist, size.init = NULL,
 	f <- function(x) zerotruncated.minus.log.likelyhood(hist.count, 
 														size = x[1], mu = x[2]);
 	return(optim(c(size.init, mu.init), f, NULL, method = "L-BFGS-B", 
-				lower = c(1, 1), upper = c(1000, 1000)))
+				lower = c(0.0001, 0.0001), upper = c(10000, 10000)))
 }
 
 ## predict the number of distinct items using zero truncated negative binomial 
