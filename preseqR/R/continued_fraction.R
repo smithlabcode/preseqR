@@ -414,7 +414,7 @@ preseqR.bootstrap.complexity.curve <- function(hist, bootstrap.times = 100, di =
 
 ## density function of truncated zero negative binomial distribution
 ## size and mu are two parameters for negative binomial
-preseqR.zerotruncated.dnbinom <- function(x, size, mu, log = FALSE)
+zerotruncated.dnbinom <- function(x, size, mu, log = FALSE)
 {
 	# the density of x in negative binomial
 	p = dnbinom(x, size = size, mu = mu, log = log);
@@ -437,7 +437,7 @@ preseqR.zerotruncated.dnbinom <- function(x, size, mu, log = FALSE)
 ## negative loglikelyhood 
 zerotruncated.minus.log.likelyhood <- function(x, size, mu)
 {
-	prob = preseqR.zerotruncated.dnbinom(1:length(x), size, mu, log = TRUE);
+	prob = zerotruncated.dnbinom(1:length(x), size, mu, log = TRUE);
 	# minus log likelyhood
 	prob = -prob;
 	# negative loglikelyhood
