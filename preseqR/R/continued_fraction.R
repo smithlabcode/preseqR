@@ -470,8 +470,14 @@ preseqR.zerotruncated.mle <- function(hist, size = SIZE.INIT,
 ## predict the number of distinct items using zero truncated negative binomial 
 ## distribution
 ## n is the size of experiment
-preseqR.zerotruncated.estimate <- function(hist.count, n)
+preseqR.zerotruncated.estimate <- function(hist, n)
 {
+	if (mode(hist) == 'character') {
+		hist.count = read.hist(hist);
+    } else {
+		hist.count = hist;
+	}   
+
 	total.sample = (1:length(hist.count) %*% hist.count);
 	distinct.sample = sum(hist.count);
 
