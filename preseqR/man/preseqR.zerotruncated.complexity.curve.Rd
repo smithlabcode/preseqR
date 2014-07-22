@@ -39,7 +39,7 @@ preseqR.zerotruncated.complexity.curve(hist, ss = 1e6, max.extrapolation = 1e10)
 }
 }
 \details{
-	See \code{preseqR.zerotruncated.estimate}
+	See \code{\link{preseqR.zerotruncated.estimate}} for the estimation method.
 }
 \value{
   \item{sample.size}{
