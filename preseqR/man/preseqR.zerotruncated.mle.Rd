@@ -80,7 +80,7 @@ data(SRR1041830_5M_hist)
 hist.count = vector(mode="numeric", length=max(SRR1041830_5M_hist$frequencies))
 hist.count[SRR1041830_5M_hist$frequencies] = SRR1041830_5M_hist$distinct.reads
 ## print the parameters of a fitting negative binomial distribution
-zerotruncated.mle(hist.count)
+preseqR.zerotruncated.mle(hist.count)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
