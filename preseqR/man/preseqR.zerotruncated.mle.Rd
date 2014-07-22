@@ -23,13 +23,13 @@ preseqR.zerotruncated.mle(hist, size = SIZE.INIT, mu = MU.INIT)
 	  the vector represents that x distinct items appear in the experiment, each
 	  of which occurs i times.
 }
-  \item{size.init}{
+  \item{size}{
 	  a positive real value to set the inital value of number of successful trials, or 
 	  dispersion parameter (the shape parameter of the gamma mixing distribution).
 	  Must be strictly positive, need not be integer. The default value 
 	  SIZE.INIT = 1
   }
-  \item{mu.init}{
+  \item{mu}{
 	  a positive real value to set the initial mean value of a negative binomial
 	  distribution. The default value MU.INIT = 0.5
   }
