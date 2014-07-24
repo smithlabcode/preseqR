@@ -1,0 +1,59 @@
+## x could be a vector
+test.logdztnb <- function(x, size, mu)
+{
+  ## check size and mu bigger than 0
+  if (size > 0 && mu > 0)
+  {
+    ## x > 0 and integer checking
+    ## for those x < 1 and x is not an integer, set them to zero first
+    x[which(x < 1 | x != floor(x))] = 0
+    # calculate the probability
+    # y1: log probability of variable equals to zero
+    y1 = -size * log(1 + mu / as.double(size))
+    # negative binomial coeffiencies
+    y2 = lgamma(x + size) - lgamma(x + 1) - lgamma(size)
+    # the third terms in your formula see Nature paper
+    y3 = x * (log(as.double(mu) / size) - log(1 + as.double(mu) / size))
+    # probability of non zero 
+    nonzero.prob = 1 - exp(y1)
+    # zero truncated negative binomial probability
+    y = y1 + y2 + y3 - log(nonzero.prob)
+    # set those x < 1 and x non-integer with probability 0
+    y[which(x == 0)] = -Inf
+    return(y)
+}
+}
+
+## negative loglikelyhood 
+## x is a count vector of a histogram
+test.minus.logztnblikelyhood <- function(x, size, mu) 
+{
+    prob = test.logdztnb(1:length(x), size, mu)
+    # minus loglikelyhood
+    prob = -prob;
+    # negative loglikelyhood
+    return( x %*% prob)
+}
+
+
+
+
+## MLE
+test.zerotruncated.mle <- function(hist, size = SIZE.INIT,
+                                      mu = MU.INIT)
+{
+    if (mode(hist) == 'character') {
+        hist.count = read.hist(hist);
+    } else {
+        hist.count = hist;
+    }
+    total.sample = (1:length(hist.count) %*% hist.count);
+    distinct.sample = sum(hist.count);
+    f <- function(x) test.minus.logztnblikelyhood(hist.count,
+                                                  size = x[1], mu = x[2]);
+    # build-in function to find general minimum
+    return(optim(c(size, mu), f, NULL, method = "L-BFGS-B",
+                lower = c(0.0001, 0.0001), upper = c(10000, 10000)))
+}
+
+
