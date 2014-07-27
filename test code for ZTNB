@@ -98,51 +98,52 @@ test.nbinom.mle <- function(hist, size = SIZE.INIT,
 
 ## EM
 ## unobserved item count should not be included in hist
-#test.nbinom.em <- function(hist, size = SIZE.INIT, mu = MU.INIT)
-#{
-#    if (mode(hist) == 'character') {
-#        hist.count = read.hist(hist);
-#    } else {
-#        hist.count = hist;
-#    }
-#	# setting the number of unobserved items as 0
-#	zero.prob = exp(dnbinom(0, size = SIZE.INIT, mu = MU.INIT, log = TRUE))
-#	# estimate the total number of distinct items
-#	L = observed.items / (1 - zero.prob)
-#	# expected the number of unobservations
-#	zero.items = L * zero.prob
-#	# setting the inital histogram  
-#	hist.count = c(zero.items, hist.count);
-#	# make sure each item in histogram is an integer
-#	hist.count = as.integer(hist.count)
-#	loglikelyhood = -1;
-#	res <- test.nbinom.mle(hist.count, SIZE.INIT, MU.INIT);
-#	iter = 1
-#	print(sprintf("item %d value %f", iter, res$value))
-#	while (abs(res$value - loglikelyhood) > tolerance)
-#	{
-#		# update minus loglikelyhood
-#		loglikelyhood = res$value;
-#		# estimated the total number of distinct items and
-#		# expected number of unabserved items
-#		# the total number of observed items
-#		observed.items = sum(hist.count[-1])
-#		# the probility an item unobserved
-#		zero.prob = exp(dnbinom(0, size = res$par[1], mu = res$par[2], log = TRUE))
-#		# estimate the total number of distinct items
-#		L = observed.items / (1 - zero.prob)
-#		# expected the number of unobservations
-#		zero.items = L * zero.prob
-#		# update histogram
-#		hist.count[1] = zero.items
-#		hist.count = as.integer(hist.count)
-#		# re-estimate the parameters
-#		res <- test.nbinom.mle(hist.count, size = res$par[1], mu = res$par[2])
-#		iter <- iter + 1
-#		print(sprintf("item %d value %f", iter, res$value))
-#	}
-#	return(res)
-#}
+test.nbinom.em <- function(hist, size = SIZE.INIT, mu = MU.INIT)
+{
+    if (mode(hist) == 'character') {
+        hist.count = read.hist(hist);
+    } else {
+        hist.count = hist;
+    }
+    # setting the number of unobserved items as 0
+    zero.prob = exp(dnbinom(0, size = size, mu = mu, log = TRUE))
+    # estimate the total number of distinct items
+    observed.items = sum(hist.count)
+    L = observed.items / (1 - zero.prob)
+    # expected the number of unobservations
+    zero.items = L * zero.prob
+    # setting the inital histogram  
+    hist.count = c(zero.items, hist.count);
+    # make sure each item in histogram is an integer
+    hist.count = as.integer(hist.count)
+    loglikelyhood = -1;
+    res <- test.nbinom.mle(hist.count, size, mu);
+    iter = 1
+    print(sprintf("item %d value %f", iter, res$value))
+    while (abs(res$value - loglikelyhood) > tolerance)
+    {
+        # update minus loglikelyhood
+        loglikelyhood = res$value;
+        # estimated the total number of distinct items and
+        # expected number of unabserved items
+        # the total number of observed items
+        observed.items = sum(hist.count[-1])
+        # the probility an item unobserved
+        zero.prob = exp(dnbinom(0, size = res$par[1], mu = res$par[2], log = TRUE))
+        # estimate the total number of distinct items
+        L = observed.items / (1 - zero.prob)
+        # expected the number of unobservations
+        zero.items = L * zero.prob
+        # update histogram
+        hist.count[1] = zero.items
+        hist.count = as.integer(hist.count)
+        # re-estimate the parameters
+        res <- test.nbinom.mle(hist.count, size = res$par[1], mu = res$par[2])
+        iter <- iter + 1
+        print(sprintf("item %d value %f", iter, res$value))
+    }
+    return(res)
+}
 
 ## EM
 ## unobserved item count should not be included in hist
