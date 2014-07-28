@@ -13,6 +13,9 @@ BOOTSTRAP.factor = 0.1
 ## distribution for a numeric optimal searching function optim in R
 SIZE.INIT = 1
 MU.INIT = 0.5
+## termination conditions for EM algorithm
+TOLERANCE = 1e-10
+ITER.TOLERANCE = 1e10
 
 ## read a histogram file; return the histogram count vector
 ## count vector represent frequencies of indexes. For those indexes not showing
@@ -528,6 +531,85 @@ preseqR.zerotruncated.complexity.curve <- function(hist, ss = 1e6,
 						   yield.estimates = yield.estimates);
 	return(yield.estimates)
 }
+
+
+## calculate the negative binomial loglikelyhood
+## hist.count is a count vector of a histogram of observed items
+## zero.items is number of items unobserved
+## size and mu are parameters in a negative binomial distribution
+nb.loglikelyhood <- function(hist.count, zero.items, size, mu)
+{
+	# likelyhood of nonzero terms
+	log.prob = dnbinom(1:length(hist.count), size = size, mu = mu, log = TRUE);
+	loglikelyhood = log.prob %*% hist.count
+	# add items with zero count
+	log.zero.prob = dnbinom(0, size = size, mu = mu, log = TRUE)
+	loglikelyhood <- loglikelyhood + zero.items * log.zero.prob
+	return(loglikelyhood)
+}
+
+
+## EM algorithm to fit a 
+## hist only includes information for observation
+## the number of unobserved items is missing data
+preseqR.nbinom.em <- function(hist, size = SIZE.INIT, mu = MU.INIT)
+{
+	if (mode(hist) == 'character') {
+		hist.count = read.hist(hist);
+	} else {
+		hist.count = hist;
+	}
+	# setting the number of unobserved items as 0
+	zero.prob = exp(dnbinom(0, size = size, mu = mu, log = TRUE))
+	# estimate the total number of distinct items
+	observed.items = sum(hist.count);
+	L = observed.items / (1 - zero.prob);
+	# expected the number of unobservations
+	zero.items = L * zero.prob
+	# convert zero.items into an integer
+	zero.items = floor(zero.items)
+	# estimated mean 
+	m = (1:length(hist.count) %*% hist.count) / L
+	# estimated variance
+	v = (((1:length(hist.count) - m)^2) %*% hist.count + m^2 * zero.items) / (L - 1)
+	# estimate size and mu based on first and second moments
+	if (v > m) {
+		size = m^2 / (v - m)
+		mu = m
+	}
+	# make sure each item in histogram is an integer
+	hist.count = floor(hist.count)
+	loglikelyhood = Inf;
+	f <- function(x) -nb.loglikelyhood(hist.count, zero.items, size = x[1], mu = x[2])
+	res <- optim(c(size, mu), f, NULL, method = "L-BFGS-B", 
+			lower = c(0.0001, 0.0001), upper = c(10000, 10000))
+	# count the times of iteration
+	iter = as.double(1)
+	# make sure EM algorithm could terminate
+	while ((loglikelyhood - res$value) > TOLERANCE && iter < ITER.TOLERANCE)
+	{
+		res.previous = res;
+		# update minus loglikelyhood
+		loglikelyhood = res$value;
+		# update parameters
+		size = res$par[1];
+		mu = res$par[2];
+		# update the probility an item unobserved
+		zero.prob = exp(dnbinom(0, size = size, mu = mu, log = TRUE))
+		# estimate the total number of distinct items
+		L = observed.items / (1 - zero.prob)
+		# update expected number of unobserved items
+		zero.items = L * zero.prob
+		# convert zero.items into an integer
+		zero.items = floor(zero.items)
+		# M step: estimate the parameters size and mu
+		res <- optim(c(size, mu), f, NULL, method = "L-BFGS-B", 
+				lower = c(0.0001, 0.0001), upper = c(10000, 10000))
+		iter <- iter + 1
+	}
+	return(res.previous);
+}
+
 
 print.continued.fraction <- function(X, filename)
 {
