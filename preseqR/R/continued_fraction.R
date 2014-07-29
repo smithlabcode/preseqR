@@ -12,7 +12,7 @@ BOOTSTRAP.factor = 0.1
 ## Initial settings of two parameters size and mu in a negative binomial 
 ## distribution for a numeric optimal searching function optim in R
 SIZE.INIT = 1
-MU.INIT = 0.5
+MU.INIT = 1
 ## termination conditions for EM algorithm
 TOLERANCE = 1e-10
 ITER.TOLERANCE = 1e10
@@ -575,25 +575,24 @@ preseqR.nbinom.em <- function(hist, size = SIZE.INIT, mu = MU.INIT)
 	# estimate size and mu based on first and second moments
 	if (v > m) {
 		size = m^2 / (v - m)
-		mu = m
 	}
 	# make sure each item in histogram is an integer
 	hist.count = floor(hist.count)
 	loglikelyhood = Inf;
-	f <- function(x) -nb.loglikelyhood(hist.count, zero.items, size = x[1], mu = x[2])
-	res <- optim(c(size, mu), f, NULL, method = "L-BFGS-B", 
-			lower = c(0.0001, 0.0001), upper = c(10000, 10000))
+	f <- function(x) -nb.loglikelyhood(hist.count, zero.items, size = x, mu = m)
+	res <- optim(size, f, NULL, method = "L-BFGS-B", 
+			lower = 0.0001, upper = 10000)
 	# count the times of iteration
 	iter = as.double(1)
 	# make sure EM algorithm could terminate
-	while ((loglikelyhood - res$value) > TOLERANCE && iter < ITER.TOLERANCE)
+	while (loglikelyhood - res$value > TOLERANCE && iter < ITER.TOLERANCE)
 	{
 		res.previous = res;
 		# update minus loglikelyhood
 		loglikelyhood = res$value;
 		# update parameters
-		size = res$par[1];
-		mu = res$par[2];
+		size = res$par;
+		mu = m;
 		# update the probility an item unobserved
 		zero.prob = exp(dnbinom(0, size = size, mu = mu, log = TRUE))
 		# estimate the total number of distinct items
@@ -602,11 +601,14 @@ preseqR.nbinom.em <- function(hist, size = SIZE.INIT, mu = MU.INIT)
 		zero.items = L * zero.prob
 		# convert zero.items into an integer
 		zero.items = floor(zero.items)
+		# estimated mean 
+		m = (1:length(hist.count) %*% hist.count) / L
 		# M step: estimate the parameters size and mu
-		res <- optim(c(size, mu), f, NULL, method = "L-BFGS-B", 
-				lower = c(0.0001, 0.0001), upper = c(10000, 10000))
+		res <- optim(size, f, NULL, method = "L-BFGS-B", 
+				lower = 0.0001, upper = 10000)
 		iter <- iter + 1
 	}
+	res.previous$par = c(size, mu);
 	return(res.previous);
 }
 
