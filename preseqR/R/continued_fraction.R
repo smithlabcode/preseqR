@@ -578,18 +578,20 @@ preseqR.nbinom.em <- function(hist, size = SIZE.INIT, mu = MU.INIT)
 	}
 	# make sure each item in histogram is an integer
 	hist.count = floor(hist.count)
-	loglikelyhood = Inf;
+	loglikelyhood.pre = Inf;
 	f <- function(x) -nb.loglikelyhood(hist.count, zero.items, size = x, mu = m)
 	res <- optim(size, f, NULL, method = "L-BFGS-B", 
 			lower = 0.0001, upper = 10000)
 	# count the times of iteration
 	iter = as.double(1)
+	# zerotruncated loglikelyhood 
+	loglikelyhood = zerotruncated.minus.log.likelyhood(hist.count, res$par, m)
 	# make sure EM algorithm could terminate
-	while (loglikelyhood - res$value > TOLERANCE && iter < ITER.TOLERANCE)
+	while ((loglikelyhood.pre - loglikelyhood) / observed.items > TOLERANCE 
+			&& iter < ITER.TOLERANCE)
 	{
-		res.previous = res;
 		# update minus loglikelyhood
-		loglikelyhood = res$value;
+		loglikelyhood.pre = loglikelyhood
 		# update parameters
 		size = res$par;
 		mu = m;
@@ -607,9 +609,10 @@ preseqR.nbinom.em <- function(hist, size = SIZE.INIT, mu = MU.INIT)
 		res <- optim(size, f, NULL, method = "L-BFGS-B", 
 				lower = 0.0001, upper = 10000)
 		iter <- iter + 1
+		# zerotruncated loglikelyhood 
+		loglikelyhood = zerotruncated.minus.log.likelyhood(hist.count, res$par, m)
 	}
-	res.previous$par = c(size, mu);
-	return(res.previous);
+	return(list(size = size, mu = m, loglik = -loglikelyhood.pre))
 }
 
 
