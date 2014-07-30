@@ -9,14 +9,6 @@ MULTINOMIAL.SAMPLE.TIMES = 19
 MINOR.correction = 1e-1
 BOOTSTRAP.factor = 0.1
 
-## Initial settings of two parameters size and mu in a negative binomial 
-## distribution for a numeric optimal searching function optim in R
-SIZE.INIT = 1
-MU.INIT = 1
-## termination conditions for EM algorithm
-TOLERANCE = 1e-10
-ITER.TOLERANCE = 1e10
-
 ## read a histogram file; return the histogram count vector
 ## count vector represent frequencies of indexes. For those indexes not showing
 ## in the histogram file, use zeros to represent their values
