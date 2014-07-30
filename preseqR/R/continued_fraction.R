@@ -572,22 +572,35 @@ preseqR.nbinom.em <- function(hist, size = SIZE.INIT, mu = MU.INIT)
 	m = (1:length(hist.count) %*% hist.count) / L
 	# estimated variance
 	v = (((1:length(hist.count) - m)^2) %*% hist.count + m^2 * zero.items) / (L - 1)
-	# estimate size and mu based on first and second moments
-	if (v > m) {
-		size = m^2 / (v - m)
-	}
 	# make sure each item in histogram is an integer
 	hist.count = floor(hist.count)
 	loglikelyhood.pre = Inf;
-	f <- function(x) -nb.loglikelyhood(hist.count, zero.items, size = x, mu = m)
-	res <- optim(size, f, NULL, method = "L-BFGS-B", 
-			lower = 0.0001, upper = 10000)
+	f <- function(x) -nb.loglikelyhood(hist.count, zero.items, size = x, mu = m) / L
+	# derivative of f
+	gr <- function(x) 
+	{
+		freq = 1:length(hist.count)
+		first.term = (digamma(x) * zero.items + (digamma(freq + size) %*% hist.count)) / L
+		second.term = digamma(x)
+		third.term = log(x) - log(x + m)
+		result = first.term - second.term + third.term
+		# f is negative loglikelyhood
+		return(-result)
+	}
+	# estimate size and mu based on first and second moments
+	if (v > m) {
+		res <- optim(m^2 / (v - m), f, gr, method = "L-BFGS-B", 
+					 lower = 0.0001, upper = 10000)
+	} else {
+		res <- optim(size, f, gr, method = "L-BFGS-B", 
+					 lower = 0.0001, upper = 10000)
+	}
 	# count the times of iteration
 	iter = as.double(1)
 	# zerotruncated loglikelyhood 
 	loglikelyhood = zerotruncated.minus.log.likelyhood(hist.count, res$par, m)
 	# make sure EM algorithm could terminate
-	while ((loglikelyhood.pre - loglikelyhood) / observed.items > TOLERANCE 
+	while (abs(loglikelyhood.pre - loglikelyhood) / observed.items > TOLERANCE 
 			&& iter < ITER.TOLERANCE)
 	{
 		# update minus loglikelyhood
@@ -605,9 +618,16 @@ preseqR.nbinom.em <- function(hist, size = SIZE.INIT, mu = MU.INIT)
 		zero.items = floor(zero.items)
 		# estimated mean 
 		m = (1:length(hist.count) %*% hist.count) / L
+		# estimated variance
+		v = (((1:length(hist.count) - m)^2) %*% hist.count + m^2 * zero.items) / (L - 1)
 		# M step: estimate the parameters size and mu
-		res <- optim(size, f, NULL, method = "L-BFGS-B", 
-				lower = 0.0001, upper = 10000)
+		if (v > m) {
+			res <- optim(m^2 / (v - m), f, gr, method = "L-BFGS-B", 
+						 lower = 0.0001, upper = 10000)
+		} else {
+			res <- optim(size, f, gr, method = "L-BFGS-B", 
+						 lower = 0.0001, upper = 10000)
+		}
 		iter <- iter + 1
 		# zerotruncated loglikelyhood 
 		loglikelyhood = zerotruncated.minus.log.likelyhood(hist.count, res$par, m)
