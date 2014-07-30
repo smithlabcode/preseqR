@@ -1,3 +1,11 @@
+## Initial settings of two parameters size and mu in a negative binomial 
+## distribution for a numeric optimal searching function optim in R
+SIZE.INIT = 1
+MU.INIT = 1
+## termination conditions for EM algorithm
+TOLERANCE = 1e-10
+ITER.TOLERANCE = 1e10
+
 ## density function of truncated zero negative binomial distribution
 ## size and mu are two parameters for negative binomial
 zerotruncated.dnbinom <- function(x, size, mu, log = FALSE)
