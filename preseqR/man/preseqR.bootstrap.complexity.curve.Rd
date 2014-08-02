@@ -12,7 +12,7 @@
 }
 \usage{
 preseqR.bootstrap.complexity.curve(hist, bootstrap.times = 100, di = 0, mt = 100, 
-ss = 1e+6, mv = 1e+10, max.extrapolation = 1e+10, step.adjust = TRUE)
+ss = 1e+6, max.extrapolation = 1e+10, step.adjust = TRUE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -40,12 +40,6 @@ ss = 1e+6, mv = 1e+10, max.extrapolation = 1e+10, step.adjust = TRUE)
   \item{ss}{
 	  A positive real number represents the step size. It defines the size of  
 	  an additional experiment.
-}
-  \item{mv}{
-	  A positive real number represents the maximum total size of an experiment
-	  that the constructed continued fraction can apply. The total size of an 
-	  experiment is calculated by the size of an initial experiment plus the 
-	  size of additional experiment.
 }
   \item{max.extrapolation}{
 	  A positive real number represents the maximum total size of an experiment
