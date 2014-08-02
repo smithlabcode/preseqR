@@ -201,11 +201,10 @@ goodtoulmin.2x.extrap <- function(hist.count)
 }
 
 ## estimate a continued fraction given a the count vector of the histogram
-## di = diagonal, mt = max_terms, ss = step_size, 
-## mv = max_value for training
+## di = diagonal, mt = max_terms, 
 ## step.adjust is an indicator for whether or not to adjust step.size
 preseqR.continued.fraction.estimate <- function(hist, di = 0, mt = 100,
-	   	ss = 1e6, mv = 1e10,  max.extrapolation = 1e10, step.adjust=TRUE)
+	   	ss = 1e6,  max.extrapolation = 1e10, step.adjust=TRUE)
 {
 	# input could be either histogram file or count vector of the histogram
 	if (mode(hist) == "character") {
@@ -281,7 +280,6 @@ preseqR.continued.fraction.estimate <- function(hist, di = 0, mt = 100,
 	# construct a continued fraction with minimum degree
 	out <- .C('c_continued_fraction_estimate', as.double(hist.count), 
 			  as.integer(length(hist.count)), as.integer(di), as.integer(mt), 
-			  as.double(step.size), as.double(mv), 
 			  ps.coeffs = as.double(vector(mode = 'numeric', length=MAXLENGTH)),
 			  ps.coeffs.l = as.integer(0), 
 			  cf.coeffs = as.double(vector(mode = 'numeric', length=MAXLENGTH)),
@@ -326,7 +324,7 @@ preseqR.continued.fraction.estimate <- function(hist, di = 0, mt = 100,
 
 ## generate complexity curve through bootstrapping the histogram
 preseqR.bootstrap.complexity.curve <- function(hist, bootstrap.times = 100, di = 0, 
-									   mt = 100, ss = 1e6, mv = 1e10,
+									   mt = 100, ss = 1e6, 
 									   max.extrapolation = 1e10, step.adjust=TRUE)
 {
 	if (mode(hist) == 'character') {
@@ -371,7 +369,7 @@ preseqR.bootstrap.complexity.curve <- function(hist, bootstrap.times = 100, di =
 		re.hist.count[ nonzero.index, 1:MULTINOMIAL.SAMPLE.TIMES ] = resample;
 		# make estimation for each histogram
 		out = apply(re.hist.count, 2, function(x) preseqR.continued.fraction.estimate(
-					  x, di, mt, step.size, mv, max.extrapolation, step.adjust=FALSE))
+					  x, di, mt, step.size, max.extrapolation, step.adjust=FALSE))
 		# eliminate NULL items in results
 		out[sapply(out, is.null)] <- NULL
 		# extract yields estimation from each estimation result. 

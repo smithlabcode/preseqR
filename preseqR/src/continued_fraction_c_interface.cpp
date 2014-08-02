@@ -75,8 +75,6 @@ extern "C" {
         int *hist_count_l, // the length of the count vector
         int *di, // the diagonal to work with for estimates
         int *mt, // the maximum number of terms to try for a CF
-        double *ss, // the step size to use when training
-        double *mv, // the largest value to check when training
 		// all variables below are used to store the constructed CF
         double *ps_coeffs, 
         int *ps_coeffs_l, 
@@ -86,7 +84,7 @@ extern "C" {
         int *diagonal_idx, 
         int *degree, 
         int *is_valid) { // an indicator to show the validness of CF
-    ContinuedFractionApproximation CFA(*di, *mt, *ss, *mv);
+    ContinuedFractionApproximation CFA(*di, *mt);
     const vector<double> counts_hist(hist_count, hist_count + *hist_count_l);
     ContinuedFraction CF(CFA.optimal_cont_frac_distinct(counts_hist));
 
