@@ -28,7 +28,7 @@ zerotruncated.dnbinom <- function(x, size, mu, log = FALSE)
 	}
 }
 
-## negative loglikelyhood 
+## zerotruncated negative loglikelyhood 
 zerotruncated.minus.log.likelyhood <- function(x, size, mu)
 {
 	prob = zerotruncated.dnbinom(1:length(x), size, mu, log = TRUE);
@@ -38,31 +38,13 @@ zerotruncated.minus.log.likelyhood <- function(x, size, mu)
 	return( x %*% prob)
 }
 
-
-## MLE
-preseqR.zerotruncated.mle <- function(hist, size = SIZE.INIT, 
-									  mu = MU.INIT)
-{
-	if (mode(hist) == 'character') {
-		hist.count = read.hist(hist);
-	} else {
-		hist.count = hist;
-	}
-	total.sample = (1:length(hist.count) %*% hist.count);
-	distinct.sample = sum(hist.count);
-	f <- function(x) zerotruncated.minus.log.likelyhood(hist.count, 
-														size = x[1], mu = x[2]);
-	return(optim(c(size, mu), f, NULL, method = "L-BFGS-B", 
-				lower = c(0.0001, 0.0001), upper = c(10000, 10000)))
-}
-
-## predict the number of distinct items using zero truncated negative binomial 
-## distribution
+## predict the number of distinct items using EM algorithm 
+## if the histogram file has a header, set header = TRUE
 ## n is the size of experiment
-preseqR.zerotruncated.estimate <- function(hist, n)
+preseqR.ztnb.estimate <- function(hist, header = FALSE, n)
 {
 	if (mode(hist) == 'character') {
-		hist.count = read.hist(hist);
+		hist.count = read.hist(hist, header);
     } else {
 		hist.count = hist;
 	}   
@@ -70,9 +52,9 @@ preseqR.zerotruncated.estimate <- function(hist, n)
 	total.sample = (1:length(hist.count) %*% hist.count);
 	distinct.sample = sum(hist.count);
 
-	opt <- preseqR.zerotruncated.mle(hist.count);
-	size = opt$par[1];
-	mu = opt$par[2];
+	opt <- preseqR.nbinom.em(hist.count);
+	size = opt$size;
+	mu = opt$mu;
 	# the probability of being sampled in the initial experiment
 	p = 1 - dnbinom(0, size = size, mu = mu);
 	# L is the estimated total number of distinct items
@@ -85,25 +67,38 @@ preseqR.zerotruncated.estimate <- function(hist, n)
 	return(L * P);
 }
 
-preseqR.zerotruncated.complexity.curve <- function(hist, ss = 1e6, 
-												max.extrapolation = 1e10)
+## predict a complexity curve using EM algorithm
+## ss is the step.size
+## max.extrapoltion is the maximum value for extrapolation
+preseqR.ztnb.complexity.curve <- function(hist, header = FALSE, 
+			ss = NULL, max.extrapolation = NULL)
 {
 	if (mode(hist) == 'character') {
-		hist.count = read.hist(hist);
+		hist.count = read.hist(hist, header);
 	} else {
 		hist.count = hist;
 	}
 	total.sample = (1:length(hist.count) %*% hist.count);
 	distinct.sample = sum(hist.count);
-	# n is the number of experiments
-	n = as.integer(max.extrapolation / ss);
+	# set step.size = total.sample if it is undefined
+	if (is.null(ss))
+		ss = total.sample;
+	# set max.extrapolation = 100 * ss if it is undefined
+	if (is.null(max.extrapolation)) {
+		max.extrapolation = 100 * ss;
+		# n is the number of experiments
+		n = 100;
+	} else {
+		# n is the number of experiments
+		n = as.integer(max.extrapolation / ss);
+	}
 	sample.size = as.double(ss) * (1: n);
 	dim(sample.size) = n;
 
 	# estimate parameters
-	opt <- preseqR.zerotruncated.mle(hist.count)
-	size = opt$par[1];
-	mu = opt$par[2];
+	opt <- preseqR.nbinom.em(hist.count)
+	size = opt$size;
+	mu = opt$mu;
 	# the probability of being sampled in the initial experiment
 	p = 1 - dnbinom(0, size = size, mu = mu);
 	# L is the estimated total number of distinct items
@@ -113,8 +108,8 @@ preseqR.zerotruncated.complexity.curve <- function(hist, ss = 1e6,
 	dim(t) = length(t)
 	P = apply(t, 1, function(x) 1 - dnbinom(0, size, mu = x * mu))
 	yield.estimates = L * P;
-	yield.estimates = list(sample.size = sample.size, 
-						   yield.estimates = yield.estimates);
+	yield.estimates = matrix(c(sample.size, yield.estimates), ncol = 2, byrow = FALSE);
+	colnames(yield.estimates) = c('sample.size', 'yield.estimates');
 	return(yield.estimates)
 }
 
