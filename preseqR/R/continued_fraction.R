@@ -12,26 +12,25 @@ BOOTSTRAP.factor = 0.1
 ## read a histogram file; return the histogram count vector
 ## count vector represent frequencies of indexes. For those indexes not showing
 ## in the histogram file, use zeros to represent their values
-read.hist <- function(hist.file)
+read.hist <- function(hist.file, header = FALSE)
 {
-	#the first column is the index of the histogram
-	#the second column is the frequency of indexes
-	hist.table = read.table(hist.file);
-	hist.count = vector(mode = 'numeric', length = 0);
-	pre.pos = 0;
-	for (i in 1:length(hist.table[, 1]))
-	{
-		#Indexes of the histogram should be increasing order
-		if (i > 1 && hist.table[i, 1] <= hist.table[i - 1, 1])
-		{
-			stop("The input histogram is not sorted in increasing order");
+	hist.table = read.table(hist.file, header = header);
+	# the first column is the frequencies of observed items
+	freq = hist.table[, 1];
+	# the second column is the number of observed items for each frequency
+	number.item.type = hist.table[, 2];
+	# check whether frequencies are at least one and the histogram is sorted
+	for (i in 1:length(freq))
+		if (freq[i] == 0) {
+			stop("items with 0 frequency should not be included")
 		}
-		#set the frequency of each index; 
-		#fill the gaps between indexes the zeros
-		hist.count = c(hist.count, rep(0, hist.table[i, 1] - pre.pos));
-		hist.count[hist.table[i, 1]] = hist.table[i, 2];
-		pre.pos = hist.table[i, 1];
-	}
+		else {
+			if (i > 1 && freq[i - 1] > freq[i])
+				stop("The input histogram is not sorted in increasing order");
+		}
+	# hist.count is the count vector of the histogram
+	hist.count = vector(mode = 'numeric', length = max(freq));
+	hist.count[freq] = number.item.type;
 	return(hist.count);
 }
 
@@ -203,12 +202,12 @@ goodtoulmin.2x.extrap <- function(hist.count)
 ## estimate a continued fraction given a the count vector of the histogram
 ## di = diagonal, mt = max_terms, 
 ## step.adjust is an indicator for whether or not to adjust step.size
-preseqR.continued.fraction.estimate <- function(hist, di = 0, mt = 100,
-	   	ss = 1e6,  max.extrapolation = 1e10, step.adjust=TRUE)
+preseqR.continued.fraction.estimate <- function(hist, header = FALSE, di = 0,
+	   	mt = 100, ss = 1e6,  max.extrapolation = 1e10, step.adjust=TRUE)
 {
 	# input could be either histogram file or count vector of the histogram
 	if (mode(hist) == "character") {
-		hist.count = read.hist(hist);
+		hist.count = read.hist(hist, header);
 	}
 	else {
 		hist.count = hist;
@@ -323,12 +322,12 @@ preseqR.continued.fraction.estimate <- function(hist, di = 0, mt = 100,
 }
 
 ## generate complexity curve through bootstrapping the histogram
-preseqR.bootstrap.complexity.curve <- function(hist, bootstrap.times = 100, di = 0, 
-									   mt = 100, ss = 1e6, 
-									   max.extrapolation = 1e10, step.adjust=TRUE)
+preseqR.bootstrap.complexity.curve <- function(hist, header = FALSE, 
+			bootstrap.times = 100, di = 0, mt = 100, ss = 1e6, 
+			max.extrapolation = 1e10, step.adjust=TRUE)
 {
 	if (mode(hist) == 'character') {
-		hist.count = read.hist(hist);
+		hist.count = read.hist(hist, header);
 	} else {
 		hist.count = hist;
 	}
