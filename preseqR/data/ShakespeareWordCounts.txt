@@ -1,3 +1,4 @@
+frequencies	word.types
 1	14376
 2	4343
 3	2292
