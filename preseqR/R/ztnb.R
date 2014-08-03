@@ -4,7 +4,7 @@ SIZE.INIT = 1
 MU.INIT = 1
 ## termination conditions for EM algorithm
 TOLERANCE = 1e-10
-ITER.TOLERANCE = 1e10
+ITER.TOLERANCE = 1e5
 
 ## density function of truncated zero negative binomial distribution
 ## size and mu are two parameters for negative binomial
@@ -181,7 +181,7 @@ preseqR.nbinom.em <- function(hist, header=FALSE, size=SIZE.INIT, mu=MU.INIT)
 	# zerotruncated loglikelyhood 
 	loglikelyhood = zerotruncated.minus.log.likelyhood(hist.count, res$par, m)
 	# make sure EM algorithm could terminate
-	while (abs(loglikelyhood.pre - loglikelyhood) / observed.items > TOLERANCE 
+	while ((loglikelyhood.pre - loglikelyhood) / observed.items > TOLERANCE 
 			&& iter < ITER.TOLERANCE)
 	{
 		# update minus loglikelyhood
