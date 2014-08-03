@@ -138,10 +138,10 @@ nb.loglikelyhood <- function(hist.count, zero.items, size, mu)
 ## EM algorithm to fit a 
 ## hist only includes information for observation
 ## the number of unobserved items is missing data
-preseqR.nbinom.em <- function(hist, size = SIZE.INIT, mu = MU.INIT)
+preseqR.nbinom.em <- function(hist, header=FALSE, size=SIZE.INIT, mu=MU.INIT)
 {
 	if (mode(hist) == 'character') {
-		hist.count = read.hist(hist);
+		hist.count = read.hist(hist, header);
 	} else {
 		hist.count = hist;
 	}
@@ -218,5 +218,5 @@ preseqR.nbinom.em <- function(hist, size = SIZE.INIT, mu = MU.INIT)
 		# zerotruncated loglikelyhood 
 		loglikelyhood = zerotruncated.minus.log.likelyhood(hist.count, res$par, m)
 	}
-	return(list(size = size, mu = m, loglik = -loglikelyhood.pre))
+	return(list(size = size, mu = mu, loglik = -loglikelyhood.pre))
 }
