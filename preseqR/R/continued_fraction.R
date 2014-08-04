@@ -183,8 +183,7 @@ preseqR.interpolate.distinct <- function(hist.count, ss)
 	# do sampling without replacement 
 	s = apply(x, 1, function(x) nonreplace.sampling(x, hist.count));
 	# calculate the number of distinct reads based on each sample
-	dim(s) = length(s);
-	yield.estimates = sapply(s, count.distinct);
+	yield.estimates = apply(s, 2, count.distinct);
     # yield.estimates
 	yield.estimates = list(sample.size = x, yields = yield.estimates);
 	return(yield.estimates);
@@ -202,8 +201,8 @@ goodtoulmin.2x.extrap <- function(hist.count)
 ## estimate a continued fraction given a the count vector of the histogram
 ## di = diagonal, mt = max_terms, 
 ## step.adjust is an indicator for whether or not to adjust step.size
-preseqR.continued.fraction.estimate <- function(hist, header = FALSE, di = 0,
-	   	mt = 100, ss = 1e6,  max.extrapolation = 1e10, step.adjust=TRUE)
+preseqR.continued.fraction.estimate <- function(hist, di = 0, mt = 100, 
+		ss = 1e6,  max.extrapolation = 1e10, step.adjust=TRUE, header = FALSE)
 {
 	# input could be either histogram file or count vector of the histogram
 	if (mode(hist) == "character") {
@@ -322,9 +321,9 @@ preseqR.continued.fraction.estimate <- function(hist, header = FALSE, di = 0,
 }
 
 ## generate complexity curve through bootstrapping the histogram
-preseqR.bootstrap.complexity.curve <- function(hist, header = FALSE, 
-			bootstrap.times = 100, di = 0, mt = 100, ss = 1e6, 
-			max.extrapolation = 1e10, step.adjust=TRUE)
+preseqR.bootstrap.complexity.curve <- function(hist, bootstrap.times = 100, 
+		di = 0, mt = 100, ss = 1e6, max.extrapolation = 1e10, step.adjust=TRUE,
+	   	header = FALSE)
 {
 	if (mode(hist) == 'character') {
 		hist.count = read.hist(hist, header);
