@@ -5,12 +5,13 @@
 A function to predict the number of distinct items
 }
 \description{
-preseqR.continued.fraction.estimate constructs a continued fraction to estimate 
-the number of distinct items, which are not found in an intial experiment, will
-be covered if an additional experiment conducts.}
+The function constructs a continued fraction to estimate the number of distinct
+items, which are not found in an intial experiment, will be covered if an 
+additional experiment conducts.
+}
 \usage{
-preseqR.continued.fraction.estimate(hist, di = 0, mt = 100, ss = 1e+06, 
-max.extrapolation = 1e+10, step.adjust = TRUE, header = FALSE)
+preseqR.continued.fraction.estimate(hist, di = 0, mt = 100, ss = NULL, 
+max.extrapolation = NULL, step.adjust = TRUE, header = FALSE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -56,6 +57,13 @@ reads or molecules if it is an DNA or RNA sequencing experiment. Items could be
 species if it is a population experiment. Generally, it applies to all 
 experiments, which follows  capture-recapture model, although performances may
 vary. 
+
+Histogram records the observed results in an initial experiment. It is used to
+train the constructed continued fraction. The continued fraction estimates the
+number of additional distinct items discovered when another experiment conducts
+under the similar conditions as the inital experiment. Then by adding the value
+to the number of distinct items in the inital experiment, we could estimate the
+total number of distinct items in a new experiment with bigger sample size.
 }
 \value{
   \item{continued.fraction}{
@@ -83,8 +91,7 @@ vary.
 	  when the diagonal value is zero, there are no offset coefficients. The 
 	  format of a continued fraction should like this:
 	  
-	  \deqn{\frac{a_0}{1 + \frac{a_1}{1 + frac{a_2}{\ldots}}}}
-
+	  \deqn{\frac{a_0 * t}{1 + \frac{a_1 * t}{1 + frac{a_2 * t}{\ldots}}}}
 }
 
 %% ~Make other sections like Warning with \section{Warning }{....} ~
@@ -96,14 +103,21 @@ vary.
 }
 \examples{
 ## import data
-data(SRR1041830_5M_hist)
-## hist.count is a count vector of a histogram
-hist.count = vector(mode="numeric", length=max(SRR1041830_5M_hist$frequencies))
-hist.count[SRR1041830_5M_hist$frequencies] = SRR1041830_5M_hist$distinct.reads
+data(ShakespeareWordCounts)
+
+## convert a histogram into a count vector 
+hist.count = vector(mode="numeric", length=max(ShakespeareWordCounts$frequencies))
+hist.count[ShakespeareWordCounts$frequencies] = ShakespeareWordCounts$word.types
+
+## construct a continued fraction and estimate the number of observed word types
+## if different quantities of Shakespeare's works are discovered.
 result = preseqR.continued.fraction.estimate(hist.count)
+
 ## print the constructed continued fraction
 result$continued.fraction
-## print the estimated yields given various sequencing sample size
+
+## print estimated the number of word types under various quantities of 
+## Shakespeare's works
 result$yield.estimates
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
