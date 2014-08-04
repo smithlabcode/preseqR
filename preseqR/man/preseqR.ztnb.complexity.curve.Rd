@@ -67,11 +67,7 @@ data(SRR1041830_5M_hist)
 hist.count = vector(mode = 'numeric', length = max(SRR1041830_5M_hist$frequencies))
 hist.count[SRR1041830_5M_hist$frequencies] = SRR1041830_5M_hist$distinct.reads
 ## estimate a complexity curve
-res <- preseqR.ztnb.complexity.curve(hist.count)
-## print the estimated yields given various sequencing sample size
-print(c("sample.size", "yield estimates"))
-yields = c(res$sample.size, res$yield.estimates)
-matrix(yields, ncol = 2, byrow = FALSE)
+preseqR.ztnb.complexity.curve(hist.count)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
