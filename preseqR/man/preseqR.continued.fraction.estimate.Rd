@@ -104,9 +104,7 @@ result = preseqR.continued.fraction.estimate(hist.count)
 ## print the constructed continued fraction
 result$continued.fraction
 ## print the estimated yields given various sequencing sample size
-yields = result$yield.estimates
-names(yields)
-matrix(as.numeric(unlist(yields)), ncol = 2, byrow = FALSE)
+result$yield.estimates
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

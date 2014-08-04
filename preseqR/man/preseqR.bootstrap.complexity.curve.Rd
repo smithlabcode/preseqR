@@ -103,12 +103,7 @@ data(SRR1041830_5M_hist)
 hist.count = vector(mode = 'numeric', length = max(SRR1041830_5M_hist$frequencies))
 hist.count[SRR1041830_5M_hist$frequencies] = SRR1041830_5M_hist$distinct.reads
 
-result = preseqR.bootstrap.complexity.curve(hist.count)
-## print the estimated yields given various sequencing sample size
-print(c("sample.size", "yield estimates", "LOWER_0.95CI", "UPPER_0.95CI"))
-yields = c(result$yield.estimates$sample.size, result$yield.estimates$yields, 
-           result$LOWER_0.95CI, result$UPPER_0.95CI)
-matrix(yields, ncol = 4, byrow = FALSE)
+preseqR.bootstrap.complexity.curve(hist.count)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
