@@ -12,7 +12,7 @@
 }
 \usage{
 preseqR.bootstrap.complexity.curve(hist, bootstrap.times = 100, di = 0, mt = 100, 
-ss = 1e+6, max.extrapolation = 1e+10, step.adjust = TRUE)
+ss = 1e+6, max.extrapolation = 1e+10, step.adjust = TRUE, header = FALSE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -26,6 +26,9 @@ ss = 1e+6, max.extrapolation = 1e+10, step.adjust = TRUE)
 	  A count vector is a non-negative integral vector. The ith coordinate x in
 	  the vector represents that x distinct items appear in the experiment, each
 	  of which occurs i times.
+}
+  \item{header}{
+	  An integer represents diagonal value for a constructed continued fraction.
 }
   \item{bootstrap.times}{
 	  An integer represents the number of successful estimation times for

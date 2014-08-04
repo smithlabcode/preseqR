@@ -10,7 +10,7 @@ the number of distinct items, which are not found in an intial experiment, will
 be covered if an additional experiment conducts.}
 \usage{
 preseqR.continued.fraction.estimate(hist, di = 0, mt = 100, ss = 1e+06, 
-max.extrapolation = 1e+10, step.adjust = TRUE)
+max.extrapolation = 1e+10, step.adjust = TRUE, header = FALSE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -25,6 +25,9 @@ max.extrapolation = 1e+10, step.adjust = TRUE)
 	  the vector represents that x distinct items appear in the experiment, each
 	  of which occurs i times.
 }
+  \item{header}{
+	  A logic number represents whether or not histogram file contains a header.
+  }
   \item{di}{
 	  An integer represents diagonal value for a constructed continued fraction.
 }
