@@ -207,7 +207,7 @@ goodtoulmin.2x.extrap <- function(hist.count)
 ## di = diagonal, mt = max_terms, 
 ## step.adjust is an indicator for whether or not to adjust step.size
 preseqR.continued.fraction.estimate <- function(hist, di = 0, mt = 100, 
-		ss = 1e6,  max.extrapolation = 1e10, step.adjust=TRUE, header = FALSE)
+		ss = NULL,  max.extrapolation = NULL, step.adjust=TRUE, header = FALSE)
 {
 	# input could be either histogram file or count vector of the histogram
 	if (mode(hist) == "character") {
@@ -223,7 +223,15 @@ preseqR.continued.fraction.estimate <- function(hist, di = 0, mt = 100,
 	# calculate total number of sample
 	freq = 1:length(hist.count);
 	total.sample = freq %*% hist.count;
-	step.size = ss;
+	if (is.null(ss))
+	{
+		ss = floor(total.sample);
+		step.size = ss;
+	}
+	if (is.null(max.extrapolation)) {
+		# extrapolation 100 times
+		max.extrapolation = 100 * step.size;
+	}
 	# no interpolation if step.size is larger than the size of experiment
 	# set the starting sample size as the step.size
 	if (step.size > total.sample)
