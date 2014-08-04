@@ -26,14 +26,14 @@ preseqR.nbinom.em(hist, size = SIZE.INIT, mu = MU.INIT, header = FALSE)
 	  of which occurs i times.
 }
   \item{size}{
-	  A positive real value to set the inital value of number of successful 
-	  trials, or dispersion parameter (the shape parameter of the gamma mixing
-	  distribution). Must be strictly positive, need not be integer. The default
-	  value SIZE.INIT = 1
+	  A positive real value sets the inital value of the parameter size. The
+	  parameters of the negative binomial distribution should be initialized
+	  when an em algorithm applies.
   }
   \item{mu}{
-	  a positive real value to set the initial mean value of a negative binomial
-	  distribution. The default value MU.INIT = 0.5
+	  A positive real value sets the initial of the parameter mu. The
+	  parameters of the negative binomial distribution should be initialized
+	  when an em algorithm applies.
   }
   \item{header}{
 	  A logic number represents whether or not histogram file contains a header.
