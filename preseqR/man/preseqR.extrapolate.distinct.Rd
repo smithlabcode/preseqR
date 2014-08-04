@@ -40,7 +40,8 @@ step.size = NULL, max.size = NULL)
 \details{
 	The function is a part of preseqR.continued.fraction.estimate used to 
 	estimate the number of distinct items when the sample size of an experiment
-	is beyond the initial experiment. 
+	is beyond the initial experiment. The constructed continued fraction is used
+   	to extrapolate.
 }
 \value{
   \item{yield.estimates}{

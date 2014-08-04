@@ -5,8 +5,8 @@
 A function to estimate the number of distinct items
 }
 \description{
-preseqR.interpolate.distinct estimates the number of distinct items when small
-size experiments conduct.
+The function estimates the number of distinct items when experiments with small
+sample sizes conduct.
 }
 \usage{
 preseqR.interpolate.distinct(hist.count, ss)
@@ -19,18 +19,16 @@ preseqR.interpolate.distinct(hist.count, ss)
 	  items appear in the experiment, each of which occurs i times.
 }
   \item{ss}{
-	  A positive real number represents the step size. It defines the size of 
-	  an additional experiment.
+	  A positive real number represents the step size. It defines the sample 
+	  size of an additional experiment.
 }
 }
 
 \details{
-preseqR.interpolate.distinct estimate the number of distinct items given various
-sizes of experiments. All experiments are conducted under the same condition as
-the initial experiment except their sizes must be less than the size of an 
-initial experiment. The function simulates small size experiments through 
-sampling the initial experiment without replacement. Then it counts the number 
-of distinct items in the sample as estimation.
+	The function is a part of preseqR.continued.fraction.estimate used to 
+	estimate the number of distinct items when the sample size of an experiment
+	is less than the initial experiment. Sampling without replacement is used
+	to interpolate.
 }
 \value{
   \item{yield.estimates}{
@@ -45,13 +43,22 @@ of distinct items in the sample as estimation.
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 
 \examples{
+## load library
+library(preseqR)
+
 ## import data
-data(SRR1041830_5M_hist)
-## hist.count is a count vector of a histogram
-hist.count = SRR1041830_5M_hist$distinct.reads
-## interpolate with step size 1e6
-preseqR.interpolate.distinct(hist.count, ss = 1e6)
-## print returning value
+data(ShakespeareWordCounts)
+
+## convert a histogram into a count vector 
+hist.count = vector(mode="numeric", length=max(ShakespeareWordCounts$frequencies))
+hist.count[ShakespeareWordCounts$frequencies] = ShakespeareWordCounts$word.types
+
+## calculate the total number of reads
+total.reads = 0
+for (i in 1:length(hist.count)) total.reads <- total.reads + i * hist.count[i]
+
+## interpolate with step size around fifth of total.reads
+preseqR.interpolate.distinct(hist.count, ss = total.reads / 5)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
