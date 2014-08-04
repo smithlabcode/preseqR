@@ -106,7 +106,10 @@ preseqR.extrapolate.distinct <- function(hist.count, CF, start.size = NULL,
 	extrapolation = out$estimate[ 1: out$estimate.l ]
 	# sample size vector for extrapolation
 	sample.size = start.size + step.size * ( 1:length(extrapolation) - 1 );
-	return(list(sample.size = sample.size, yield.estimates = extrapolation))
+	# put sample.size and extrapolation results together into a matrix
+	result = matrix(c(sample.size, extrapolation), ncol = 2, byrow = FALSE);
+	colnames(result) = c('sample.size', 'extrapolation');
+	return(result);
 }
 
 ## do withouat replacement of random sampling given a count vector of a histogram
@@ -185,9 +188,10 @@ preseqR.interpolate.distinct <- function(hist.count, ss)
 	# calculate the number of distinct reads based on each sample
 	dim(s) = length(s)
 	yield.estimates = sapply(s, function(x) count.distinct(x));
-    # yield.estimates
-	yield.estimates = list(sample.size = x, yields = yield.estimates);
-	return(yield.estimates);
+    # put sample.size and yield.estimates together into a matrix
+	result = matrix(c(x, yield.estimates), ncol = 2, byrow = FALSE);
+	colnames(result) = c('sample.size', 'yield.estimates')
+	return(result);
 }
 
 #check the goodness of the sample based on good Good & Toulmin's model
@@ -240,7 +244,7 @@ preseqR.continued.fraction.estimate <- function(hist, di = 0, mt = 100,
 		}
 		# interpolate and set the size of sample for initial extrapolation
 		out = preseqR.interpolate.distinct(hist.count, step.size);
-		yield.estimates = out$yields;
+		yield.estimates = out[, 2];
 		starting.size = (as.integer(total.sample / step.size) + 1) * step.size;
 	}
 
@@ -314,7 +318,7 @@ preseqR.continued.fraction.estimate <- function(hist, di = 0, mt = 100,
 		       (starting.size - total.sample) / total.sample, step.size / total.sample, 
 		       (max.extrapolation+MINOR.correction-total.sample) / total.sample);
 
-	yield.estimates = c(yield.estimates, est$yield.estimates);
+	yield.estimates = c(yield.estimates, est[, 2]);
 	index = as.double(step.size) * (1: length(yield.estimates));
 	# put index and estimated yields together into a two-colunm matrix
 	yield.estimates = matrix(c(index, yield.estimates), ncol = 2, byrow = FALSE);
