@@ -20,12 +20,9 @@ preseqR.calculate.continued.fraction(CF, x)
 	  A real number as the coordinate.
   }
 }
-\details{
-	See \code{}
 
-}
 \value{
-	A real number as the function value.
+	A real number is the function value.
 }
 
 \author{
@@ -35,10 +32,17 @@ preseqR.calculate.continued.fraction(CF, x)
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 
 \examples{
+## load library
+library(preseqR)
+
 ## import data
-data(SRR1041830_5M_hist)
-## hist.count is a count vector of a histogram
-hist.count = SRR1041830_5M_hist$distinct.reads
+data(ShakespeareWordCounts)
+
+## convert a histogram into a count vector 
+hist.count = vector(mode="numeric", length=max(ShakespeareWordCounts$frequencies))
+hist.count[ShakespeareWordCounts$frequencies] = ShakespeareWordCounts$word.types
+
+## estimate the continued fraction
 result = preseqR.continued.fraction.estimate(hist.count)
 ## record the constructed continued fraction
 CF = result$continued.fraction

@@ -98,6 +98,9 @@ ss = NULL, max.extrapolation = NULL, step.adjust = TRUE, header = FALSE)
 	\code{\link{preseqR.continued.fraction.estimate}}
 }
 \examples{
+## load library
+library(preseqR)
+
 ## import data
 data(FisherButterlyCaptures)
 

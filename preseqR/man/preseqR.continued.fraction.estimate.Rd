@@ -102,6 +102,9 @@ total number of distinct items in a new experiment with bigger sample size.
 %% ~~objects to See Also as \code{\link{help}}, ~~~
 }
 \examples{
+## load library
+library(preseqR)
+
 ## import data
 data(ShakespeareWordCounts)
 
