@@ -183,7 +183,7 @@ preseqR.interpolate.distinct <- function(hist.count, ss)
 	# do sampling without replacement 
 	s = apply(x, 1, function(x) nonreplace.sampling(x, hist.count));
 	# calculate the number of distinct reads based on each sample
-	yield.estimates = apply(s, 2, count.distinct);
+	yield.estimates = apply(s, 2, function(x) count.distinct(x));
     # yield.estimates
 	yield.estimates = list(sample.size = x, yields = yield.estimates);
 	return(yield.estimates);
@@ -315,7 +315,9 @@ preseqR.continued.fraction.estimate <- function(hist, di = 0, mt = 100,
 
 	yield.estimates = c(yield.estimates, est$yield.estimates);
 	index = as.double(step.size) * (1: length(yield.estimates));
-	yield.estimates = list(sample.size = index, yields = yield.estimates);
+	# put index and estimated yields together into a two-colunm matrix
+	yield.estimates = matrix(c(index, yield.estimates), ncol = 2, byrow = FALSE);
+	colnames(yield.estimates) = c('sample.size', 'yield.estimates');
 	result = list(continued.fraction = CF, yield.estimates = yield.estimates)
 	return(result);
 }
@@ -371,7 +373,7 @@ preseqR.bootstrap.complexity.curve <- function(hist, bootstrap.times = 100,
 		# eliminate NULL items in results
 		out[sapply(out, is.null)] <- NULL
 		# extract yields estimation from each estimation result. 
-		yields = sapply(out, function(x) x$yield.estimates$yields)
+		yields = sapply(out, function(x) x$yield.estimates[, 2])
 		# the number of successful estimation time
 		if ( !is.null( dim(yields) ) )
 		{
@@ -397,10 +399,9 @@ preseqR.bootstrap.complexity.curve <- function(hist, bootstrap.times = 100,
 		# 95% confident interval based on normal distribution
 		left.interval = mean - qnorm(0.975) * sqrt(variance / resampling.n);
 		right.interval = mean + qnorm(0.975) * sqrt(variance / resampling.n);
-		yield.estimates = list(sample.size = index, yields = mean)
-		result = list(yield.estimates, left.interval, right.interval);
-		names(result) = c("yield.estimates", "LOWER_0.95CI", 
-						  "UPPER_0.95CI")
+		result = matrix(c(index, mean, left.interval, right.interval), ncol = 4,
+				byrow = FALSE)
+		colnames(result) = c('sample.size', 'yield.estimates','lower.0.95CI','upper.0.95CI')
 		return(result);
 	} else {
 		write("fail to bootstrap!", stderr());
@@ -443,13 +444,11 @@ print.continued.fraction <- function(X, filename)
 
 print.yield.estimates <- function(X, filename, digit = 0)
 {
-	if (!is.null(names(X))) {
-		s = formatC(toupper( names(X) ), width = 15, format = 's', flag = '-')
+	if (!is.null(colnames(X))) {
+		s = formatC(toupper( colnames(X) ), width = 15, format = 's', flag = '-')
 		write(paste(s, collapse = ''), filename);
 	}
-	l = length(X)
-	if (l > 0) {
-		X = matrix(unlist(X), ncol = l, byrow = FALSE);
+	if (!is.null( dim(X) )) {
 		f <- function(x) {
 			s = formatC(x, digit, width = 15, format = 'f', flag = '-')
 			write(paste(s, collapse = ''), filename, append = TRUE);
@@ -461,7 +460,7 @@ print.yield.estimates <- function(X, filename, digit = 0)
 preseqR.print2file <- function(X, prefix = '', digit = 0)
 {
 	# check if X is a continued fraction
-	if (class(X) == "CF") {
+	if (!is.null(class(X)) && class(X) == "CF") {
 		filename = paste(prefix, "_continued_fraction.txt", sep = '');
 		print.continued.fraction(X, filename);
 	} else if (!is.null(names(X))) {
@@ -474,13 +473,7 @@ preseqR.print2file <- function(X, prefix = '', digit = 0)
 			print.continued.fraction(X$continued.fraction, filename.CF);
 			print.yield.estimates(X$yield.estimates, filename.YE, digit);
 		  # check if X is the result from preseqR.bootstrap.complexity.curve
-		} else if( length(names(X)) == 3 && 
-					all( names(X) == c("yield.estimates", "LOWER_0.95CI", "UPPER_0.95CI") ) )
-		{
-			X = list(SAMPLE.SIZE = X$yield.estimates$sample.size,
-					 YIELDS = X$yield.estimates$yields,
-					 LOWER_0.95CI = X$LOWER_0.95CI,
-					 UPPER_0.95CI = X$UPPER_0.95CI)
+		} else if( !is.null(colnames(X))) {
 			filename.YE = paste(prefix, "_yield.estimates.txt", sep = '');
 			print.yield.estimates(X, filename.YE, digit);
 		}
