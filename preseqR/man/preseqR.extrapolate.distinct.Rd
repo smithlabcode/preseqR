@@ -65,11 +65,8 @@ CF = preseqR.continued.fraction.estimate(hist.count)$continued.fraction
 ## calculate the total number of reads
 total.reads = 0
 for (i in 1:length(hist.count)) total.reads <- total.reads + i * hist.count[i]
-result = preseqR.extrapolate.distinct(hist.count, CF, start.size = total.reads + 1e6,
-	     step.size = 1e6, max.size = 1e10)
-## print returning value
-names(result)
-matrix(as.numeric(unlist(result)), ncol = 2, byrow = FALSE)
+preseqR.extrapolate.distinct(hist.count, CF, start.size = total.reads + 1e6, 
+step.size = 1e6, max.size = 1e10)
 }
 
 % Add one or more standard keywords, see file 'KEYWORDS' in the

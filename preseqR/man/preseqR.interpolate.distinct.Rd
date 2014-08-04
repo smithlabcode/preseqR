@@ -50,10 +50,8 @@ data(SRR1041830_5M_hist)
 ## hist.count is a count vector of a histogram
 hist.count = SRR1041830_5M_hist$distinct.reads
 ## interpolate with step size 1e6
-result = preseqR.interpolate.distinct(hist.count, ss = 1e6)
+preseqR.interpolate.distinct(hist.count, ss = 1e6)
 ## print returning value
-names(result)
-matrix(as.numeric(unlist(result)), ncol = 2, byrow = FALSE)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
