@@ -1,14 +1,14 @@
-\name{preseqR.zerotruncated.mle}
-\alias{preseqR.zerotruncated.mle}
+\name{preseqR.nbinom.em}
+\alias{preseqR.nbinom.em}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
 A function to fit a negative binomial distribution through MLE
 }
 \description{
-preseqR.zerotruncated.mle fits the counts of a item through a negative binomial 
+preseqR.nbinom.em fits a histogram of observations with a negative binomial 
 distribution.}
 \usage{
-preseqR.zerotruncated.mle(hist, size = SIZE.INIT, mu = MU.INIT)
+preseqR.nbinom.em(hist, size = SIZE.INIT, mu = MU.INIT, header = FALSE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -33,38 +33,31 @@ preseqR.zerotruncated.mle(hist, size = SIZE.INIT, mu = MU.INIT)
 	  a positive real value to set the initial mean value of a negative binomial
 	  distribution. The default value MU.INIT = 0.5
   }
+  \item{header}{
+	  A logic number represents whether or not histogram file contains a header.
+  }
 }
 \details{
 	  The function assumes that the read count follows a negative binomial 
-	  distribution. Under the assumption, given a histogram, each observed read 
-	  count should follow a zero truncated negative binomial distributon. Thus a
-	  conditional maximum likelyhood estimation is used to estimate two 
-	  parameters size and mu.
-
-	  Both size and mu are parameters for the negative binomial distribution.
-	  See \url{http://stat.ethz.ch/R-manual/R-patched/library/stats/html/NegBinomial.html}
-	  for more information on definition of parameters. 
-	  
-	  The function uses optim() in R to find the optimal parameters. It returns
-	  results from optim(). See Value in 
-	  \url{http://stat.ethz.ch/R-manual/R-devel/library/stats/html/optim.html}
-
+	  distribution. The histogram gave frequencies of observed items. The number
+	  of unobserved items is the missing data. The function applies an EM 
+	  algorithm to estimate parameters in the negative binomial distribution. In
+	  E-step, the number of unobserved items is estimated by its expected value,
+	  under current parameters. Then in M-step, preseqR.nbinom.em uses 
+	  conditional maximum loglikelyhood given the number of observations to
+	  update parameters based on a complete data set. It stops when the
+	  conditional loglikelyhood stops increasing.
 }
 \value{
-  \item{par}{
-	  The best set of parameters found.
+  \item{size}{
+	  Estimated value of the parameter size in a negative binomial distribution.
 	   }
-  \item{value}{
-	  The value of negative loglikelyhood  corresponding to par
+  \item{mu}{
+	  Estimated value of the parameter mu in a negative binomial distribution.
   }
-  \item{counts}{
-	  A two-element integer vector giving the number of calls to fn and gr 
-	  respectively. This excludes those calls needed to compute the Hessian, 
-	  if requested, and any calls to fn to compute a finite-difference 
-	  approximation to the gradient.
-  }
-  \item{convergence}{
-	  An integer code.
+  \item{loglik}{
+	  Conditional loglikelyhood given the number of observations under an 
+	  estimated negative binomial distribution.
   }
 }
 \author{
@@ -80,7 +73,7 @@ data(SRR1041830_5M_hist)
 hist.count = vector(mode="numeric", length=max(SRR1041830_5M_hist$frequencies))
 hist.count[SRR1041830_5M_hist$frequencies] = SRR1041830_5M_hist$distinct.reads
 ## print the parameters of a fitting negative binomial distribution
-preseqR.zerotruncated.mle(hist.count)
+preseqR.nbinom.em(hist.count)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
