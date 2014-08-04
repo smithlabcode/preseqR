@@ -223,9 +223,10 @@ preseqR.continued.fraction.estimate <- function(hist, di = 0, mt = 100,
 	# calculate total number of sample
 	freq = 1:length(hist.count);
 	total.sample = freq %*% hist.count;
-	if (is.null(ss))
-	{
+	if (is.null(ss)) {
 		ss = floor(total.sample);
+		step.size = ss;
+	} else {
 		step.size = ss;
 	}
 	if (is.null(max.extrapolation)) {
