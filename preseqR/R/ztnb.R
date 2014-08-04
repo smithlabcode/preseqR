@@ -41,7 +41,7 @@ zerotruncated.minus.log.likelyhood <- function(x, size, mu)
 ## predict the number of distinct items using EM algorithm 
 ## if the histogram file has a header, set header = TRUE
 ## n is the size of experiment
-preseqR.ztnb.estimate <- function(hist, header = FALSE, n)
+preseqR.ztnb.estimate <- function(hist, n, header = FALSE)
 {
 	if (mode(hist) == 'character') {
 		hist.count = read.hist(hist, header);
@@ -70,8 +70,8 @@ preseqR.ztnb.estimate <- function(hist, header = FALSE, n)
 ## predict a complexity curve using EM algorithm
 ## ss is the step.size
 ## max.extrapoltion is the maximum value for extrapolation
-preseqR.ztnb.complexity.curve <- function(hist, header = FALSE, 
-			ss = NULL, max.extrapolation = NULL)
+preseqR.ztnb.complexity.curve <- function(hist, ss = NULL, 
+		max.extrapolation = NULL, header = FALSE)
 {
 	if (mode(hist) == 'character') {
 		hist.count = read.hist(hist, header);
@@ -133,7 +133,7 @@ nb.loglikelyhood <- function(hist.count, zero.items, size, mu)
 ## EM algorithm to fit a 
 ## hist only includes information for observation
 ## the number of unobserved items is missing data
-preseqR.nbinom.em <- function(hist, header=FALSE, size=SIZE.INIT, mu=MU.INIT)
+preseqR.nbinom.em <- function(hist, size=SIZE.INIT, mu=MU.INIT, header=FALSE)
 {
 	if (mode(hist) == 'character') {
 		hist.count = read.hist(hist, header);
