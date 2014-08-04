@@ -51,6 +51,6 @@ preseqR.calculate.continued.fraction(CF, 1)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-\keyword{ approximation }
-\keyword{ continued}
-\keyword{ fraction}
+\keyword{ calculate }
+\keyword{ continued }
+\keyword{ fraction }
