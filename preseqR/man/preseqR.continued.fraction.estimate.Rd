@@ -19,12 +19,12 @@ max.extrapolation = NULL, step.adjust = TRUE, header = FALSE)
 	  The histogram of an experiment. It can be either the file name of a 
 	  histogram or its count vector. For a histogram file, it should have two 
 	  columns. Each row (x, y) represents there are y distinct items, each of
-	  which occurs x times in the experiment. Both x, y are positive integers
+	  which appears x times in the experiment. Both x, y are positive integers
 	  and The first columns must be an increasing order. 
 	  
 	  A count vector is a non-negative integral vector. The ith coordinate x in
 	  the vector represents that x distinct items appear in the experiment, each
-	  of which occurs i times.
+	  of which appears i times.
 }
   \item{header}{
 	  A logic number represents whether or not histogram file contains a header.
@@ -76,7 +76,7 @@ total number of distinct items in a new experiment with bigger sample size.
   }
   \item{yield.estimates}{
 	  A two-columns table represents estimated number of distinct items given 
-	  various sizes of experiments.
+	  experiments with different sample sizes.
   }
 }
 \references{
@@ -97,7 +97,7 @@ total number of distinct items in a new experiment with bigger sample size.
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 
 \seealso{
-	  See Baker, G. \& Graves-Morris, P. \emph{Pade Approximants} about the
+	  Baker, G. \& Graves-Morris, P. \emph{Pade Approximants} for the
 	  form of a continued fraction
 %% ~~objects to See Also as \code{\link{help}}, ~~~
 }
@@ -123,5 +123,5 @@ result$yield.estimates
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
 \keyword{ approximation }
-\keyword{ continued}
-\keyword{ fraction}
+\keyword{ continued }
+\keyword{ fraction }
