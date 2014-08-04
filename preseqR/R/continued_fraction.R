@@ -190,7 +190,7 @@ preseqR.interpolate.distinct <- function(hist.count, ss)
 	yield.estimates = sapply(s, function(x) count.distinct(x));
     # put sample.size and yield.estimates together into a matrix
 	result = matrix(c(x, yield.estimates), ncol = 2, byrow = FALSE);
-	colnames(result) = c('sample.size', 'yield.estimates')
+	colnames(result) = c('sample.size', 'interpolation')
 	return(result);
 }
 
