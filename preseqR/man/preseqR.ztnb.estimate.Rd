@@ -1,16 +1,16 @@
-\name{preseqR.zerotruncated.estimate}
-\alias{preseqR.zerotruncated.estimate}
+\name{preseqR.ztnb.estimate}
+\alias{preseqR.ztnb.estimate}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
 A function to predict the number of distinct items
 }
 \description{
-preseqR.zerotruncated.estimate fits a given histogram with a negative binomial
+preseqR.ztnb.estimate fits a given histogram with a negative binomial
 distribution. Thus it uses the distribution to estimate the number of distinct
 items if a new experiment with different size conducts.
 }
 \usage{
-preseqR.zerotruncated.estimate(hist, n)
+preseqR.ztnb.estimate(hist, n, header = FALSE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -28,9 +28,12 @@ preseqR.zerotruncated.estimate(hist, n)
   \item{n}{
 	  A positive real number represents the size of a new experiment.
 }
+  \item{header}{
+	  An integer represents diagonal value for a constructed continued fraction.
+}
 }
 \details{
-	The function applies preseqR.zerotruncated.mle to fit the given histogram
+	The function applies preseqR.nbinom.em to fit the given histogram
 	with a negative binomial. Then it estimates the total number of distinct 
 	items and updates parameters size and mu. The number of distinct items in
 	the new experiment is estimated by its expectation. 
