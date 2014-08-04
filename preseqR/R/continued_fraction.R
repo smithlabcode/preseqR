@@ -338,7 +338,7 @@ preseqR.continued.fraction.estimate <- function(hist, di = 0, mt = 100,
 
 ## generate complexity curve through bootstrapping the histogram
 preseqR.bootstrap.complexity.curve <- function(hist, bootstrap.times = 100, 
-		di = 0, mt = 100, ss = 1e6, max.extrapolation = 1e10, step.adjust=TRUE,
+		di = 0, mt = 100, ss = NULL, max.extrapolation = NULL, step.adjust=TRUE,
 	   	header = FALSE)
 {
 	if (mode(hist) == 'character') {
@@ -351,14 +351,23 @@ preseqR.bootstrap.complexity.curve <- function(hist, bootstrap.times = 100,
 	total.sample = freq %*% hist.count;
 	# calculate the distinct number of sample
 	distinct.sample = sum(hist.count)
+	if (is.null(ss)) {
+		ss = floor(total.sample);
+		step.size = ss;
+	} else {
+		step.size = ss;
+	}
 	# adjust step.size for sampling complexity curve
-	step.size = ss;
 	if (step.adjust == TRUE && step.size < (total.sample / 20))
 	{
 		step.size = max(step.size, step.size*round(total.sample/(20*step.size)));
 		# output the adjusted step size to stderr
 		m = paste("adjust step size to", toString(step.size), '\n', sep = ' ');
 		write(m, stderr());
+	}
+	if (is.null(max.extrapolation)) {
+		# extrapolation 100 times
+		max.extrapolation = 100 * step.size;
 	}
 	# record count vector of a resampled histogram
 	re.hist.count = matrix(data = 0, nrow = length(hist.count), 
