@@ -28,7 +28,7 @@ max.extrapolation = NULL, step.adjust = TRUE, header = FALSE)
 }
   \item{header}{
 	  A logic number represents whether or not histogram file contains a header.
-  }
+}
   \item{di}{
 	  An integer represents diagonal value for a constructed continued fraction.
 }
