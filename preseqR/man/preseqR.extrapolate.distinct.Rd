@@ -6,7 +6,7 @@ A function to predict the number of distinct items
 }
 \description{
 preseqR.extrapolate.distinct predicts the number of distinct items when 
-large-size experiments conduct.
+experiments with large sample sizes conduct.
 }
 \usage{
 preseqR.extrapolate.distinct(hist.count, CF, start.size = NULL, 
@@ -38,11 +38,9 @@ step.size = NULL, max.size = NULL)
   }
 }
 \details{
-Items could be anything depending on the experiment. For example, items could be
-reads or molecules if it is an DNA or RNA sequencing experiment. Items could be
-species if it is a population experiment. Generally, it applies to all 
-experiments, which follows  capture-recapture model, although performances may
-vary. 
+	The function is a part of preseqR.continued.fraction.estimate used to 
+	estimate the number of distinct items when the sample size of an experiment
+	is beyond the initial experiment. 
 }
 \value{
   \item{yield.estimates}{
@@ -56,19 +54,31 @@ vary.
 
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 \examples{
+## load library
+library(preseqR)
+
 ## import data
-data(SRR1041830_5M_hist)
-## hist.count is a count vector of a histogram
-hist.count = SRR1041830_5M_hist$distinct.reads
+data(ShakespeareWordCounts)
+
+## convert a histogram into a count vector 
+hist.count = vector(mode="numeric", length=max(ShakespeareWordCounts$frequencies))
+hist.count[ShakespeareWordCounts$frequencies] = ShakespeareWordCounts$word.types
+
 ## construct a continued fraction
 CF = preseqR.continued.fraction.estimate(hist.count)$continued.fraction
+
 ## calculate the total number of reads
 total.reads = 0
 for (i in 1:length(hist.count)) total.reads <- total.reads + i * hist.count[i]
-preseqR.extrapolate.distinct(hist.count, CF, start.size = total.reads + 1e6, 
-step.size = 1e6, max.size = 1e10)
+
+## extrapolate
+step.size = total.reads;
+preseqR.extrapolate.distinct(hist.count, CF, start.size = total.reads + step.size, 
+step.size = step.size, max.size = 100 * step.size)
 }
 
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
 \keyword{ extrapolate }
+\keyword{ continued }
+\keyword{ fraction }
