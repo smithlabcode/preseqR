@@ -29,8 +29,8 @@ preseqR.ztnb.estimate(hist, n, header = FALSE)
 	  A positive real number represents the size of a new experiment.
 }
   \item{header}{
-	  An integer represents diagonal value for a constructed continued fraction.
-}
+	  A logic number represents whether or not histogram file contains a header.
+  }
 }
 \details{
 	The function applies preseqR.nbinom.em to fit the given histogram
@@ -59,7 +59,7 @@ data(SRR1041830_5M_hist)
 hist.count = vector(mode="numeric", length=max(SRR1041830_5M_hist$frequencies))
 hist.count[SRR1041830_5M_hist$frequencies] = SRR1041830_5M_hist$distinct.reads
 ## estimate the number of distinct reads if the experiment with size 1e8 conducts
-preseqR.zerotruncated.estimate(hist.count, 1e8)
+preseqR.ztnb.estimate(hist.count, 1e8)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
