@@ -229,10 +229,6 @@ preseqR.continued.fraction.estimate <- function(hist, di = 0, mt = 100,
 	} else {
 		step.size = ss;
 	}
-	if (is.null(max.extrapolation)) {
-		# extrapolation 100 times
-		max.extrapolation = 100 * step.size;
-	}
 	# no interpolation if step.size is larger than the size of experiment
 	# set the starting sample size as the step.size
 	if (step.size > total.sample)
@@ -255,6 +251,10 @@ preseqR.continued.fraction.estimate <- function(hist, di = 0, mt = 100,
 		out = preseqR.interpolate.distinct(hist.count, step.size);
 		yield.estimates = out[, 2];
 		starting.size = (as.integer(total.sample / step.size) + 1) * step.size;
+	}
+	if (is.null(max.extrapolation)) {
+		# extrapolation 100 times
+		max.extrapolation = 100 * step.size;
 	}
 
 	counts.before.first.zero = 1;
