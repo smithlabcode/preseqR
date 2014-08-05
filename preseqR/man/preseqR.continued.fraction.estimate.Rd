@@ -90,17 +90,11 @@ total number of distinct items in a new experiment with bigger sample size.
 	  coefficients, its diagonal value and offset coefficients. For example,
 	  when the diagonal value is zero, there are no offset coefficients. The 
 	  format of a continued fraction should like this:
-	  
-	  \deqn{\frac{a_0 * t}{1 + \frac{a_1 * t}{1 + frac{a_2 * t}{\ldots}}}}
+	  \deqn{\frac{a_0 * t}{1 + \frac{a_1 * t}{1 + \frac{a_2 * t}{\ldots}}}}
+	  See Baker, G. & Graves-Morris, P. \emph{Pade Approximants} for the detail
+	  of the continued fraction.
 }
 
-%% ~Make other sections like Warning with \section{Warning }{....} ~
-
-\seealso{
-	  Baker, G. \& Graves-Morris, P. \emph{Pade Approximants} for the
-	  form of a continued fraction
-%% ~~objects to See Also as \code{\link{help}}, ~~~
-}
 \examples{
 ## load library
 library(preseqR)
