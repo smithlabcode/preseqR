@@ -482,27 +482,31 @@ print.yield.estimates <- function(X, filename, digit = 0)
 
 preseqR.print2file <- function(X, prefix = '', digit = 0)
 {
-	# check if X is a continued fraction
-	if (!is.null(class(X)) && class(X) == "CF") {
-		filename = paste(prefix, "_continued_fraction.txt", sep = '');
-		print.continued.fraction(X, filename);
-	} else if (!is.null(names(X))) {
-		# check if X is the result from preseqR.continued.fraction.estimate
-		if ( length(names(X)) == 2 && 
-				all( names(X) == c("continued.fraction", "yield.estimates") ) )
-		{
-			filename.CF = paste(prefix, "_continued_fraction.txt", sep = '');
-			filename.YE = paste(prefix, "_yield_estimates.txt", sep = '');
-			print.continued.fraction(X$continued.fraction, filename.CF);
-			print.yield.estimates(X$yield.estimates, filename.YE, digit);
-		  # check if X is the result from preseqR.bootstrap.complexity.curve
-		} else if( !is.null(colnames(X))) {
+	if ( !is.null(class(X)) ) {
+		# check if X is a continued fraction
+		if ( class(X) == "CF" ) {
+			filename = paste(prefix, "_continued_fraction.txt", sep = '');
+			print.continued.fraction(X, filename);
+			return(0)
+		  # check if X is a matrix
+		} else if (class(X) == "matrix") {
 			filename.YE = paste(prefix, "_yield_estimates.txt", sep = '');
 			print.yield.estimates(X, filename.YE, digit);
+			return(0)
+		} else if (class(X) == "list") {
+			# check if X is a result from preseqR.continued.fraction.estimate
+			if (!is.null( names(X) ) && length(names(X)) == 2 && 
+					all(names(X) == c("continued.fraction", "yield.estimates")))
+			{	
+				filename.CF = paste(prefix, "_continued_fraction.txt", sep = '');
+				filename.YE = paste(prefix, "_yield_estimates.txt", sep = '');
+				print.continued.fraction(X$continued.fraction, filename.CF);
+				print.yield.estimates(X$yield.estimates, filename.YE, digit);
+				return(0)
+			}
 		}
-	} else
-	{
-		# invalid parameter X
-		write("unknown input variables!", stderr());
 	}
+	# invalid parameter X
+	write("unknown input variables!", stderr());
+	return(1);
 }
