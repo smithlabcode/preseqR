@@ -11,8 +11,7 @@
 	its expectation.
 }
 \usage{
-preseqR.ztnb.complexity.curve <- function(hist, ss = NULL, 
-max.extrapolation = NULL, header = FALSE)
+preseqR.ztnb.complexity.curve(hist, ss = NULL, max.extrapolation = NULL, header = FALSE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
