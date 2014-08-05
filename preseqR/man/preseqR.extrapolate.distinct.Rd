@@ -20,7 +20,7 @@ step.size = NULL, max.size = NULL)
 	  items appear in the experiment, each of which occurs i times.
   }
   \item{CF}{
-	  A continued fraction with "continued.fraction" attribute.
+	  A continued fraction.
   }
   \item{start.size}{
 	  A positive real number represent a starting size of experiment for 
@@ -30,11 +30,11 @@ step.size = NULL, max.size = NULL)
 	  A positive real number represents the step size. It defines the size of 
 	  an additional experiment.
   }
-  \item{max.size}{
+  \item{max.extrapolation}{
 	  A positive real number represents the upperbound for extrapolation. In
-	  other word, it defines the maximum possible size of experiment, in which 
-	  the constructed continued fraction would be called to estimate the total
-	  number of distinct items.   
+	  other word, it defines the maximum possible sample size of experiment, in
+	  which a constructed continued fraction would be called to estimate the
+	  total number of distinct items.   
   }
 }
 \details{
@@ -44,10 +44,8 @@ step.size = NULL, max.size = NULL)
    	to extrapolate.
 }
 \value{
-  \item{yield.estimates}{
-	  A two-columns table represents estimated number of distinct items given 
-	  various sizes of experiments.
-  }
+	A two-columns table represents estimated number of distinct items given 
+	various sizes of experiments.
 }
 \author{
 	Chao Deng
