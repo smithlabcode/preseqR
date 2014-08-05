@@ -36,20 +36,19 @@ preseqR.ztnb.estimate(hist, n, header = FALSE)
 \details{
 	The function assumes that the count of each item follows a negative binomial
 	distribution. Given the histogram of the initial experiment, an EM algorithm
-	is used to learn the parameters (size = s, mu = m) in the negative binomial 
-	distribution. According to theory, for experiments with different sample 
-	sizes, they also follow a negative binomial distribution with parameters 
-	(size = s, mu = m * t). t is the proportion of sample size to the size of
-	the inital experiment. 
+	is used to learn the parameters (size, mu) in the negative binomial 
+	distribution. Assume estimated parameters are (s, m). According to theory, 
+	for experiments with different sample sizes, they also follow a negative
+	binomial distribution with parameters (s, m*t). t is the proportion of 
+	sample sizes between the new experiment and  the inital experiment. 
 	
 	Given the sample size of an experiment, preseqR.ztnb.complexity.curve will
 	calculate the parameters (size, mu) of a negaative binomial distribution
-	corresponding to the experiment. Then the expected number of distinct items
-   	is used as estimation for the experiment.
+	corresponding to the experiment. Then the number of distinct items in the 
+	experiment is estimated by its expectation.
 }
 \value{
-	The expected number of distinct items in the new experiment with sample size
-	n.
+	The expected number of distinct items in the new experiment.
 }
 \author{
 	Chao Deng
