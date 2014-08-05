@@ -1,8 +1,8 @@
-\name{preseqR.nbinom.em}
-\alias{preseqR.nbinom.em}
+\name{preseqR.ztnb.em}
+\alias{preseqR.ztnb.em}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-A function to fit a negative binomial distribution through MLE
+A function to fit a negative binomial distribution
 }
 \description{
 The function fits a histogram of observations with a negative binomial 
@@ -10,7 +10,7 @@ distribution. Since the number of unobserved items missed in the histogram,
 an EM algorithm is used to estimate the number of unobserved items and 
 parameters (size, mu) in a negative binomial distribution.}
 \usage{
-preseqR.nbinom.em(hist, size = SIZE.INIT, mu = MU.INIT, header = FALSE)
+preseqR.ztnb.em(hist, size = SIZE.INIT, mu = MU.INIT, header = FALSE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -40,12 +40,12 @@ preseqR.nbinom.em(hist, size = SIZE.INIT, mu = MU.INIT, header = FALSE)
   }
 }
 \details{
-	  The function assumes that the read count follows a negative binomial 
-	  distribution. The histogram gave frequencies of observed items. The number
-	  of unobserved items is a missing data. The function applies an EM 
+	  The function assumes that the count of each item follows a negative 
+	  binomial distribution. The histogram provided the counts of observed items.
+	  The number of unobserved items is a missing data. The function applies an EM 
 	  algorithm to estimate parameters in the negative binomial distribution. In
 	  E-step, the number of unobserved items is estimated by its expected value 
-	  under current parameters settings. Then in M-step, preseqR.nbinom.em uses 
+	  under current parameters settings. Then in M-step, preseqR.ztnb.em uses 
 	  maximum likelyhood estimation to update parameters based on the complete
 	  data set. It terminates when the conditional loglikelyhood, given the 
 	  number of observations, stop increasing.
@@ -81,7 +81,7 @@ hist.count = vector(mode = 'numeric', length = max(FisherButterlyCaptures$n))
 hist.count[FisherButterlyCaptures$n] = FisherButterlyCaptures$S
 
 ## print the parameters of a fitting negative binomial distribution
-preseqR.nbinom.em(hist.count)
+preseqR.ztnb.em(hist.count)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
