@@ -52,7 +52,7 @@ preseqR.ztnb.estimate <- function(hist, n, header = FALSE)
 	total.sample = (1:length(hist.count) %*% hist.count);
 	distinct.sample = sum(hist.count);
 
-	opt <- preseqR.nbinom.em(hist.count);
+	opt <- preseqR.ztnb.em(hist.count);
 	size = opt$size;
 	mu = opt$mu;
 	# the probability of being sampled in the initial experiment
@@ -96,7 +96,7 @@ preseqR.ztnb.complexity.curve <- function(hist, ss = NULL,
 	dim(sample.size) = n;
 
 	# estimate parameters
-	opt <- preseqR.nbinom.em(hist.count)
+	opt <- preseqR.ztnb.em(hist.count)
 	size = opt$size;
 	mu = opt$mu;
 	# the probability of being sampled in the initial experiment
@@ -133,7 +133,7 @@ nb.loglikelyhood <- function(hist.count, zero.items, size, mu)
 ## EM algorithm to fit a 
 ## hist only includes information for observation
 ## the number of unobserved items is missing data
-preseqR.nbinom.em <- function(hist, size=SIZE.INIT, mu=MU.INIT, header=FALSE)
+preseqR.ztnb.em <- function(hist, size=SIZE.INIT, mu=MU.INIT, header=FALSE)
 {
 	if (mode(hist) == 'character') {
 		hist.count = read.hist(hist, header);
