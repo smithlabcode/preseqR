@@ -412,17 +412,18 @@ preseqR.bootstrap.complexity.curve <- function(hist, bootstrap.times = 100,
 	if (bootstrap.times <= 0) {
 		# the number of sampled points for complexity curve
 		n = dim(yield.estimates)[1];
-		# successful resampling times
-		resampling.n = dim(yield.estimates)[2];
 		# sample sizes
 		index = as.double(step.size) * ( 1:n );
 		# mean values are used as complexity curve
-		mean = apply(yield.estimates, 1, mean);
+		median.estimate = apply(yield.estimates, 1, median);
 		variance = apply(yield.estimates, 1, var);
-		# 95% confident interval based on normal distribution
-		left.interval = mean - qnorm(0.975) * sqrt(variance / resampling.n);
-		right.interval = mean + qnorm(0.975) * sqrt(variance / resampling.n);
-		result = matrix(c(index, mean, left.interval, right.interval), ncol = 4,
+
+		# 95% confident interval based on lognormal distribution
+		C = exp(qnorm(0.975) * sqrt(log(1.0 + variance / (median.estimate^2))))
+		left.interval = median.estimate / C;
+		right.interval = median.estimate * C;
+
+		result = matrix(c(index, median.estimate, left.interval, right.interval), ncol = 4,
 				byrow = FALSE)
 		colnames(result) = c('sample.size', 'yield.estimates','lower.0.95CI','upper.0.95CI')
 		return(result);
@@ -506,6 +507,7 @@ preseqR.print2file <- function(X, prefix = '', digit = 0)
 			}
 		}
 	}
+
 	# invalid parameter X
 	write("unknown input variables!", stderr());
 	return(1);
