@@ -27,7 +27,7 @@ preseqR.ztnb.complexity.curve(hist, ss = NULL, max.extrapolation = NULL, header 
 	  of which occurs i times.
 }
   \item{header}{
-	  An integer represents diagonal value for a constructed continued fraction.
+	  A logic number represents whether or not histogram file contains a header.
 }
   \item{ss}{
 	  A positive real number represents the step size. It defines the size of  
@@ -41,7 +41,7 @@ preseqR.ztnb.complexity.curve(hist, ss = NULL, max.extrapolation = NULL, header 
 }
 }
 \details{
-	see details in \code{\link{preseqR.ztnb.estimate}}
+	see \code{\link{preseqR.ztnb.estimate}} for methods.
 }
 \value{
 	  A two-columns table represents estimated number of distinct items given 
