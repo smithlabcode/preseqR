@@ -492,12 +492,12 @@ preseqR.print2file <- function(X, prefix = '', digit = 0)
 				all( names(X) == c("continued.fraction", "yield.estimates") ) )
 		{
 			filename.CF = paste(prefix, "_continued_fraction.txt", sep = '');
-			filename.YE = paste(prefix, "_yield.estimates.txt", sep = '');
+			filename.YE = paste(prefix, "_yield_estimates.txt", sep = '');
 			print.continued.fraction(X$continued.fraction, filename.CF);
 			print.yield.estimates(X$yield.estimates, filename.YE, digit);
 		  # check if X is the result from preseqR.bootstrap.complexity.curve
 		} else if( !is.null(colnames(X))) {
-			filename.YE = paste(prefix, "_yield.estimates.txt", sep = '');
+			filename.YE = paste(prefix, "_yield_estimates.txt", sep = '');
 			print.yield.estimates(X, filename.YE, digit);
 		}
 	} else
