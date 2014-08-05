@@ -6,9 +6,10 @@
 }
 \description{
 	The function estimates number of distinct items given experiments with 
-	various sample size. All experiments should be under the similar condition
-   	as it was in the inital experiment but with different sizes. Bootstrap 
-	method is used to improve estimation and make a confident interval.	
+	various sample sizes. All experiments should be conducted under the similar
+   	condition as it was in the inital experiment but with different sample sizes.
+   	Bootstrap method is used to improve the estimation and make a confident
+   	interval.	
 }
 \usage{
 preseqR.bootstrap.complexity.curve(hist, bootstrap.times = 100, di = 0, mt = 100, 
@@ -24,8 +25,8 @@ ss = NULL, max.extrapolation = NULL, step.adjust = TRUE, header = FALSE)
 	  and The first columns must be an increasing order. 
 
 	  A count vector is a non-negative integral vector. The ith coordinate x in
-	  the vector represents that x distinct items appear in the experiment, each
-	  of which occurs i times.
+	  the vector represents that there are x distinct items in the experiment, 
+	  each of which appears i times.
 }
   \item{header}{
 	  A logic number represents whether or not histogram file contains a header.
@@ -57,13 +58,14 @@ ss = NULL, max.extrapolation = NULL, step.adjust = TRUE, header = FALSE)
 }
 }
 \details{
-	The function resamples a histogram as the histogram of an intial experiment
-	and applies preseqR.continued.fraction.estimate, which could return
+	The function resamples a histogram by sampling with replacement. The 
+	generated histogram is used as the histogram of an intial experiment
+	and applies preseqR.continued.fraction.estimate, which could return either 
 	a valid estimation or NULL. When times of valid estimation are beyond the 
 	bootstrap.times, it finish resampling and returns the mean of results from
     each estimation	as final results. When total resampling times are beyond an
-    upperbound, it stops and returns failture as the inital experiment
-	is poor for bootstrapping. 
+    upperbound, it stops and returns failture since the quality of the inital
+   	experiment is poor.
 }
 \value{
 	  A four-column table represents estimated number of distinct items given
