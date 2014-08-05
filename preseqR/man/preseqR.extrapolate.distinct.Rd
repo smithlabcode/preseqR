@@ -30,7 +30,7 @@ step.size = NULL, max.size = NULL)
 	  A positive real number represents the step size. It defines the size of 
 	  an additional experiment.
   }
-  \item{max.extrapolation}{
+  \item{max.size}{
 	  A positive real number represents the upperbound for extrapolation. In
 	  other word, it defines the maximum possible sample size of experiment, in
 	  which a constructed continued fraction would be called to estimate the
