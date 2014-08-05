@@ -40,8 +40,9 @@ formate. Functions includes \code{preseqR.continued.fraction.estimate},
 	  when the file is generated.
   }
   \item{prefix_yield_estimates}{
-	  A file contains information about estimated number of distinct items given
-	  experiments with various sample sizes.
+	  A file contains information about estimated number of distinct items. 
+	  "prefix" in prefix_continued_fraction.txt will be replaced by its value
+	  when the file is generated.
   }
 }
 
