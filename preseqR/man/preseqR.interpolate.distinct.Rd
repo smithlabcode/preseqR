@@ -31,10 +31,8 @@ preseqR.interpolate.distinct(hist.count, ss)
 	to interpolate.
 }
 \value{
-  \item{yield.estimates}{
-	  A two-columns table represents estimated number of distinct items given 
-	  various sizes of experiments.
-  }
+    A two-columns table represents estimated number of distinct items given 
+  	experiments with various sample sizes.
 }
 \author{
 	Chao Deng
