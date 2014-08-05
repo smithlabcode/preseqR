@@ -42,18 +42,7 @@ max.extrapolation = NULL, header = FALSE)
 }
 }
 \details{
-	The function assumes that the count of each item follows a negative binomial
-	distribution. Given the histogram of the initial experiment, an EM algorithm
-	is used to learn the parameters (size = s, mu = m) in the negative binomial 
-	distribution. According to theory, for experiments with different sample 
-	sizes, they also follow a negative binomial distribution with parameters 
-	(size = s, mu = m * t). t is the proportion of sample size to the size of
-	the inital experiment. 
-	
-	Given the sample size of an experiment, preseqR.ztnb.complexity.curve will
-	calculate the parameters (size, mu) of a negaative binomial distribution
-	corresponding to the experiment. Then the expected number of distinct items
-   	is used as estimation for the experiment.
+	see details in \code{\link{preseqR.ztnb.estimate}}
 }
 \value{
 	  A two-columns table represents estimated number of distinct items given 

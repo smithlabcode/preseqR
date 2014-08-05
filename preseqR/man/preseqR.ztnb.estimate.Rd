@@ -5,9 +5,10 @@
 A function to predict the number of distinct items
 }
 \description{
-preseqR.ztnb.estimate fits a given histogram with a negative binomial
-distribution. Thus it uses the distribution to estimate the number of distinct
-items if a new experiment with different size conducts.
+The function estimates the number of distinct items if an experiment with
+different sample size conducts. It assumes that the count of each item follows a
+negative binomial distribution. The number of distinct items is estimated by its
+expectation.
 }
 \usage{
 preseqR.ztnb.estimate(hist, n, header = FALSE)
@@ -26,20 +27,29 @@ preseqR.ztnb.estimate(hist, n, header = FALSE)
 	  of which occurs i times.
 }
   \item{n}{
-	  A positive real number represents the size of a new experiment.
+	  A positive real number represents the sample size of an experiment.
 }
   \item{header}{
 	  A logic number represents whether or not histogram file contains a header.
   }
 }
 \details{
-	The function applies preseqR.nbinom.em to fit the given histogram
-	with a negative binomial. Then it estimates the total number of distinct 
-	items and updates parameters size and mu. The number of distinct items in
-	the new experiment is estimated by its expectation. 
+	The function assumes that the count of each item follows a negative binomial
+	distribution. Given the histogram of the initial experiment, an EM algorithm
+	is used to learn the parameters (size = s, mu = m) in the negative binomial 
+	distribution. According to theory, for experiments with different sample 
+	sizes, they also follow a negative binomial distribution with parameters 
+	(size = s, mu = m * t). t is the proportion of sample size to the size of
+	the inital experiment. 
+	
+	Given the sample size of an experiment, preseqR.ztnb.complexity.curve will
+	calculate the parameters (size, mu) of a negaative binomial distribution
+	corresponding to the experiment. Then the expected number of distinct items
+   	is used as estimation for the experiment.
 }
 \value{
-	The expected number of distinct items in the new experiment with size n.
+	The expected number of distinct items in the new experiment with sample size
+	n.
 }
 \author{
 	Chao Deng
@@ -47,22 +57,23 @@ preseqR.ztnb.estimate(hist, n, header = FALSE)
 
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 
-\seealso{
-	  See Baker, G. \& Graves-Morris, P. \emph{Pade Approximants} about the
-	  form of a continued fraction
-%% ~~objects to See Also as \code{\link{help}}, ~~~
-}
 \examples{
+## load library
+library(preseqR)
+
 ## import data
-data(SRR1041830_5M_hist)
-## hist.count is a count vector of a histogram
-hist.count = vector(mode="numeric", length=max(SRR1041830_5M_hist$frequencies))
-hist.count[SRR1041830_5M_hist$frequencies] = SRR1041830_5M_hist$distinct.reads
-## estimate the number of distinct reads if the experiment with size 1e8 conducts
-preseqR.ztnb.estimate(hist.count, 1e8)
+data(FisherButterlyCaptures)
+
+## convert a histogram into a count vector
+hist.count = vector(mode = 'numeric', length = max(FisherButterlyCaptures$n))
+hist.count[FisherButterlyCaptures$n] = FisherButterlyCaptures$S
+
+## estimate the number of distinct butterflies if 10000 butterflies are trapped
+preseqR.ztnb.estimate(hist.count, 1e4)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
 \keyword{ estimate }
 \keyword{ negative }
 \keyword{ binomial }
+\keyword{ EM }
