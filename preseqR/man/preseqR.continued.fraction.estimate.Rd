@@ -6,7 +6,7 @@ A function to predict the number of distinct items
 }
 \description{
 The function constructs a continued fraction to estimate the number of distinct
-items, which are not found in an intial experiment, will be covered if an 
+items, which did not appear in an intial experiment, should be covered if an 
 additional experiment conducts.
 }
 \usage{
@@ -23,8 +23,8 @@ max.extrapolation = NULL, step.adjust = TRUE, header = FALSE)
 	  and The first columns must be an increasing order. 
 	  
 	  A count vector is a non-negative integral vector. The ith coordinate x in
-	  the vector represents that x distinct items appear in the experiment, each
-	  of which appears i times.
+	  the vector represents that there are x distinct items appear in the 
+	  experiment, each of which appears i times.
 }
   \item{header}{
 	  A logic number represents whether or not histogram file contains a header.
@@ -41,9 +41,9 @@ max.extrapolation = NULL, step.adjust = TRUE, header = FALSE)
 }
   \item{max.extrapolation}{
 	  A positive real number represents the upperbound for extrapolation. In
-	  other word, it defines the maximum possible size of experiment, in which 
-	  the constructed continued fraction would be called to estimate the total
-	  number of distinct items.   
+	  other word, it defines the maximum possible sample size of experiment, in
+	  which a constructed continued fraction would be called to estimate the
+	  total number of distinct items.   
 }
   \item{step.adjust}{
 	  A logic value represents whether or not the step size could change. If
@@ -54,12 +54,11 @@ max.extrapolation = NULL, step.adjust = TRUE, header = FALSE)
 \details{
 Items could be anything depending on the experiment. For example, items could be
 reads or molecules if it is an DNA or RNA sequencing experiment. Items could be
-species if it is a population experiment. Generally, it applies to all 
-experiments, which follows  capture-recapture model, although performances may
-vary. 
+species if it is a population experiment. Generally, the function applies to
+all experiments, in which the count of each item follows poisson distribution.
 
 Histogram records the observed results in an initial experiment. It is used to
-train the constructed continued fraction. The continued fraction estimates the
+train a constructed continued fraction. The continued fraction estimates the
 number of additional distinct items discovered when another experiment conducts
 under the similar conditions as the inital experiment. Then by adding the value
 to the number of distinct items in the inital experiment, we could estimate the
@@ -69,13 +68,13 @@ total number of distinct items in a new experiment with bigger sample size.
   \item{continued.fraction}{
 	  A list contains five components of a continued fraction: ps.coeffs is the 
 	  coeffiencies of a power series, which the continued fraction tries to 
-	  estimates; cf.coeffs is coeffiencies of the continued fraction; 
+	  estimate; cf.coeffs is coeffiencies of the continued fraction; 
 	  offset.coeffs is offset coeffiencies of the continued fraction; di is the 
 	  diagonal value of the continued fraction; de is the degree of the 
 	  continued fracton.
   }
   \item{yield.estimates}{
-	  A two-columns table represents estimated number of distinct items given 
+	  A two-column table represents estimated number of distinct items given 
 	  experiments with different sample sizes.
   }
 }
@@ -90,7 +89,7 @@ total number of distinct items in a new experiment with bigger sample size.
 	  coefficients, its diagonal value and offset coefficients. For example,
 	  when the diagonal value is zero, there are no offset coefficients. The 
 	  format of a continued fraction should like this:
-	  \deqn{\frac{a_0 * t}{1 + \frac{a_1 * t}{1 + \frac{a_2 * t}{\ldots}}}}
+	  \deqn{\frac{a_0t}{1 + \frac{a_1t}{1 + \frac{a_2t}{\ldots}}}}
 	  See Baker, G. & Graves-Morris, P. \emph{Pade Approximants} for the detail
 	  of the continued fraction.
 }
