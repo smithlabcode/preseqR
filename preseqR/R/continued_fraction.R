@@ -29,10 +29,10 @@ read.hist <- function(hist.file, header = FALSE)
 	# the first column is the frequencies of observed items
 	freq = hist.table[, 1];
 	# the second column is the number of observed items for each frequency
-	number.item.type = hist.table[, 2];
+	number.items = hist.table[, 2];
 	# check whether frequencies are at least one and the histogram is sorted
 	for (i in 1:length(freq))
-		if (freq[i] <= 0 || freq[i] != floor(freq[i]) || hist.table[i] < 0) {
+		if (freq[i] <= 0 || freq[i] != floor(freq[i]) || number.items[i] < 0) {
 			stop("frequencies should not be positive integers!")
 		} else {
 			if (i > 1 && freq[i - 1] >= freq[i])
@@ -40,7 +40,7 @@ read.hist <- function(hist.file, header = FALSE)
 		}
 	# hist.count is the count vector of the histogram
 	hist.count = vector(mode = 'numeric', length = max(freq));
-	hist.count[freq] = number.item.type;
+	hist.count[freq] = number.items;
 	return(hist.count);
 }
 
@@ -379,6 +379,16 @@ preseqR.bootstrap.complexity.curve <- function(hist, bootstrap.times = 100,
 	yield.estimates = vector(mode = "numeric", length = 0);
 	# upperbound of times of iterations for bootstrapping
 	upper.limit = bootstrap.times / BOOTSTRAP.factor
+	f <- function(x)
+	{
+		# convert a count vector of a histogram into a histogram table
+		freq = which(x != 0);
+		number.items = x[freq];
+		hist.table = matrix(c(freq, number.items), ncol = 2, byrow = FALSE);
+		preseqR.continued.fraction.estimate(hist.table, di, mt, step.size, 
+				max.extrapolation, step.adjust = FALSE);
+	}
+
 	while (bootstrap.times > 0) {
 		# do sampling with replacement
 		# the piece of code achives the same function as nonreplace.sampling()
@@ -389,8 +399,7 @@ preseqR.bootstrap.complexity.curve <- function(hist, bootstrap.times = 100,
 		# reconstruct count vectors of histograms
 		re.hist.count[ nonzero.index, 1:MULTINOMIAL.SAMPLE.TIMES ] = resample;
 		# make estimation for each histogram
-		out = apply(re.hist.count, 2, function(x) preseqR.continued.fraction.estimate(
-					  x, di, mt, step.size, max.extrapolation, step.adjust=FALSE))
+		out = apply(re.hist.count, 2, f)
 		# eliminate NULL items in results
 		out[sapply(out, is.null)] <- NULL
 		# extract yields estimation from each estimation result. 
