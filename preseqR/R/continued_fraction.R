@@ -9,20 +9,31 @@ MULTINOMIAL.SAMPLE.TIMES = 19
 MINOR.correction = 1e-1
 BOOTSTRAP.factor = 0.1
 
-## read a histogram file; return the histogram count vector
+## read a histogram file, a two-column table, or a count vector of the histogram
+## return the histogram count vector
 ## count vector represent frequencies of indexes. For those indexes not showing
 ## in the histogram file, use zeros to represent their values
 read.hist <- function(hist.file, header = FALSE)
 {
-	hist.table = read.table(hist.file, header = header);
+	if (class(hist.file) == "character") {
+		hist.table = read.table(hist.file, header = header);
+	} else if (!is.null(ncol(hist.file)) && ncol(hist.file) == 2) {
+		if (is.numeric(hist.file[, 1]) && is.numeric(hist.file[, 2])) {
+			hist.table = hist.file;
+		} else {
+			stop("All items in the input should be numeric values");
+		}
+	} else {
+		stop("input should be a variable or a file of a two-column table")
+	}
 	# the first column is the frequencies of observed items
 	freq = hist.table[, 1];
 	# the second column is the number of observed items for each frequency
 	number.item.type = hist.table[, 2];
 	# check whether frequencies are at least one and the histogram is sorted
 	for (i in 1:length(freq))
-		if (freq[i] == 0) {
-			stop("items with 0 frequency should not be included")
+		if (freq[i] <= 0) {
+			stop("items with non-positive frequency should not be included")
 		}
 		else {
 			if (i > 1 && freq[i - 1] > freq[i])
@@ -33,7 +44,6 @@ read.hist <- function(hist.file, header = FALSE)
 	hist.count[freq] = number.item.type;
 	return(hist.count);
 }
-
 
 ## calculate the value of the continued fraction CF given the coordinate x 
 ## call c-encoded function "c.calculate.continued.fraction()" through 
@@ -209,14 +219,7 @@ goodtoulmin.2x.extrap <- function(hist.count)
 preseqR.continued.fraction.estimate <- function(hist, di = 0, mt = 100, 
 		ss = NULL,  max.extrapolation = NULL, step.adjust=TRUE, header = FALSE)
 {
-	# input could be either histogram file or count vector of the histogram
-	if (mode(hist) == "character") {
-		hist.count = read.hist(hist, header);
-	}
-	else {
-		hist.count = hist;
-	}
-
+	hist.count = read.hist(hist);
 	# minimum required number of terms of power series in order to construct
 	# continued fraction
 	MIN_REQUIRED_TERMS = 4
@@ -341,11 +344,7 @@ preseqR.bootstrap.complexity.curve <- function(hist, bootstrap.times = 100,
 		di = 0, mt = 100, ss = NULL, max.extrapolation = NULL, step.adjust=TRUE,
 	   	header = FALSE)
 {
-	if (mode(hist) == 'character') {
-		hist.count = read.hist(hist, header);
-	} else {
-		hist.count = hist;
-	}
+	hist.count = read.hist(hist, header);
 	# calculate the total number of sample
 	freq = 1:length(hist.count);
 	total.sample = freq %*% hist.count;
