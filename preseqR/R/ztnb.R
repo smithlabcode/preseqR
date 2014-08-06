@@ -43,16 +43,17 @@ zerotruncated.minus.log.likelyhood <- function(x, size, mu)
 ## n is the size of experiment
 preseqR.ztnb.estimate <- function(hist, n, header = FALSE)
 {
-	if (mode(hist) == 'character') {
-		hist.count = read.hist(hist, header);
-    } else {
-		hist.count = hist;
-	}   
+	hist.count = read.hist(hist, header);
 
 	total.sample = (1:length(hist.count) %*% hist.count);
 	distinct.sample = sum(hist.count);
 
-	opt <- preseqR.ztnb.em(hist.count);
+	# convert the count vector of a histogram into a histogram table
+	freq = which(hist.count != 0);
+	number.items = hist.count[freq]
+	hist.table = matrix(c(freq, number.items), ncol = 2, byrow = FALSE)
+	# estimate the parameters
+	opt <- preseqR.ztnb.em(hist.table);
 	size = opt$size;
 	mu = opt$mu;
 	# the probability of being sampled in the initial experiment
@@ -73,11 +74,8 @@ preseqR.ztnb.estimate <- function(hist, n, header = FALSE)
 preseqR.ztnb.complexity.curve <- function(hist, ss = NULL, 
 		max.extrapolation = NULL, header = FALSE)
 {
-	if (mode(hist) == 'character') {
-		hist.count = read.hist(hist, header);
-	} else {
-		hist.count = hist;
-	}
+	hist.count = read.hist(hist, header);
+
 	total.sample = (1:length(hist.count) %*% hist.count);
 	distinct.sample = sum(hist.count);
 	# set step.size = total.sample if it is undefined
@@ -95,8 +93,12 @@ preseqR.ztnb.complexity.curve <- function(hist, ss = NULL,
 	sample.size = as.double(ss) * (1: n);
 	dim(sample.size) = n;
 
+	# convert the count vector of a histogram into a histogram table
+	freq = which(hist.count != 0);
+	number.items = hist.count[freq]
+	hist.table = matrix(c(freq, number.items), ncol = 2, byrow = FALSE)
 	# estimate parameters
-	opt <- preseqR.ztnb.em(hist.count)
+	opt <- preseqR.ztnb.em(hist.table)
 	size = opt$size;
 	mu = opt$mu;
 	# the probability of being sampled in the initial experiment
@@ -135,11 +137,7 @@ nb.loglikelyhood <- function(hist.count, zero.items, size, mu)
 ## the number of unobserved items is missing data
 preseqR.ztnb.em <- function(hist, size=SIZE.INIT, mu=MU.INIT, header=FALSE)
 {
-	if (mode(hist) == 'character') {
-		hist.count = read.hist(hist, header);
-	} else {
-		hist.count = hist;
-	}
+	hist.count = read.hist(hist, header);
 	# setting the number of unobserved items as 0
 	zero.prob = exp(dnbinom(0, size = size, mu = mu, log = TRUE))
 	# estimate the total number of distinct items
