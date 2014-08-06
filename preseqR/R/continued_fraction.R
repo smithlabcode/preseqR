@@ -34,9 +34,8 @@ read.hist <- function(hist.file, header = FALSE)
 	for (i in 1:length(freq))
 		if (freq[i] <= 0 || freq[i] != floor(freq[i])) {
 			stop("frequencies should not be positive integers!")
-		}
-		else {
-			if (i > 1 && freq[i - 1] > freq[i])
+		} else {
+			if (i > 1 && freq[i - 1] >= freq[i])
 				stop("The input histogram is not sorted in increasing order");
 		}
 	# hist.count is the count vector of the histogram
@@ -219,7 +218,7 @@ goodtoulmin.2x.extrap <- function(hist.count)
 preseqR.continued.fraction.estimate <- function(hist, di = 0, mt = 100, 
 		ss = NULL,  max.extrapolation = NULL, step.adjust=TRUE, header = FALSE)
 {
-	hist.count = read.hist(hist);
+	hist.count = read.hist(hist, header);
 	# minimum required number of terms of power series in order to construct
 	# continued fraction
 	MIN_REQUIRED_TERMS = 4
