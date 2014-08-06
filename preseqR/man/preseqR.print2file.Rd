@@ -29,9 +29,11 @@ preseqR.print2file(X, prefix = '', digit = 0)
 \details{
 preseqR.print2file aims to help users process results when running functions
 in preseqR. It write down results from functions in preseqR into a file with
-formate. Functions includes \code{preseqR.continued.fraction.estimate},
+format. Functions includes \code{preseqR.continued.fraction.estimate},
 \code{preseqR.bootstrap.complexity.curve}, \code{preseqR.extrapolate.distinct}, 
-\code{preseqR.interpolate.distinct}, \code{preseqR.ztnb.complexity.curve}.
+\code{preseqR.interpolate.distinct}, \code{preseqR.ztnb.complexity.curve}. User
+could use the 'prefix' option to assign the directory to write. If the path
+is not specified, the function will write files into current work directory. 
 }
 \value{
   \item{prefix_continued_fraction.txt}{
@@ -57,14 +59,10 @@ library(preseqR)
 ## import data
 data(ShakespeareWordCounts)
 
-## convert a histogram into a count vector 
-hist.count = vector(mode="numeric", length=max(ShakespeareWordCounts$frequencies))
-hist.count[ShakespeareWordCounts$frequencies] = ShakespeareWordCounts$word.types
-
 ## construct a continued fraction and estimate the number of observed word types
 ## if different quantities of Shakespeare's works are discovered.
-result = preseqR.continued.fraction.estimate(hist.count)
-preseqR.print2file(result, "test")
+result = preseqR.continued.fraction.estimate(ShakespeareWordCounts)
+preseqR.print2file(result, prefix = "test")
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

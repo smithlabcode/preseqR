@@ -37,12 +37,8 @@ library(preseqR)
 ## import data
 data(ShakespeareWordCounts)
 
-## convert a histogram into a count vector 
-hist.count = vector(mode="numeric", length=max(ShakespeareWordCounts$frequencies))
-hist.count[ShakespeareWordCounts$frequencies] = ShakespeareWordCounts$word.types
-
 ## estimate the continued fraction
-result = preseqR.continued.fraction.estimate(hist.count)
+result = preseqR.continued.fraction.estimate(ShakespeareWordCounts)
 ## record the constructed continued fraction
 CF = result$continued.fraction
 ## calculate values when the coordinate equals to one

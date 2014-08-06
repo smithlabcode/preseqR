@@ -16,15 +16,11 @@ preseqR.ztnb.complexity.curve(hist, ss = NULL, max.extrapolation = NULL, header 
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{hist}{
-	  The histogram of an experiment. It can be either the file name of a 
-	  histogram or its count vector. For a histogram file, it should have two 
-	  columns. Each row (x, y) represents there are y distinct items, each of
-	  which occurs x times in the experiment. Both x, y are positive integers
-	  and The first columns must be an increasing order. 
-
-	  A count vector is a non-negative integral vector. The ith coordinate x in
-	  the vector represents that x distinct items appear in the experiment, each
-	  of which occurs i times.
+	  The histogram of an experiment. It can be either a file name or a 
+	  variable of a histogram. Histogram should have two columns. Each row (x, y)
+	  represents there are y distinct items, each of which occurs x times in the
+	  experiment. Both x, y are positive integers and the first column must be 
+	  an increasing order. 
 }
   \item{header}{
 	  A logic number represents whether or not histogram file contains a header.
@@ -57,14 +53,10 @@ preseqR.ztnb.complexity.curve(hist, ss = NULL, max.extrapolation = NULL, header 
 library(preseqR)
 
 ## import data
-data(FisherButterlyCaptures)
-
-## convert a histogram into a count vector
-hist.count = vector(mode = 'numeric', length = max(FisherButterlyCaptures$n))
-hist.count[FisherButterlyCaptures$n] = FisherButterlyCaptures$S
+data(FisherButterflyCaptures)
 
 ## estimate a complexity curve
-preseqR.ztnb.complexity.curve(hist.count)
+preseqR.ztnb.complexity.curve(FisherButterflyCaptures)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
