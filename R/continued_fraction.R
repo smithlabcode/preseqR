@@ -256,9 +256,9 @@ goodtoulmin.2x.extrap <- function(hist.count)
 ### step.adjust is an indicator for whether or not to adjust step.size
 preseqR.continued.fraction.estimate <- function(hist, di = 0, mt = 100, 
                                                 ss = NULL,  
-												max.extrapolation = NULL, 
-												step.adjust=TRUE, 
-												header = FALSE)
+                                                max.extrapolation = NULL, 
+                                                step.adjust=TRUE, 
+                                                header = FALSE)
 {
   hist.count <- read.hist(hist, header)
 
@@ -402,8 +402,8 @@ preseqR.continued.fraction.estimate <- function(hist, di = 0, mt = 100,
 ### generate complexity curve through bootstrapping the histogram
 preseqR.bootstrap.complexity.curve <- function(hist, bootstrap.times = 100, 
                                                di = 0, mt = 100, ss = NULL, 
-											   max.extrapolation = NULL, 
-											   step.adjust=TRUE,
+                                               max.extrapolation = NULL, 
+                                               step.adjust=TRUE,
                                                header = FALSE)
 {
   hist.count <- read.hist(hist, header)
@@ -435,7 +435,7 @@ preseqR.bootstrap.complexity.curve <- function(hist, bootstrap.times = 100,
 
   ## set the maximum extrapolation size if it is undefined
   if (is.null(max.extrapolation)) {
-	
+
     ## extrapolation 100 times; 100 is a magic number
     max.extrapolation <- 100 * step.size
   }
@@ -461,7 +461,7 @@ preseqR.bootstrap.complexity.curve <- function(hist, bootstrap.times = 100,
   f <- function(x)
   {
     ## combine nonzero.index column and the second column to build a histogram 
-	## table
+    ## table
     hist.table <- matrix(c(nonzero.index, x), ncol = 2, byrow = FALSE)
     preseqR.continued.fraction.estimate(hist.table, di, mt, step.size, 
                                         max.extrapolation, step.adjust = FALSE)
@@ -470,7 +470,7 @@ preseqR.bootstrap.complexity.curve <- function(hist, bootstrap.times = 100,
   while (bootstrap.times > 0) {
 
     ## do sampling with replacement
-	## re.hist.second.col saves the second columns of each resampled histogram
+    ## re.hist.second.col saves the second columns of each resampled histogram
     re.hist.second.col <- replace.sampling(MULTINOMIAL.SAMPLE.TIMES, hist.count)
 
     ## estimate for each histogram
@@ -488,8 +488,8 @@ preseqR.bootstrap.complexity.curve <- function(hist, bootstrap.times = 100,
       bootstrap.times <- bootstrap.times - success.times
       yield.estimates <- cbind(yield.estimates, yields)
     }
-	
-	## update sampling tmes
+
+    ## update sampling tmes
     counter <- counter + MULTINOMIAL.SAMPLE.TIMES
     if (counter > upper.limit)
       break;
@@ -497,7 +497,7 @@ preseqR.bootstrap.complexity.curve <- function(hist, bootstrap.times = 100,
 
   ## enough successful sampling
   if (bootstrap.times <= 0) {
-	
+
     ## the number of sampled points for complexity curve
     n <- dim(yield.estimates)[1]
 
@@ -513,7 +513,7 @@ preseqR.bootstrap.complexity.curve <- function(hist, bootstrap.times = 100,
     left.interval <- median.estimate / C
     right.interval <- median.estimate * C
 
-	## combine results and output a matrix
+    ## combine results and output a matrix
     result <- matrix(c(index, median.estimate, left.interval, right.interval), 
                     ncol = 4, byrow = FALSE)
     colnames(result) <- c('sample.size', 'yield.estimates', 'lower.0.95CI', 
@@ -552,7 +552,7 @@ print.continued.fraction <- function(X, filename)
     dim(index) <- di
     s <- apply( index, 1, function(x) paste('a_', toString(x - 1), ' = ', 
                                             toString(X$offset.coeffs[x]), 
-											sep = '') )
+                                            sep = '') )
     write(s, filename, append = TRUE)
   }
 
