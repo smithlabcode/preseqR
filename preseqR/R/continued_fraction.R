@@ -32,8 +32,8 @@ read.hist <- function(hist.file, header = FALSE)
 	number.item.type = hist.table[, 2];
 	# check whether frequencies are at least one and the histogram is sorted
 	for (i in 1:length(freq))
-		if (freq[i] <= 0) {
-			stop("items with non-positive frequency should not be included")
+		if (freq[i] <= 0 || freq[i] != floor(freq[i])) {
+			stop("frequencies should not be positive integers!")
 		}
 		else {
 			if (i > 1 && freq[i - 1] > freq[i])
