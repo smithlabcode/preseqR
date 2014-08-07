@@ -187,7 +187,7 @@ replace.sampling <- function(n, hist.count)
   ## returning sampling matrix
   ## each column of the matrix represent the second column of a histogram
   ## all histograms use nonzero.index as the first column
-  return( rmultinom(n, as.integer(distinct.sample), hist.count) )
+  return( rmultinom(n, as.integer(distinct.sample), nonzero.hist.count) )
 }
 
 
