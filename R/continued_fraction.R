@@ -34,7 +34,8 @@ read.hist <- function(hist.file, header = FALSE)
   ## the first column is the frequencies of observed items
   freq <- hist.table[, 1]
 
-  ## the second column is the number of observed distinct items for each frequency
+  ## the second column is the number of observed distinct items for each
+  ## frequency
   number.items <- hist.table[, 2]
 
   ## check whether frequencies are at least one and the histogram is sorted
@@ -61,13 +62,13 @@ preseqR.calculate.continued.fraction <- function(CF, x)
     return()
 
   ## call a c-encoded function c.calculate.continued.fraction
-  out <- .C("c_calculate_continued_fraction", 
-            cf = as.double(CF$cf.coeffs), 
+  out <- .C("c_calculate_continued_fraction",
+            cf = as.double(CF$cf.coeffs),
             cf.l = as.integer(length(CF$cf.coeffs)),
-            off = as.double(CF$offset.coeffs), 
-            di = as.integer(CF$diagonal.idx), 
-            de = as.integer(CF$degree), 
-            coordinate = as.double(x), 
+            off = as.double(CF$offset.coeffs),
+            di = as.integer(CF$diagonal.idx),
+            de = as.integer(CF$degree),
+            coordinate = as.double(x),
             result = as.double(0));
 
   ## return the calculated function value
@@ -91,8 +92,8 @@ preseqR.extrapolate.distinct <- function(hist.count, CF, start.size = NULL,
   de <- as.integer(CF$degree)
   hist.count <- as.double(hist.count)
 
-  ## the styles of the histogram count vector are different between R code 
-  ## and c++ code; The first line of the histogram is always [0  0] in c++ 
+  ## the styles of the histogram count vector are different between R code
+  ## and c++ code; The first line of the histogram is always [0  0] in c++
   ## but the line is removed in R-encoded function
   hist.count <- c(0, hist.count)
   hist.count.l <- as.integer(length(hist.count))
@@ -113,27 +114,27 @@ preseqR.extrapolate.distinct <- function(hist.count, CF, start.size = NULL,
   if (is.null(step.size))
     step.size <- total.reads
   if (is.null(max.size)) {
-    ## 100 is a magic number 
+    ## 100 is a magic number
     max.size <- 100*total.reads
   }
 
   ## allocate memory to store extrapolation results
-  ## first "c.extrapolate.distinct" stores the observed number of distinct 
+  ## first "c.extrapolate.distinct" stores the observed number of distinct
   ## molecules into estimate, then it stores the extrapolation values
   ## thus the allocated memory size is 1 plus the size of extrapolation values,
   ## which is (max.size - start.size) / step.size) + 1
-  extrap.size <- as.integer((max.size - start.size) / step.size) + 1
+  extrap.size <- as.integer( (max.size - start.size)/step.size ) + 1
 
   out <- .C("c_extrapolate_distinct", cf.coeffs, cf.coeffs.l, offset.coeffs,
             di, de, hist.count, hist.count.l, as.double(start.size), 
             as.double(step.size), as.double(max.size), 
-            estimate = as.double(vector(mode = 'numeric', extrap.size + 1)), 
+            estimate = as.double(vector(mode = 'numeric', extrap.size + 1)),
             estimate.l = as.integer(0));
 
   extrapolation <- out$estimate[ 1:out$estimate.l ]
 
   ## sample size vector for extrapolation
-  sample.size <- start.size + step.size * ( (1:length(extrapolation)) - 1 )
+  sample.size <- start.size + step.size*( (1:length(extrapolation)) - 1 )
 
   ## put sample.size and extrapolation results together into a matrix
   result <- matrix(c(sample.size, extrapolation), ncol = 2, byrow = FALSE)
@@ -142,7 +143,7 @@ preseqR.extrapolate.distinct <- function(hist.count, CF, start.size = NULL,
 }
 
 
-### do without replacement of random sampling given a count vector of a 
+### do without replacement of random sampling given a count vector of a
 ### histogram; size is a user defined sample size
 nonreplace.sampling <- function(size, hist.count)
 {
@@ -201,7 +202,7 @@ count.distinct <- function(sample)
 }
 
 
-### interpolate when the sample size is no more than the size of 
+### interpolate when the sample size is no more than the size of
 ### the initial experiment
 preseqR.interpolate.distinct <- function(hist.count, ss)
 {
@@ -254,10 +255,10 @@ goodtoulmin.2x.extrap <- function(hist.count)
 ### estimate a continued fraction given a the count vector of the histogram
 ### di = diagonal, mt = max_terms, 
 ### step.adjust is an indicator for whether or not to adjust step.size
-preseqR.continued.fraction.estimate <- function(hist, di = 0, mt = 100, 
-                                                ss = NULL,  
-                                                max.extrapolation = NULL, 
-                                                step.adjust=TRUE, 
+preseqR.continued.fraction.estimate <- function(hist, di = 0, mt = 100,
+                                                ss = NULL,
+                                                max.extrapolation = NULL,
+                                                step.adjust=TRUE,
                                                 header = FALSE)
 {
   hist.count <- read.hist(hist, header)
@@ -302,17 +303,17 @@ preseqR.continued.fraction.estimate <- function(hist, di = 0, mt = 100,
       yield.estimates <- out[, 2]
 
       ## starting sample size for extrapolation
-      starting.size <- (as.integer(total.sample / step.size) + 1) * step.size
+      starting.size <- ( as.integer(total.sample/step.size) + 1 )*step.size
   }
 
   if (is.null(max.extrapolation)) {
     ## extrapolation 100 times if it is undefined; 100 is a magic number
-    max.extrapolation <- 100 * step.size
+    max.extrapolation <- 100*step.size
   }
 
   ## only use non zeros items in histogram from begining up to the first zero
   counts.before.first.zero = 1
-  while (as.integer(counts.before.first.zero) <= length(hist.count) && 
+  while (as.integer(counts.before.first.zero) <= length(hist.count) &&
          hist.count[counts.before.first.zero] != 0)
     counts.before.first.zero <- counts.before.first.zero + 1
 
@@ -323,15 +324,15 @@ preseqR.continued.fraction.estimate <- function(hist, di = 0, mt = 100,
   ## pre-check to make sure the sample is good for prediction
   if (mt < MIN_REQUIRED_TERMS)
   {
-    m <- "max count before zero is les than min required count (4), 
-         sample not sufficiently deep or duplicates removed"
+    m <- paste("max count before zero is les than min required count (4)",
+               " sample not sufficiently deep or duplicates removed", sep = ',')
     write(m, stderr())
     return(NULL)
   }
   if(goodtoulmin.2x.extrap(hist.count) < 0.0)
   {
-    m <- "Library expected to saturate in doubling of size, 
-         unable to extrapolate"
+    m <- paste("Library expected to saturate in doubling of size",
+               " unable to extrapolate", sep = ',')
     write(m, stderr())
     return(NULL)
   }
@@ -343,13 +344,13 @@ preseqR.continued.fraction.estimate <- function(hist, di = 0, mt = 100,
   ## allocate spaces to store constructed continued fraction
   ## construct a continued fraction with minimum degree
   out <- .C('c_continued_fraction_estimate', as.double(hist.count), 
-            as.integer(length(hist.count)), as.integer(di), as.integer(mt), 
+            as.integer(length(hist.count)), as.integer(di), as.integer(mt),
             ps.coeffs = as.double(vector(mode = 'numeric', length=MAXLENGTH)),
-            ps.coeffs.l = as.integer(0), 
+            ps.coeffs.l = as.integer(0),
             cf.coeffs = as.double(vector(mode = 'numeric', length=MAXLENGTH)),
-            cf.coeffs.l = as.integer(0), 
+            cf.coeffs.l = as.integer(0),
             offset.coeffs =as.double(vector(mode='numeric',length=MAXLENGTH)),
-            diagonal.idx = as.integer(0), 
+            diagonal.idx = as.integer(0),
             degree = as.integer(0),
             is.valid = as.integer(0));
 
@@ -365,13 +366,14 @@ preseqR.continued.fraction.estimate <- function(hist, di = 0, mt = 100,
   length(out$offset.coeffs) <- as.integer(abs(out$diagonal.idx))
   CF <- list(out$ps.coeffs, out$cf.coeffs, out$offset.coeffs, out$diagonal.idx,
              out$degree)
-  names(CF) <- c('ps.coeffs', 'cf.coeffs', 'offset.coeffs', 'diagonal.idx', 
+  names(CF) <- c('ps.coeffs', 'cf.coeffs', 'offset.coeffs', 'diagonal.idx',
                  'degree')
   class(CF) <- 'CF'
 
   ## if the sample size is larger than max.extrapolation
   ## stop extrapolation
-  ## MINOR.correction prevents machinary precision from biasing comparison result
+  ## MINOR.correction prevents machinary precision from biasing comparison
+  ## result
   if (starting.size > (max.extrapolation + MINOR.correction))
   {
     index <- as.double(step.size) * (1:length(yield.estimates))
@@ -381,10 +383,10 @@ preseqR.continued.fraction.estimate <- function(hist, di = 0, mt = 100,
   }
 
   ## extrapolation for experiment with large sample size
-  start <- (starting.size - total.sample) / total.sample
-  end <- (max.extrapolation+MINOR.correction-total.sample) / total.sample
-  step <- step.size / total.sample
-  res <- preseqR.extrapolate.distinct( hist.count, CF, start, step, end)
+  start <- ( starting.size - total.sample )/total.sample
+  end <- ( max.extrapolation + MINOR.correction - total.sample )/total.sample
+  step <- step.size/total.sample
+  res <- preseqR.extrapolate.distinct(hist.count, CF, start, step, end)
 
   ## combine results from interpolation/extrapolation
   yield.estimates <- c(yield.estimates, res[, 2])
@@ -400,9 +402,9 @@ preseqR.continued.fraction.estimate <- function(hist, di = 0, mt = 100,
 
 
 ### generate complexity curve through bootstrapping the histogram
-preseqR.bootstrap.complexity.curve <- function(hist, bootstrap.times = 100, 
-                                               di = 0, mt = 100, ss = NULL, 
-                                               max.extrapolation = NULL, 
+preseqR.bootstrap.complexity.curve <- function(hist, bootstrap.times = 100,
+                                               di = 0, mt = 100, ss = NULL,
+                                               max.extrapolation = NULL,
                                                step.adjust=TRUE,
                                                header = FALSE)
 {
@@ -424,9 +426,9 @@ preseqR.bootstrap.complexity.curve <- function(hist, bootstrap.times = 100,
   }
 
   ## adjust step.size for sampling complexity curve
-  if (step.adjust == TRUE && step.size < (total.sample / 20))
+  if ( step.adjust == TRUE && step.size < total.sample/20 )
   {
-    step.size <- max(step.size, step.size*round(total.sample/(20*step.size)))
+    step.size <- max(step.size, step.size*round(total.sample / (20*step.size)))
 
     ## output the adjusted step size to stderr
     m <- paste("adjust step size to", toString(step.size), '\n', sep = ' ')
@@ -437,7 +439,7 @@ preseqR.bootstrap.complexity.curve <- function(hist, bootstrap.times = 100,
   if (is.null(max.extrapolation)) {
 
     ## extrapolation 100 times; 100 is a magic number
-    max.extrapolation <- 100 * step.size
+    max.extrapolation <- 100*step.size
   }
 
   ## nonzero indexes in the hist.count
@@ -447,7 +449,7 @@ preseqR.bootstrap.complexity.curve <- function(hist, bootstrap.times = 100,
   nonzero.hist.count <- hist.count[nonzero.index]
 
   ## record second columns of resampled histograms
-  re.hist.second.col <- matrix(data = 0, nrow = length(nonzero.index), 
+  re.hist.second.col <- matrix(data = 0, nrow = length(nonzero.index),
                                ncol = MULTINOMIAL.SAMPLE.TIMES)
 
   ## the number of resampling times
@@ -456,11 +458,11 @@ preseqR.bootstrap.complexity.curve <- function(hist, bootstrap.times = 100,
   yield.estimates <- vector(mode = "numeric", length = 0)
 
   ## upperbound of times of iterations for bootstrapping
-  upper.limit <- bootstrap.times / BOOTSTRAP.factor
+  upper.limit <- bootstrap.times/BOOTSTRAP.factor
 
   f <- function(x)
   {
-    ## combine nonzero.index column and the second column to build a histogram 
+    ## combine nonzero.index column and the second column to build a histogram
     ## table
     hist.table <- matrix(c(nonzero.index, x), ncol = 2, byrow = FALSE)
     preseqR.continued.fraction.estimate(hist.table, di, mt, step.size, 
@@ -478,7 +480,7 @@ preseqR.bootstrap.complexity.curve <- function(hist, bootstrap.times = 100,
 
     ## eliminate NULL items in results
     out[sapply(out, is.null)] <- NULL
-    ## extract yields estimation from each estimation result. 
+    ## extract yields estimation from each estimation result.
     yields <- sapply(out, function(x) x$yield.estimates[, 2])
 
     if ( !is.null( dim(yields) ) )
@@ -510,13 +512,13 @@ preseqR.bootstrap.complexity.curve <- function(hist, bootstrap.times = 100,
 
     # 95% confident interval based on lognormal distribution
     C <- exp(qnorm(0.975) * sqrt(log(1.0 + variance / (median.estimate^2))))
-    left.interval <- median.estimate / C
-    right.interval <- median.estimate * C
+    left.interval <- median.estimate/C
+    right.interval <- median.estimate*C
 
     ## combine results and output a matrix
-    result <- matrix(c(index, median.estimate, left.interval, right.interval), 
+    result <- matrix(c(index, median.estimate, left.interval, right.interval),
                     ncol = 4, byrow = FALSE)
-    colnames(result) <- c('sample.size', 'yield.estimates', 'lower.0.95CI', 
+    colnames(result) <- c('sample.size', 'yield.estimates', 'lower.0.95CI',
                          'upper.0.95CI')
     return(result)
   } else {
@@ -550,8 +552,8 @@ print.continued.fraction <- function(X, filename)
   {
     index <- 1:di
     dim(index) <- di
-    s <- apply( index, 1, function(x) paste('a_', toString(x - 1), ' = ', 
-                                            toString(X$offset.coeffs[x]), 
+    s <- apply( index, 1, function(x) paste('a_', toString(x - 1), ' = ',
+                                            toString(X$offset.coeffs[x]),
                                             sep = '') )
     write(s, filename, append = TRUE)
   }
@@ -605,8 +607,8 @@ preseqR.print2file <- function(X, prefix = '', digit = 0)
     } else if (class(X) == "list") {
 
       ## check if X is a result from preseqR.continued.fraction.estimate
-      if (!is.null( names(X) ) && length(names(X)) == 2 && 
-          all(names(X) == c("continued.fraction", "yield.estimates"))) 
+      if (!is.null( names(X) ) && length(names(X)) == 2 &&
+          all(names(X) == c("continued.fraction", "yield.estimates")))
       {  
         filename.CF <- paste(prefix, "_continued_fraction.txt", sep = '')
         filename.YE <- paste(prefix, "_yield_estimates.txt", sep = '')

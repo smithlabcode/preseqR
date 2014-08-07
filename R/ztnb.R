@@ -1,4 +1,4 @@
-### initial settings of two parameters size and mu in a negative binomial 
+### initial settings of two parameters size and mu in a negative binomial
 ### distribution for a numeric optimal searching function optim in R
 SIZE.INIT = 1
 MU.INIT = 0.5
@@ -27,9 +27,9 @@ zerotruncated.dnbinom <- function(x, size, mu, log = FALSE)
 
   ## normalize all non-zero values in negrative binomial to generate ZTNB
   if (log == FALSE) {
-    return(p / q)
+    return( p/q )
   } else {
-    return(p - log(q))
+    return( p - log(q) )
   }
 }
 
@@ -41,7 +41,7 @@ zerotruncated.minus.log.likelyhood <- function(hist.table, size, mu)
 
   ## negative loglikelyhood
   prob <- -prob
-  return( prob %*% hist.table[, 2])
+  return( prob %*% hist.table[, 2] )
 }
 
 
@@ -74,10 +74,10 @@ preseqR.ztnb.em <- function(hist, size=SIZE.INIT, mu=MU.INIT, header=FALSE)
 
   ## estimate the total number of distinct items
   observed.items <- sum(hist.count)
-  L <- observed.items / (1 - zero.prob)
+  L <- observed.items/( 1 - zero.prob )
 
   ## expected the number of unobservations
-  zero.items <- L * zero.prob
+  zero.items <- L*zero.prob
 
   ## convert zero.items into an integer
   zero.items <- floor(zero.items)
@@ -88,7 +88,7 @@ preseqR.ztnb.em <- function(hist, size=SIZE.INIT, mu=MU.INIT, header=FALSE)
 
   ## estimated mean and variance
   m <- (freq %*% number.items) / L
-  v <- ( (freq - m)^2 %*% number.items + m^2 * zero.items ) / (L - 1)
+  v <- ( (freq - m)^2 %*% number.items + m^2 * zero.items )/(L - 1)
 
   ## build a histogram table
   hist.table <- matrix(c(freq, number.items), ncol = 2, byrow = FALSE)
@@ -102,7 +102,7 @@ preseqR.ztnb.em <- function(hist, size=SIZE.INIT, mu=MU.INIT, header=FALSE)
   gr <- function(x) 
   {
     first.term <- ( digamma(x) * zero.items + 
-                    digamma( hist.table[, 1] + size ) %*% hist.table[, 2] ) / L
+                    digamma(hist.table[, 1] + size) %*% hist.table[, 2] )/L
     second.term <- digamma(x)
     third.term <- log(x) - log(x + m)
     result <- first.term - second.term + third.term
@@ -112,10 +112,10 @@ preseqR.ztnb.em <- function(hist, size=SIZE.INIT, mu=MU.INIT, header=FALSE)
 
   ## estimate size and mu based on first and second moments
   if (v > m) {
-    res <- optim(m^2 / (v - m), f, gr, method = "L-BFGS-B", 
+    res <- optim(m^2 / (v - m), f, gr, method = "L-BFGS-B",
            lower = 0.0001, upper = 10000)
   } else {
-    res <- optim(size, f, gr, method = "L-BFGS-B", 
+    res <- optim(size, f, gr, method = "L-BFGS-B",
            lower = 0.0001, upper = 10000)
   }
 
@@ -129,8 +129,8 @@ preseqR.ztnb.em <- function(hist, size=SIZE.INIT, mu=MU.INIT, header=FALSE)
   loglikelyhood <- zerotruncated.minus.log.likelyhood(hist.table, res$par, m)
 
   ## EM algorithm
-  while ((loglikelyhood.pre - loglikelyhood) / observed.items > TOLERANCE 
-      && iter < ITER.TOLERANCE)
+  while (( loglikelyhood.pre - loglikelyhood )/observed.items > TOLERANCE &&
+           iter < ITER.TOLERANCE)
   {
     ## update negative loglikelyhood
     loglikelyhood.pre <- loglikelyhood
@@ -145,35 +145,35 @@ preseqR.ztnb.em <- function(hist, size=SIZE.INIT, mu=MU.INIT, header=FALSE)
     zero.prob <- exp(dnbinom(0, size = size, mu = mu, log = TRUE))
 
     ## estimate the total number of distinct items
-    L <- observed.items / (1 - zero.prob)
+    L <- observed.items/( 1 - zero.prob )
 
     ## update expected number of unobserved items
-    zero.items <- L * zero.prob
+    zero.items <- L*zero.prob
 
     ## convert zero.items into an integer
     zero.items <- floor(zero.items)
 
     ## estimated mean and variance
-    m <- (freq %*% number.items) / L
-    v <- ( (freq - m)^2 %*% number.items + m^2 * zero.items ) / (L - 1)
+    m <- (freq %*% number.items)/L
+    v <- ( (freq - m)^2 %*% number.items + m^2 * zero.items )/(L - 1)
 
 ### M step: estimate the parameters size and mu
     if (v > m) {
-      res <- optim(m^2 / (v - m), f, gr, method = "L-BFGS-B", 
+      res <- optim(m^2 / (v - m), f, gr, method = "L-BFGS-B",
              lower = 0.0001, upper = 10000)
     } else {
-      res <- optim(size, f, gr, method = "L-BFGS-B", 
+      res <- optim(size, f, gr, method = "L-BFGS-B",
              lower = 0.0001, upper = 10000)
     }
     iter <- iter + 1
-    ## zerotruncated loglikelyhood 
+    ## zerotruncated loglikelyhood
     loglikelyhood <- zerotruncated.minus.log.likelyhood(hist.table, res$par, m)
   }
   return(list(size = size, mu = mu, loglik = -loglikelyhood.pre))
 }
 
 
-### predict the number of distinct items using EM algorithm 
+### predict the number of distinct items using EM algorithm
 ### if the histogram file has a header, set header = TRUE
 ### n is the size of experiment
 preseqR.ztnb.estimate <- function(hist, n, header = FALSE)
@@ -197,10 +197,10 @@ preseqR.ztnb.estimate <- function(hist, n, header = FALSE)
   p <- 1 - dnbinom(0, size = size, mu = mu)
 
   ## L is the estimated total number of distinct items
-  L <- distinct.sample / p
+  L <- distinct.sample/p
 
   ## update parameters of negative binomial in the experiment with size n
-  mu <- mu * n / as.double(total.sample)
+  mu <- mu*n/as.double(total.sample)
 
   ## the probability of being sampled under the new experiment
   P <- 1 - dnbinom(0, size = size, mu = mu)
@@ -212,30 +212,30 @@ preseqR.ztnb.estimate <- function(hist, n, header = FALSE)
 ## predict a complexity curve using EM algorithm
 ## ss is the step.size
 ## max.extrapoltion is the maximum value for extrapolation
-preseqR.ztnb.complexity.curve <- function(hist, ss = NULL, 
-                                          max.extrapolation = NULL, 
+preseqR.ztnb.complexity.curve <- function(hist, ss = NULL,
+                                          max.extrapolation = NULL,
                                           header = FALSE)
 {
-  hist.count = read.hist(hist, header)
+  hist.count <- read.hist(hist, header)
 
-  total.sample = (1:length(hist.count) %*% hist.count)
-  distinct.sample = sum(hist.count)
+  total.sample <- (1:length(hist.count) %*% hist.count)
+  distinct.sample <- sum(hist.count)
 
   ## set step.size = total.sample if it is undefined
   if (is.null(ss))
-    ss = total.sample
+    ss <- total.sample
 
   ## set max.extrapolation = 100 * ss if it is undefined
   if (is.null(max.extrapolation)) {
 
     ## n is the number of experiments; 100 is a magic number
-    n = 100
-    max.extrapolation = 100 * ss
+    n <- 100
+    max.extrapolation <- 100*ss
 
   } else {
 
     # n is the number of experiments
-    n = as.integer(max.extrapolation / ss)
+    n <- as.integer( max.extrapolation/ss )
 
   }
 
@@ -256,13 +256,13 @@ preseqR.ztnb.complexity.curve <- function(hist, ss = NULL,
   p <- 1 - dnbinom(0, size = size, mu = mu)
 
   ## L is the estimated total number of distinct items
-  L <- distinct.sample / p
+  L <- distinct.sample/p
 
   ## estimate the item being sampled under new experiments with different size
-  t = sample.size / as.double(total.sample)
+  t = sample.size/as.double(total.sample)
   dim(t) = length(t)
   P = apply(t, 1, function(x) 1 - dnbinom(0, size, mu = x * mu))
-  yield.estimates = L * P
+  yield.estimates = L*P
 
   ## combine sample.size and yield.estimates into matrix
   yield.estimates = matrix(c(sample.size, yield.estimates), ncol = 2, byrow = FALSE)
