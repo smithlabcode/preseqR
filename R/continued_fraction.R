@@ -529,7 +529,7 @@ preseqR.bootstrap.complexity.curve <- function(hist, bootstrap.times = 100,
 
 
 ### write continued fraction into a file
-print.continued.fraction <- function(X, filename)
+print.continued.fraction <- function(X, filename, digit)
 {
   ## use the variable name as the name of the continued fraction
   s <- paste("CONTINUED FRACTION ", deparse(substitute(X)), ':\n', sep = '')
@@ -546,15 +546,24 @@ print.continued.fraction <- function(X, filename)
   ## print the coefficients depending on the value of diagonal value
   write("COEFFICIENTS:", filename, append = TRUE)
   di <- abs(X$diagonal.idx)
-
+    
+  ## the function to print a coefficient
+  ## S is the set of coefficients
+  ## shift is the difference between the index of S and the index of 
+  ## coefficients of a continued fraction
+  f <- function(index, S, shift)
+  {
+    s <- formatC(S[index], digit, format = 'f')
+    s <- paste('a_', toString(index + shift), ' = ', s, sep = '')
+  }
+ 
   ## print offset values if any
   if (di > 0)
   {
     index <- 1:di
     dim(index) <- di
-    s <- apply( index, 1, function(x) paste('a_', toString(x - 1), ' = ',
-                                            toString(X$offset.coeffs[x]),
-                                            sep = '') )
+
+    s <- apply( index, 1, function(x) f(x, X$offset.coeffs, -1) )
     write(s, filename, append = TRUE)
   }
 
@@ -563,8 +572,8 @@ print.continued.fraction <- function(X, filename)
   {
     index <- 1:length(X$cf.coeffs)
     dim(index) <- length(X$cf.coeffs)
-    s <- apply(index, 1,function(x) paste('a_', toString(x - 1 + di),
-                        ' = ', toString(X$cf.coeffs[x]), sep = ''))
+
+	s <- apply( index, 1, function(x) f(x, X$cf.coeffs, di - 1) )
     write(s, filename, append = TRUE)
   }
 }
@@ -588,38 +597,48 @@ print.yield.estimates <- function(X, filename, digit = 0)
 
 
 ### write results from exported functions into a file
-preseqR.print2file <- function(X, prefix = '', digit = 0)
+preseqR.print2file <- function(X, filename = NULL, digit = NULL)
 {
+  ## make sure user spcifies the file name to write
+  if (is.null(filename)) {
+    write("Please specify the file name!", stderr())
+    return(1)
+  }
+
+  ## check if user-defined digit is a non-negative integer
+  if ( !is.null(digit) )
+    if (digit < 0 || digit != floor(digit)) {
+      write("digit must be a non-negative integer!", stderr())
+      return(1)
+  }
+    
   if ( !is.null(class(X)) ) {
 
     ## check if X is a continued fraction
     if ( class(X) == "CF" ) {
-      filename <- paste(prefix, "_continued_fraction.txt", sep = '')
-      print.continued.fraction(X, filename)
+
+      ## if digit is undefined
+      if (is.null(digit))
+		  ## preserve 4 digits after decimal in coefficients
+		  digit = 4
+
+      print.continued.fraction(X, filename, digit)
       return(0)
 
     } else if (class(X) == "matrix") {
-      ## check if X is a matrix
-      filename.YE <- paste(prefix, "_yield_estimates.txt", sep = '')
-      print.yield.estimates(X, filename.YE, digit)
+
+      ## preserve integer after decimal in coefficients
+      if (is.null(digit))
+		  digit = 0
+
+      print.yield.estimates(X, filename, digit)
       return(0)
-
-    } else if (class(X) == "list") {
-
-      ## check if X is a result from preseqR.continued.fraction.estimate
-      if (!is.null( names(X) ) && length(names(X)) == 2 &&
-          all(names(X) == c("continued.fraction", "yield.estimates")))
-      {  
-        filename.CF <- paste(prefix, "_continued_fraction.txt", sep = '')
-        filename.YE <- paste(prefix, "_yield_estimates.txt", sep = '')
-        print.continued.fraction(X$continued.fraction, filename.CF)
-        print.yield.estimates(X$yield.estimates, filename.YE, digit)
-        return(0)
-      }
     }
-  }
+  } else {
 
-  ## invalid parameter X
-  write("unknown input variables!", stderr())
-  return(1)
+    ## invalid parameter X
+    write("unknown input variables!", stderr())
+    write('variables must have a "CF" or "matrix" class attribute!', stderr())
+    return(1)
+  }
 }
