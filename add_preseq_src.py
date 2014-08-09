@@ -1,8 +1,27 @@
 #!/usr/bin/python
 
-### automatically copy and modify required files from preseq to preseqR
-### change header file names from '*hpp' to '*.h'
-### change ' #include "header.hpp" ' to ' #include "header.h" ' in src files
+##  Copyright (C) 2014
+##  University of Southern California, Andrew D. Smith, Chao Deng, Timothy Daley
+##
+##  Authors: Chao Deng
+##
+##  This program is free software: you can redistribute it and/or modify
+##  it under the terms of the GNU General Public License as published by
+##  the Free Software Foundation, either version 3 of the License, or
+##  (at your option) any later version.
+##
+##  This program is distributed in the hope that it will be useful,
+##  but WITHOUT ANY WARRANTY; without even the implied warranty of
+##  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##  GNU General Public License for more details.
+##
+##  You should have received a copy of the GNU General Public License
+##  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+
+### automatically copy and modify required files from preseq to
+### preseqR change header file names from '*hpp' to '*.h' change '
+### #include "header.hpp" ' to ' #include "header.h" ' in src files
 
 import sys
 import shutil
@@ -10,13 +29,14 @@ import os
 import fileinput
 import re
 
-## set the paths for preseq and preseqR directory
-if len(sys.argv) == 3:
-  preseqPath = sys.argv[1]
-  preseqRPath = sys.argv[2]
-else:
+## check that the right number of arguments are specified
+if len(sys.argv) != 3:
   sys.stderr.write('Usage: ./add_preseq_src.py [preseq path] [preseqR path]\n')
   sys.exit(1)
+
+## set the paths for preseq and preseqR directory
+preseqPath = sys.argv[1]
+preseqRPath = sys.argv[2]
 
 ## check any file including keyWords in its name
 ## matchingFile contains file names with keywords 
@@ -66,5 +86,3 @@ for i in filenames:
       if any(feature.match(line) for feature in lineFeature):
         line = line.replace('.hpp', '.h')
       sys.stdout.write(line)
-
-sys.exit(0)
