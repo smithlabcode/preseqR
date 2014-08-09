@@ -24,12 +24,18 @@ filenames = os.listdir(preseqPath)
 keyWords = "continued_fraction"
 matchingFile = [i for i in filenames if keyWords in i]
 
+## catch .o files
+exe = re.compile('.*\.o')
+
 ## copy required files from preseq into preseqR/src directory
 preseqRSrcPath = os.path.join(preseqRPath, 'src')
 for i in matchingFile:
-  srcFile = os.path.join(preseqPath, i)
-  desFile = os.path.join(preseqRSrcPath, i)
-  shutil.copy(srcFile, desFile)
+  
+  ## exclude .o file when copying
+  if not exe.match(i):
+    srcFile = os.path.join(preseqPath, i)
+    desFile = os.path.join(preseqRSrcPath, i)
+    shutil.copy(srcFile, desFile)
 
 ## change header suffix from 'hpp' with 'h'
 os.chdir(preseqRSrcPath)
