@@ -35,8 +35,8 @@ if len(sys.argv) != 3:
   sys.exit(1)
 
 ## set the paths for preseq and preseqR directory
-preseqPath = sys.argv[1]
-preseqRPath = sys.argv[2]
+preseqPath = os.path.abspath(sys.argv[1])
+preseqRPath = os.path.abspath(sys.argv[2])
 
 ## check any file including keyWords in its name
 ## matchingFile contains file names with keywords 
