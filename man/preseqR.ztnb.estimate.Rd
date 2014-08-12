@@ -2,13 +2,12 @@
 \alias{preseqR.ztnb.estimate}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-A function to predict the number of distinct items
+Predict the number of species through a ZTNB
 }
 \description{
-The function estimates the number of distinct items if an experiment with
-different sample size conducts. It assumes that the count of each item follows a
-negative binomial distribution. The number of distinct items is estimated by its
-expectation.
+The function estimates the number of species given the size of the sample in a 
+survey. It assumes that the observed count of species follows a zero-truncated
+negative binomial distribution.
 }
 \usage{
 preseqR.ztnb.estimate(hist, n, header = FALSE)
@@ -16,42 +15,38 @@ preseqR.ztnb.estimate(hist, n, header = FALSE)
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{hist}{
-	  The histogram of an experiment. It can be either a file name or a 
-	  variable of a histogram. Histogram should have two columns. Each row (x, y)
-	  represents there are y distinct items, each of which occurs x times in the
-	  experiment. Both x, y are positive integers and the first column must be 
-	  an increasing order. 
+    Frequencies of count data in an inital survey. \code{hist} can be either a 
+    file name of the data or a variable of a matrix containing the data. The 
+    data must be a two-column table. Each row (x, y) in the table represents
+    there were y species with x individuals observed in each single species. 
+    Both x, y are positive integers and the first column must be sorted in an 
+    ascending order.
 }
   \item{n}{
-	  A positive real number represents the sample size of an experiment.
+  A positive double representing the size of a sample in the survey.
 }
   \item{header}{
-	  A logic number represents whether or not histogram file contains a header.
-  }
+    A boolean variable number representing whether or not the frequencies of 
+    count data file contains a header.
+}
 }
 \details{
-	The function assumes that the count of each item follows a negative binomial
-	distribution. Given the histogram of the initial experiment, an EM algorithm
-	is used to learn the parameters (size, mu) in the negative binomial 
-	distribution. Assume estimated parameters are (s, m). According to theory, 
-	for experiments with different sample sizes, they also follow a negative
-	binomial distribution with parameters (s, m*t). t is the proportion of 
-	sample sizes between the new experiment and  the inital experiment. 
-	
-	Given the sample size of an experiment, preseqR.ztnb.complexity.curve will
-	calculate the parameters (size, mu) of a negaative binomial distribution
-	corresponding to the experiment. Then the number of distinct items in the 
-	experiment is estimated by its expectation.
+    See supplymentary of Daley, T., & Smith, A. D. (2013).
 }
+
 \value{
-	The expected number of distinct items in the new experiment.
+    The expected number of species when a sample with n individuals observed in
+    the survey.
 }
 \author{
-	Chao Deng
+    Chao Deng
+}
+
+\seealso{
+    \code{\link{preseqR.ztnb.em}}
 }
 
 %% ~Make other sections like Warning with \section{Warning }{....} ~
-
 \examples{
 ## load library
 library(preseqR)
