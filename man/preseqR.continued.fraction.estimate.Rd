@@ -32,19 +32,19 @@ max.extrapolation = NULL, step.adjust = TRUE, header = FALSE)
     fraction. Default value is 0.
 }
   \item{mt}{
-    An positive integer represents the maximum degree allowed in the continued
+    An positive integer representing the maximum degree allowed in the continued
 	fraction approximation. Default is 100.
 }
   \item{ss}{
-    An positive double represents the step size between samples. Default value 
+    An positive double representing the step size between samples. Default value 
 	is the size of the sample in the initial survey.
 }
   \item{max.extrapolation}{
-    A positive double represents the maximum possible size of a sample in a
+    A positive double representing the maximum possible size of a sample in a
     survey. Default value is the \code{ss} times 100.
 }
   \item{step.adjust}{
-    A boolean value represents whether or not the value of \code{ss} could 
+    A boolean value representing whether or not the value of \code{ss} could 
 	adjust if the user-defined value of \code{ss} is relatively small comparing
 	with the number of individuals observed in the inital survey. If 
     \code{step.adjust} is TRUE, \code{ss} could adjust to around one twentieth
@@ -81,7 +81,7 @@ to both small and larger extrapolation.
    	fracton.
   }
   \item{yield.estimates}{
-    A two-column table represents estimated number of species given samples of
+    A two-column table representing estimated number of species given samples of
     different sizes.
   }
 }
