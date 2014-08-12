@@ -260,7 +260,7 @@ preseqR.continued.fraction.estimate <- function(hist, di = 0, mt = 100,
                                                 max.extrapolation = NULL,
                                                 step.adjust=TRUE,
                                                 header = FALSE,
-												seed = NULL)
+                                                seed = NULL)
 {
   ## set seed to reproduce the results
   if ( !is.null(seed) ) set.seed(seed)
@@ -411,7 +411,7 @@ preseqR.bootstrap.complexity.curve <- function(hist, bootstrap.times = 100,
                                                max.extrapolation = NULL,
                                                step.adjust=TRUE,
                                                header = FALSE,
-											   seed = NULL)
+                                               seed = NULL)
 {
   ## set seed to reproduce the results
   if ( !is.null(seed) ) set.seed(seed)
