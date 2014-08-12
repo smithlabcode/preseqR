@@ -16,12 +16,12 @@ preseqR.calculate.continued.fraction(CF, x)
     A continued fraction.
   }
   \item{x}{
-    A real number as the coordinate.
+    A double as the coordinate.
   }
 }
 
 \value{
-    A real number is the function value.
+    A double as the function value.
 }
 
 \author{
