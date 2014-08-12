@@ -22,7 +22,8 @@ preseqR.print2file(X, filename = NULL, digit = NULL)
 }
   \item{digit}{
     A nonnegative number controlling the format of output file. It determines
-    the number of digits preserved after the decimal point.
+    the number of digits preserved after the decimal point. Default value is 4
+	for a continued fraction class and 2 for a matrix class.
 }
 }
 
