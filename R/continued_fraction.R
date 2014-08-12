@@ -259,8 +259,12 @@ preseqR.continued.fraction.estimate <- function(hist, di = 0, mt = 100,
                                                 ss = NULL,
                                                 max.extrapolation = NULL,
                                                 step.adjust=TRUE,
-                                                header = FALSE)
+                                                header = FALSE,
+												seed = NULL)
 {
+  ## set seed to reproduce the results
+  if ( !is.null(seed) ) set.seed(seed)
+
   hist.count <- read.hist(hist, header)
 
   ## minimum required number of terms of power series in order to construct
@@ -406,8 +410,12 @@ preseqR.bootstrap.complexity.curve <- function(hist, bootstrap.times = 100,
                                                di = 0, mt = 100, ss = NULL,
                                                max.extrapolation = NULL,
                                                step.adjust=TRUE,
-                                               header = FALSE)
+                                               header = FALSE,
+											   seed = NULL)
 {
+  ## set seed to reproduce the results
+  if ( !is.null(seed) ) set.seed(seed)
+
   hist.count <- read.hist(hist, header)
 
   ## calculate the total number of sample
