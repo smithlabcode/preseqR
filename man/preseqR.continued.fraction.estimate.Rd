@@ -2,7 +2,7 @@
 \alias{preseqR.continued.fraction.estimate}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-A function to predict the number of species
+Predict the number of species
 }
 \description{
 The function constructs a continued fraction to estimate the expected number of
@@ -17,15 +17,15 @@ max.extrapolation = NULL, step.adjust = TRUE, header = FALSE)
 \arguments{
   \item{hist}{
     Frequencies of count data in an inital survey. \code{hist} can be either a
-	file name of the data or a variable of a matrix containing the data. The 
-	data must be a two-column table. Each row (x, y) in the table represents
-   	there were y species with x individuals observed in each single species. 
-	Both x, y are positive integers and the first column must be sorted in an 
-	ascending order.
+    file name of the data or a variable of a matrix containing the data. The 
+    data must be a two-column table. Each row (x, y) in the table represents
+    there were y species with x individuals observed in each single species. 
+    Both x, y are positive integers and the first column must be sorted in an 
+    ascending order.
 }
   \item{header}{
     A boolean variable number representing whether or not the frequencies of 
-	count data file contains a header.
+    count data file contains a header.
 }
   \item{di}{
     An integer representing the diagonal value for a constructed continued 
@@ -33,11 +33,11 @@ max.extrapolation = NULL, step.adjust = TRUE, header = FALSE)
 }
   \item{mt}{
     An positive integer representing the maximum degree allowed in the continued
-	fraction approximation. Default is 100.
+    fraction approximation. Default is 100.
 }
   \item{ss}{
-    An positive double representing the step size between samples. Default value 
-	is the size of the sample in the initial survey.
+    An positive double representing the step size between samples. Default value
+    is the size of the sample in the initial survey.
 }
   \item{max.extrapolation}{
     A positive double representing the maximum possible size of a sample in a
@@ -45,8 +45,8 @@ max.extrapolation = NULL, step.adjust = TRUE, header = FALSE)
 }
   \item{step.adjust}{
     A boolean value representing whether or not the value of \code{ss} could 
-	adjust if the user-defined value of \code{ss} is relatively small comparing
-	with the number of individuals observed in the inital survey. If 
+    adjust if the user-defined value of \code{ss} is relatively small comparing
+    with the number of individuals observed in the inital survey. If 
     \code{step.adjust} is TRUE, \code{ss} could adjust to around one twentieth
     size of the inital sample when the user-defined \code{ss} is too small.
   }
@@ -76,9 +76,9 @@ to both small and larger extrapolation.
     A list contains five components of a continued fraction: ps.coeffs is the 
     coeffiencies of a power series, which the continued fraction tries to 
     approximate; cf.coeffs is coeffiencies of the continued fraction; 
-	offset.coeffs is offset coeffiencies of the continued fraction; di is the
-	diagonal value of the continued fraction; de is the degree of the continued
-   	fracton.
+    offset.coeffs is offset coeffiencies of the continued fraction; di is the
+    diagonal value of the continued fraction; de is the degree of the continued
+    fracton.
   }
   \item{yield.estimates}{
     A two-column table representing estimated number of species given samples of
@@ -100,6 +100,11 @@ sequencing libraries." Nature methods 10.4 (2013): 325-327.
   Chao Deng
 }
 \note{
+    The continued fraction approximation is only applied to extrapolation. For 
+    estimating the expected number of species given a sample with size less than
+    the size of sample in the initial survey, we downsample the observed 
+    individuals and count the number of species as estimation.
+
     The format of a constructed continued fraction is totally determined by its 
     coefficients, its diagonal value and its offset coefficients. For example,
     when the diagonal value is zero, there are no offset coefficients. The 
