@@ -2,7 +2,7 @@
 \alias{preseqR.calculate.continued.fraction}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-A function to calculate the value of a continued fraction
+Calculate the value of a continued fraction
 }
 \description{
 The function calculates the value of a continued fraction given its coordinates.
@@ -13,19 +13,19 @@ preseqR.calculate.continued.fraction(CF, x)
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{CF}{
-	  A continued fraction.
+    A continued fraction.
   }
   \item{x}{
-	  A real number as the coordinate.
+    A real number as the coordinate.
   }
 }
 
 \value{
-	A real number is the function value.
+    A real number is the function value.
 }
 
 \author{
-	Chao Deng
+    Chao Deng
 }
 
 %% ~Make other sections like Warning with \section{Warning }{....} ~
