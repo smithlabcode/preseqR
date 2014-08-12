@@ -11,7 +11,7 @@
 }
 \usage{
 preseqR.bootstrap.complexity.curve(hist, bootstrap.times = 100, di = 0, mt = 100, 
-ss = NULL, max.extrapolation = NULL, step.adjust = TRUE, header = FALSE)
+ss = NULL, max.extrapolation = NULL, step.adjust = TRUE, header = FALSE, seed = NULL)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -53,6 +53,11 @@ ss = NULL, max.extrapolation = NULL, step.adjust = TRUE, header = FALSE)
     with the number of individuals observed in the inital survey. If 
     \code{step.adjust} is TRUE, \code{ss} could adjust to around one twentieth
     size of the inital sample when the user-defined \code{ss} is too small.
+}
+  \item{seed}{
+    A single value, interpreted as an integer, or NULL for random number 
+    generator. Default is NULL. Set the seed if you want to reproduce the 
+    results.
 }
 }
 \details{

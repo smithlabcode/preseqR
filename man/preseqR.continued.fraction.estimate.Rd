@@ -11,7 +11,7 @@ sampling is continued.
 }
 \usage{
 preseqR.continued.fraction.estimate(hist, di = 0, mt = 100, ss = NULL, 
-max.extrapolation = NULL, step.adjust = TRUE, header = FALSE)
+max.extrapolation = NULL, step.adjust = TRUE, header = FALSE, seed = NULL)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -50,6 +50,11 @@ max.extrapolation = NULL, step.adjust = TRUE, header = FALSE)
     \code{step.adjust} is TRUE, \code{ss} could adjust to around one twentieth
     size of the inital sample when the user-defined \code{ss} is too small.
   }
+  \item{seed}{
+    A single value, interpreted as an integer, or NULL for random number 
+    generator. Default is NULL. Set the seed if you want to reproduce the 
+    results.
+}
 }
 \details{
 In general contexts, "species" could be defined in a board way. For example, 
