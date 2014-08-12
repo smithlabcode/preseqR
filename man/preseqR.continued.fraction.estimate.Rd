@@ -5,9 +5,9 @@
 A function to predict the number of species
 }
 \description{
-The function constructs a continued fraction to estimate the number of new 
-species, which did not appear in an intial survey, could be detected if sampling
-could be continued.
+The function constructs a continued fraction to estimate the expected number of
+new species, which did not appear in an intial survey, but will be detected if
+sampling is continued.
 }
 \usage{
 preseqR.continued.fraction.estimate(hist, di = 0, mt = 100, ss = NULL, 
@@ -16,37 +16,37 @@ max.extrapolation = NULL, step.adjust = TRUE, header = FALSE)
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{hist}{
-    Frequencies of frequencies data in an inital survey. \code{hist} can be 
-    either a file name of the data or a variable of a matrix containing the 
-    data. The data must be a two-column table. Each row (x, y) in the table
-    represents there were y species with x individuals observed in each single
-    species. Both x, y are positive integers and the first column must be sorted
-    in an ascending order.
+    Frequencies of count data in an inital survey. \code{hist} can be either a
+	file name of the data or a variable of a matrix containing the data. The 
+	data must be a two-column table. Each row (x, y) in the table represents
+   	there were y species with x individuals observed in each single species. 
+	Both x, y are positive integers and the first column must be sorted in an 
+	ascending order.
 }
   \item{header}{
-    A logic number represents whether or not the frequencies of frequencies data
-    file contains a header.
+    A boolean variable number representing whether or not the frequencies of 
+	count data file contains a header.
 }
   \item{di}{
-    An integer represents the diagonal value for a constructed continued 
-    fraction.
+    An integer representing the diagonal value for a constructed continued 
+    fraction. Default value is 0.
 }
   \item{mt}{
-    An integer represents the maximum number of parameters allowed in a 
-    continued fraction.
+    An positive integer represents the maximum degree allowed in the continued
+	fraction approximation. Default is 100.
 }
   \item{ss}{
-    An integer represents the step size of samples. Default value is the size of
-    a sample in the initial survey.
+    An positive double represents the step size between samples. Default value 
+	is the size of the sample in the initial survey.
 }
   \item{max.extrapolation}{
-    A positive real number represents the maximum possible size of a sample in a
+    A positive double represents the maximum possible size of a sample in a
     survey. Default value is the \code{ss} times 100.
 }
   \item{step.adjust}{
-    A logic value represents whether or not the value of \code{ss} could adjust
-    if the user-defined value of \code{ss} is relatively small comparing with 
-    the number of individuals observed in the inital survey. If 
+    A boolean value represents whether or not the value of \code{ss} could 
+	adjust if the user-defined value of \code{ss} is relatively small comparing
+	with the number of individuals observed in the inital survey. If 
     \code{step.adjust} is TRUE, \code{ss} could adjust to around one twentieth
     size of the inital sample when the user-defined \code{ss} is too small.
   }
@@ -55,28 +55,30 @@ max.extrapolation = NULL, step.adjust = TRUE, header = FALSE)
 In general contexts, "species" could be defined in a board way. For example, 
 "species" could be reads in a sequencing experiment or words in a book. The 
 function can apply to any defined "species" once the count of each single 
-"species" follows a poisson distribution.
+"species" follows a poisson distribution with rates possibly varying between
+species.
 
-According to Good, I. J., & Toulmin, G. H. (1956), if the count of each single 
-species follows a poisson distribution, a power series could be derived to 
-estimate the number of new species when sampling continues. Coefficients of the
-power series are estimated through the frequencies of frequencies data in the
-initial survey. While it performs well for small extrapolation, the power series
-shows large variance in general when the size pasts twice the size of the 
-initial survey.
+According to Good, I. J., & Toulmin, G. H. (1956) and Efron & Thisted (1976), if
+the count of each single species follows a compound poisson distribution, a 
+power series could be derived to estimate the number of new species when
+sampling continues. Coefficients of the power series are estimated through the
+frequencies of count data in the initial survey. While it performs well for
+small extrapolation, the power series shows large variance in general when the
+size pasts twice the size of the initial survey.
 
 Daley, T., & Smith, A. D. (2013) use a continued fraction to approximate the
-power series. The constructed continued fraction locally closes to the power 
-series but has a larger radius of convergence. It can apply to both small and
-larger extrapolation.
+power series. The constructed continued fraction is locally close to the power
+series of Good & Toulmin but is constructed to be globally stable. It can apply
+to both small and larger extrapolation.
 }
 \value{
   \item{continued.fraction}{
     A list contains five components of a continued fraction: ps.coeffs is the 
     coeffiencies of a power series, which the continued fraction tries to 
-    estimate; cf.coeffs is coeffiencies of the continued fraction; offset.coeffs
-    is offset coeffiencies of the continued fraction; di is the diagonal value
-    of the continued fraction; de is the degree of the continued fracton.
+    approximate; cf.coeffs is coeffiencies of the continued fraction; 
+	offset.coeffs is offset coeffiencies of the continued fraction; di is the
+	diagonal value of the continued fraction; de is the degree of the continued
+   	fracton.
   }
   \item{yield.estimates}{
     A two-column table represents estimated number of species given samples of
@@ -87,6 +89,9 @@ larger extrapolation.
 Good, I. J., and G. H. Toulmin. "The number of new species, and the increase 
 in population coverage, when a sample is increased." Biometrika 43.1-2 (1956):
 45-63.
+
+Efron, Bradley, and Ronald Thisted. "Estimating the number of unseen species: 
+How many words did Shakespeare know?." Biometrika 63.3 (1976): 435-447.
 
 Daley, Timothy, and Andrew D. Smith. "Predicting the molecular complexity of 
 sequencing libraries." Nature methods 10.4 (2013): 325-327.
