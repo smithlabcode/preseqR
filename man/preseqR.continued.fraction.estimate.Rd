@@ -2,7 +2,7 @@
 \alias{preseqR.continued.fraction.estimate}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-Predict the number of species
+Predict the number of species through a continued fraction
 }
 \description{
 The function constructs a continued fraction to estimate the expected number of
