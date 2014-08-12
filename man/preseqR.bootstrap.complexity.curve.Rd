@@ -67,7 +67,8 @@ ss = NULL, max.extrapolation = NULL, step.adjust = TRUE, header = FALSE)
     estimations is still below the \code{bootstrap.times}, the function will
     stop and return a \code{NULL}. 
 
-    The confident interval is estimated based on Chao, A. (1987) formula 12.
+    The confident interval is estimated through a lognormal distribution based
+    on Chao, A. (1987) formula 12.
 }
 \value{
     A four-column table representing estimated number of species given samples
