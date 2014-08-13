@@ -312,7 +312,7 @@ preseqR.continued.fraction.estimate <- function(hist, di = 0, mt = 100,
 
   if (is.null(max.extrapolation)) {
     ## extrapolation 100 times if it is undefined; 100 is a magic number
-    max.extrapolation <- 100*step.size
+    max.extrapolation <- 100*total.sample
   }
 
   ## only use non zeros items in histogram from begining up to the first zero
@@ -447,7 +447,7 @@ preseqR.bootstrap.complexity.curve <- function(hist, bootstrap.times = 100,
   if (is.null(max.extrapolation)) {
 
     ## extrapolation 100 times; 100 is a magic number
-    max.extrapolation <- 100*step.size
+    max.extrapolation <- 100*total.sample
   }
 
   ## nonzero indexes in the hist.count

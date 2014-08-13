@@ -229,8 +229,8 @@ preseqR.ztnb.complexity.curve <- function(hist, ss = NULL,
   if (is.null(max.extrapolation)) {
 
     ## n is the number of experiments; 100 is a magic number
-    n <- 100
-    max.extrapolation <- 100*ss
+    max.extrapolation <- 100*total.sample
+    n <- as.integer( max.extrapolation/ss )
 
   } else {
 
