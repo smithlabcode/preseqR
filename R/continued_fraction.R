@@ -55,10 +55,11 @@ read.hist <- function(hist.file, header = FALSE)
 }
 
 
-### calculate the value of the continued fraction CF given the coordinate x
-preseqR.calculate.continued.fraction <- function(CF, x)
+### calculate the value of the continued fraction approximation CF given the
+### argument x
+preseqR.calculate.continued.fraction.approximation <- function(CF, x)
 {
-  if (class(CF) != "CF")
+  if (class(CF) != "RFA")
     return()
 
   ## call a c-encoded function c.calculate.continued.fraction
@@ -81,7 +82,7 @@ preseqR.extrapolate.distinct <- function(hist.count, CF, start.size = NULL,
      step.size = NULL, max.size = NULL)
 {
   ## check CF is a continued fraction with CF attribute
-  if (class(CF) != "CF")
+  if (class(CF) != "RFA")
     return(NULL)
 
   ## parameters for calling the c-encode function c_extrapolate_distinct
@@ -252,15 +253,13 @@ goodtoulmin.2x.extrap <- function(hist.count)
 }
 
 
-### estimate a continued fraction given a the count vector of the histogram
+### construct a rational function approximation given a frequencies of count
+### data
 ### di = diagonal, mt = max_terms, 
 ### step.adjust is an indicator for whether or not to adjust step.size
-preseqR.continued.fraction.estimate <- function(hist, di = 0, mt = 100,
-                                                ss = NULL,
-                                                max.extrapolation = NULL,
-                                                step.adjust=TRUE,
-                                                header = FALSE,
-                                                seed = NULL)
+preseqR.rational.function.approximation.estimate <- function(
+    hist, di = 0, mt = 100, ss = NULL, max.extrapolation = NULL,
+    step.adjust=TRUE, header = FALSE, seed = NULL)
 {
   ## set seed to reproduce the results
   if ( !is.null(seed) ) set.seed(seed)
@@ -268,7 +267,7 @@ preseqR.continued.fraction.estimate <- function(hist, di = 0, mt = 100,
   hist.count <- read.hist(hist, header)
 
   ## minimum required number of terms of power series in order to construct
-  ## continued fraction
+  ## a continued fraction approximation
   MIN_REQUIRED_TERMS <- 4
 
   ## calculate total number of sample
@@ -321,7 +320,8 @@ preseqR.continued.fraction.estimate <- function(hist, di = 0, mt = 100,
          hist.count[counts.before.first.zero] != 0)
     counts.before.first.zero <- counts.before.first.zero + 1
 
-  ## continued fraction with even degree conservatively estimates
+  ## constrain the continued fraction approximation with even degree 
+  ## conservatively estimates
   mt <- min(mt, counts.before.first.zero - 1)
   mt <- mt - (mt %% 2)
 
@@ -345,8 +345,8 @@ preseqR.continued.fraction.estimate <- function(hist, di = 0, mt = 100,
   ## call the c-encoded function
   hist.count <- c(0, hist.count)
 
-  ## allocate spaces to store constructed continued fraction
-  ## construct a continued fraction with minimum degree
+  ## allocate spaces to store constructed continued fraction approximation
+  ## construct a continued fraction approximation with minimum degree
   out <- .C('c_continued_fraction_estimate', as.double(hist.count), 
             as.integer(length(hist.count)), as.integer(di), as.integer(mt),
             ps.coeffs = as.double(vector(mode = 'numeric', length=MAXLENGTH)),
@@ -360,7 +360,7 @@ preseqR.continued.fraction.estimate <- function(hist, di = 0, mt = 100,
 
   if (!out$is.valid)
   {
-    write("Fail to construct continued fraction", stderr())
+    write("Fail for rational function approximation", stderr())
     return(NULL)
   }
 
@@ -372,7 +372,7 @@ preseqR.continued.fraction.estimate <- function(hist, di = 0, mt = 100,
              out$degree)
   names(CF) <- c('ps.coeffs', 'cf.coeffs', 'offset.coeffs', 'diagonal.idx',
                  'degree')
-  class(CF) <- 'CF'
+  class(CF) <- 'RFA'
 
   ## if the sample size is larger than max.extrapolation
   ## stop extrapolation
@@ -406,7 +406,7 @@ preseqR.continued.fraction.estimate <- function(hist, di = 0, mt = 100,
 
 
 ### generate complexity curve through bootstrapping the histogram
-preseqR.bootstrap.complexity.curve <- function(hist, bootstrap.times = 100,
+preseqR.bootstrap.species.richness <- function(hist, bootstrap.times = 100,
                                                di = 0, mt = 100, ss = NULL,
                                                max.extrapolation = NULL,
                                                step.adjust=TRUE,
@@ -473,8 +473,8 @@ preseqR.bootstrap.complexity.curve <- function(hist, bootstrap.times = 100,
     ## combine nonzero.index column and the second column to build a histogram
     ## table
     hist.table <- matrix(c(nonzero.index, x), ncol = 2, byrow = FALSE)
-    preseqR.continued.fraction.estimate(hist.table, di, mt, step.size, 
-                                        max.extrapolation, step.adjust = FALSE)
+    preseqR.rational.function.approximation.estimate(
+        hist.table, di, mt, step.size, max.extrapolation, step.adjust = FALSE)
   }
 
   while (bootstrap.times > 0) {
@@ -536,14 +536,15 @@ preseqR.bootstrap.complexity.curve <- function(hist, bootstrap.times = 100,
 }
 
 
-### write continued fraction into a file
-print.continued.fraction <- function(X, filename, digit)
+### write a continued fraction approximation into a file
+print.continued.fraction.approximation <- function(X, filename, digit)
 {
-  ## use the variable name as the name of the continued fraction
-  s <- paste("CONTINUED FRACTION ", deparse(substitute(X)), ':\n', sep = '')
+  ## use the variable name as the name of the continued fraction approximation
+  s <- paste("CONTINUED FRACTION APPROXIMATION", deparse(substitute(X)), ':\n',
+             sep = '')
   write(s, filename)
 
-  ## print the degree of the continued fraction
+  ## print the degree of the continued fraction approximation
   s <- paste("DEGREE", toString(X$degree), "\n", sep = '\t')
   write(s, filename, append = TRUE)
 
@@ -558,7 +559,7 @@ print.continued.fraction <- function(X, filename, digit)
   ## the function to print a coefficient
   ## S is the set of coefficients
   ## shift is the difference between the index of S and the index of 
-  ## coefficients of a continued fraction
+  ## coefficients of a continued fraction approximation
   f <- function(index, S, shift)
   {
     s <- formatC(S[index], digit, format = 'f')
@@ -622,15 +623,15 @@ preseqR.print2file <- function(X, filename = NULL, digit = NULL)
     
   if ( !is.null(class(X)) ) {
 
-    ## check if X is a continued fraction
-    if ( class(X) == "CF" ) {
+    ## check if X is a rational function approximation
+    if ( class(X) == "RFA" ) {
 
       ## if digit is undefined
       if (is.null(digit))
 		  ## preserve 4 digits after decimal in coefficients
 		  digit = 4
 
-      print.continued.fraction(X, filename, digit)
+      print.continued.fraction.approximation(X, filename, digit)
       return(0)
 
     } else if (class(X) == "matrix") {
@@ -646,7 +647,7 @@ preseqR.print2file <- function(X, filename = NULL, digit = NULL)
 
     ## invalid parameter X
     write("unknown input variables!", stderr())
-    write('variables must have a "CF" or "matrix" class attribute!', stderr())
+    write('variables must have a "RFA" or "matrix" class attribute!', stderr())
     return(1)
   }
 }
