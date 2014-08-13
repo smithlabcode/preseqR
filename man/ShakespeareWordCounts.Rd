@@ -16,3 +16,5 @@ library(preseqR)
 ##load data
 data(ShakespeareWordCounts)
 }
+
+\keyword{ data }

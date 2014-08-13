@@ -7,7 +7,7 @@ Predict the number of species through a ZTNB
 \description{
 The function estimates the number of species given the size of the sample in a 
 survey. It assumes that the observed count of species follows a zero-truncated
-negative binomial distribution.
+negative binomial (ZTNB) distribution.
 }
 \usage{
 preseqR.ztnb.estimate(hist, n, header = FALSE)
@@ -42,10 +42,6 @@ preseqR.ztnb.estimate(hist, n, header = FALSE)
     Chao Deng
 }
 
-\seealso{
-    \code{\link{preseqR.ztnb.em}}
-}
-
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 \examples{
 ## load library
@@ -59,7 +55,4 @@ preseqR.ztnb.estimate(FisherButterflyCaptures, 1e4)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-\keyword{ estimate }
-\keyword{ negative }
-\keyword{ binomial }
-\keyword{ EM }
+\keyword{ ZTNB }

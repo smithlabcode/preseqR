@@ -69,8 +69,4 @@ preseqR.ztnb.em(FisherButterflyCaptures)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-\keyword{ zero-truncated }
-\keyword{ negative }
-\keyword{ binomial }
-\keyword{ MLE }
-\keyword{ EM }
+\keyword{ ZTNB }

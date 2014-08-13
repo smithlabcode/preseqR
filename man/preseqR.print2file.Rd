@@ -23,18 +23,10 @@ preseqR.print2file(X, filename = NULL, digit = NULL)
   \item{digit}{
     A nonnegative number controlling the format of output file. It determines
     the number of digits preserved after the decimal point. Default value is 4
-	for a continued fraction class and 2 for a matrix class.
+    for a continued fraction class and 2 for a matrix class.
 }
 }
 
-\details{
-    The function aims to help users process returning results from functions in 
-    preseqR. Here functions include \code{preseqR.bootstrap.complexity.curve}, 
-    \code{preseqR.extrapolate.distinct}, \code{preseqR.interpolate.distinct}, 
-    and \code{preseqR.ztnb.complexity.curve}. For the returning result from
-    \code{preseqR.continued.fraction.estimate}, \code{preseqR.print2file} can
-    write down its components separately. See examples below.
-}
 \value{
   It returns either 0 or 1. 0 means normal. 1 means abnormal. If the returning
   value is 1, an error message will print on stderr.
@@ -60,4 +52,3 @@ preseqR.print2file(result$yield.estimates, "observed_wordtypes.txt")
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
 \keyword{ print }
-\keyword{ file }

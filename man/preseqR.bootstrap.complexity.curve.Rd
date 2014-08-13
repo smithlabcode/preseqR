@@ -1,4 +1,4 @@
-\name{presesqR.bootstrap.complexity.curve}
+\name{preseqR.bootstrap.complexity.curve}
 \alias{preseqR.bootstrap.complexity.curve}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
@@ -120,7 +120,4 @@ preseqR.bootstrap.complexity.curve(FisherButterflyCaptures)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-\keyword{ complexity }
-\keyword{ bootstrap }
-\keyword{ confident }
-\keyword{ interval }
+\keyword{ continued fraction}

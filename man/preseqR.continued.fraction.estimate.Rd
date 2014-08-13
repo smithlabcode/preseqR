@@ -139,6 +139,4 @@ result$yield.estimates
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-\keyword{ approximation }
-\keyword{ continued }
-\keyword{ fraction }
+\keyword{ continued fraction }

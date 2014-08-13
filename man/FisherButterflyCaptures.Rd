@@ -17,3 +17,5 @@ library(preseqR)
 ##load data
 data(FisherButterflyCaptures)
 }
+
+\keyword{ data }

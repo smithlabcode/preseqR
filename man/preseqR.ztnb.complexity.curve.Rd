@@ -60,7 +60,4 @@ preseqR.ztnb.complexity.curve(FisherButterflyCaptures)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-\keyword{ complexity }
-\keyword{ negative }
-\keyword{ binomial }
-\keyword{ EM }
+\keyword{ ZTNB }
