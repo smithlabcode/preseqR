@@ -3,13 +3,13 @@
 \alias{preseqR}
 \docType{package}
 \title{
-    Species richness estimation through rational functions
+    Species richness estimation through rational function approximations
 }
 \description{
     This is a R package to make the functionality of Preseq available in the R
     statistical computing environment. It provides functions to construct,
-    calcuate and use rational functions to estimate the number of species for
-    a sample with a given size.
+    calculate and use rational function approximations to estimate the number of
+    observed species for a sample with a given size.
 }
 \details{
 \tabular{ll}{
@@ -20,13 +20,14 @@ Date: \tab 2014-08-12\cr
 License: \tab GPL-3\cr
 }
 
-functions: preseqR.continued.fraction.estimate, 
-           preseqR.bootstrap.complexity.curve,
-           preseqR.calculate.continued.fraction,
+functions: preseqR.rational.function.approximation.estimate, 
+           preseqR.bootstrap.species.richness,
+           preseqR.calculate.continued.fraction.approximation,
            preseqR.ztnb.em,
            preseqR.ztnb.estimate,
-           preseqR.ztnb.complexity.curve.
+           preseqR.ztnb.species.richness,
            preseqR.print2file;
+
 data: FisherButterflyCaptures, ShakespeareWordCounts
 }
 \author{
@@ -66,15 +67,15 @@ library(preseqR)
 ## load data
 data(FisherButterflyCaptures)
 
-## construct a continued fraction and estimate the number of butterflie species
-## given samples of different sizes
-res <- preseqR.continued.fraction.estimate(FisherButterflyCaptures)
+## construct a continued fraction approximation and estimate the number of
+## butterflie species given samples of different sizes
+res <- preseqR.rational.function.approximation.estimate(FisherButterflyCaptures)
 
 ## output the continued fraction approximation
 res$continued.fraction
 
-## calculate the function value when the coordinate equals to one
-preseqR.calculate.continued.fraction(res$continued.fraction, 1)
+## calculate the function value when the argument equals to one
+preseqR.calculate.continued.fraction.approximation(res$continued.fraction, 1)
 
 ## output the estimated number of butterflies species
 res$yield.estimates
@@ -83,8 +84,8 @@ res$yield.estimates
 preseqR.print2file(res$continued.fraction, 'continued_fraction.txt')
 preseqR.print2file(res$yield.estimate, 'butterflies_estimation.txt')
 
-## use bootstrap method to build a confident interval
-res <- preseqR.bootstrap.complexity.curve(FisherButterflyCaptures)
+## use bootstrap method to build confident intervals
+res <- preseqR.bootstrap.species.richness(FisherButterflyCaptures)
 
 ## write results down to a file
 preseqR.print2file(res, 'butterfliesCI.txt')
@@ -97,7 +98,7 @@ preseqR.ztnb.em(FisherButterflyCaptures)
 preseqR.ztnb.estimate(FisherButterflyCaptures, 10000)
 
 ## estimate the number of butterflie specie given samples of different sizes
-res <- preseqR.ztnb.complexity.curve(FisherButterflyCaptures)
+res <- preseqR.ztnb.species.richness(FisherButterflyCaptures)
 
 ## write results down to a file
 preseqR.print2file(res, 'butterflies_ZTNB_estimation.txt')
