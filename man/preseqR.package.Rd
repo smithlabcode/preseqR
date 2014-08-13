@@ -67,8 +67,8 @@ library(preseqR)
 ## load data
 data(FisherButterflyCaptures)
 
-## construct a continued fraction approximation and estimate the number of
-## butterflie species given samples of different sizes
+## construct a continued fraction approximation and extrapolate the number of
+## butterfly species given samples of different sizes
 res <- preseqR.rational.function.approximation.estimate(FisherButterflyCaptures)
 
 ## output the continued fraction approximation
