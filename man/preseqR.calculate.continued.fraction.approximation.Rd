@@ -1,11 +1,11 @@
-\name{preseqR.calculate.continued.fraction}
-\alias{preseqR.calculate.continued.fraction}
+\name{preseqR.calculate.continued.fraction.approximation}
+\alias{preseqR.calculate.continued.fraction.approximation}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
 Calculate the value of a continued fraction
 }
 \description{
-The function calculates the value of a continued fraction given its coordinates.
+The function calculates the value of a continued fraction.
 }
 \usage{
 preseqR.calculate.continued.fraction(CF, x)
@@ -16,7 +16,7 @@ preseqR.calculate.continued.fraction(CF, x)
     A continued fraction.
   }
   \item{x}{
-    A double as the coordinate.
+    A double as the argument.
   }
 }
 
@@ -38,12 +38,12 @@ library(preseqR)
 data(ShakespeareWordCounts)
 
 ## estimate the continued fraction
-result = preseqR.continued.fraction.estimate(ShakespeareWordCounts)
+result = preseqR.rational.function.approximation.estimate(ShakespeareWordCounts)
 ## record the constructed continued fraction
 CF = result$continued.fraction
-## calculate values when the coordinate equals to one
-preseqR.calculate.continued.fraction(CF, 1)
+## calculate values when the argument equals to one
+preseqR.calculate.continued.fraction.approximation(CF, 1)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-\keyword{ continued fraction }
+\keyword{ Rational Function Approximation }
