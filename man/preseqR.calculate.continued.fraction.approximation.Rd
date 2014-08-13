@@ -37,10 +37,12 @@ library(preseqR)
 ## import data
 data(ShakespeareWordCounts)
 
-## estimate the continued fraction
+## the continued fraction approximation
 result = preseqR.rational.function.approximation.estimate(ShakespeareWordCounts)
-## record the constructed continued fraction
+
+## record the constructed continued fraction approximation
 CF = result$continued.fraction
+
 ## calculate values when the argument equals to one
 preseqR.calculate.continued.fraction.approximation(CF, 1)
 }
