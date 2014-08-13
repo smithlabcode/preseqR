@@ -1,10 +1,10 @@
 Package: preseqR
 Type: Package
-Title: Predicting Library Complexity
+Title: Predicting Species Richness
 Version: 1.0
-Date: 2014-06-26
+Date: 2014-08-11
 Author: Andrew D. Smith, Timothy Daley and Chao Deng
 Maintainer: Chao Deng <chaodeng@usc.edu>
-Description: This is a R package to make the functionality of Preseq available in the R statistical computing environment. 
+Description: This is a R package to use rational functions for species richness estimation.
 License: GPL-3
-Keyword: Library, Complexity, Rational Function
+Keyword: SPECIES, Richness, Rational Function
