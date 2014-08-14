@@ -56,8 +56,8 @@ read.hist <- function(hist.file, header = FALSE)
 
 
 ### calculate the value of the continued fraction approximation CF given the
-### argument x
-preseqR.calculate.continued.fraction.approximation <- function(CF, x)
+### argument t
+preseqR.calculate.continued.fraction.approximation <- function(CF, t)
 {
   if (class(CF) != "RFA")
     return()
@@ -69,7 +69,7 @@ preseqR.calculate.continued.fraction.approximation <- function(CF, x)
             off = as.double(CF$offset.coeffs),
             di = as.integer(CF$diagonal.idx),
             de = as.integer(CF$degree),
-            coordinate = as.double(x),
+            coordinate = as.double(t),
             result = as.double(0));
 
   ## return the calculated function value
