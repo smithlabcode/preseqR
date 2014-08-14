@@ -15,7 +15,7 @@ preseqR.ztnb.estimate(hist, n, header = FALSE)
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{hist}{
-    Frequencies of count data in an inital survey. \code{hist} can be either a 
+    Frequencies of count data in an initial survey. \code{hist} can be either a 
     file name of the data or a variable of a matrix containing the data. The 
     data must be a two-column table. Each row (j, n_j) in the table represents
     there were n_j species with j individuals observed in each single species. 
@@ -36,7 +36,7 @@ preseqR.ztnb.estimate(hist, n, header = FALSE)
     parameters. 
 	
 	For extrapolation the number of species through a negative binomial 
-    distribution, See supplimentary of Daley, T., & Smith, A. D. (2013).
+    distribution, See supplementary of Daley, T., & Smith, A. D. (2013).
 }
 
 \value{
