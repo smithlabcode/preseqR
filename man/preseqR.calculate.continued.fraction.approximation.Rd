@@ -8,14 +8,14 @@ Calculate the value of a continued fraction
 The function calculates the value of a continued fraction.
 }
 \usage{
-preseqR.calculate.continued.fraction.approximation(CF, x)
+preseqR.calculate.continued.fraction.approximation(CF, t)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{CF}{
     A continued fraction.
   }
-  \item{x}{
+  \item{t}{
     A double as the argument.
   }
 }
