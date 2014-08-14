@@ -16,7 +16,7 @@ ss = NULL, max.extrapolation = NULL, step.adjust = TRUE, header = FALSE, seed = 
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{hist}{
-    Frequencies of count data in an inital survey. \code{hist} can be either a 
+    Frequencies of count data in an initial survey. \code{hist} can be either a 
     file name of the data or a variable of a matrix containing the data. The 
     data must be a two-column table. Each row (j, n_j) in the table represents
     there were n_j species with j individuals observed in each single species. 
@@ -51,9 +51,9 @@ ss = NULL, max.extrapolation = NULL, step.adjust = TRUE, header = FALSE, seed = 
   \item{step.adjust}{
     A boolean value representing whether or not the value of \code{ss} could 
     adjust if the user-defined value of \code{ss} is relatively small comparing
-    with the number of individuals observed in the inital survey. If 
+    with the number of individuals observed in the initial survey. If 
     \code{step.adjust} is TRUE, \code{ss} could adjust to around one twentieth
-    size of the inital sample when the user-defined \code{ss} is too small.
+    size of the initial sample when the user-defined \code{ss} is too small.
 }
   \item{seed}{
     A single value, interpreted as an integer, or NULL for random number 
@@ -81,12 +81,12 @@ power series. The rational function approximation is locally close to the power
 series of Good & Toulmin but is constructed to be globally stable. It can apply
 to both small and larger extrapolation.
 
-The confident interval is estimated through a lognormal confident interval based
-on Chao, A. (1987) formula 12.
+The confident interval is estimated through a log normal confident interval
+based on Chao, A. (1987) formula 12.
 }
 \value{
     A four-column table representing estimated number of species given samples
-    of different sizes or \code{NULL} representing failure of boostrapping.
+    of different sizes or \code{NULL} representing failure of bootstrapping.
     The first column is the size of a sample. The second column is the estimated
     number of species. The third column is the lower bound of the 95\% confident
     interval. The fourth column is the upper bound of the 95\% confident 
@@ -118,9 +118,10 @@ unequal catchability." Biometrics (1987): 783-791.
     individuals and count the number of species as estimation.
 
     A global variable \code{BOOTSTRAP.factor} defines maximum resampling times 
-    allowed for bootstrapping. The default value is 0.1. When resampling times are
-    beyond \code{bootstrap.times} / \code{BOOTSTRAP.factor}, the function will
-    terminate since the quality of the sample in the inital survery is poor.
+    allowed for bootstrapping. The default value is 0.1. When resampling times
+    are beyond \code{bootstrap.times} / \code{BOOTSTRAP.factor}, the function 
+    will terminate since the quality of the sample in the initial survey is
+    poor.
 }
 
 %% ~Make other sections like Warning with \section{Warning }{....} ~
