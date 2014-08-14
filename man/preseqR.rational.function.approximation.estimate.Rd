@@ -49,7 +49,7 @@ max.extrapolation = NULL, step.adjust = TRUE, header = FALSE, seed = NULL)
     adjust if the user-defined value of \code{ss} is relatively small comparing
     with the number of individuals observed in the initial survey. If 
     \code{step.adjust} is TRUE, \code{ss} could adjust to around one twentieth
-    size of the inital sample when the user-defined \code{ss} is too small.
+    size of the initial sample when the user-defined \code{ss} is too small.
   }
   \item{seed}{
     A single value, interpreted as an integer, or NULL for random number 
