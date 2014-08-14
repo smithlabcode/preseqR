@@ -52,7 +52,7 @@ data(ShakespeareWordCounts)
 ## construct a continued fraction approximation and estimate the number of
 ## observed word types
 ## if different quantities of Shakespeare's works are discovered.
-result = preseqR.continued.fraction.estimate(ShakespeareWordCounts)
+result = preseqR.continued.fraction.approximation.estimate(ShakespeareWordCounts)
 preseqR.print2file(result$continued.fraction, "continued_fraction_approximation.txt")
 preseqR.print2file(result$yield.estimates, "observed_wordtypes.txt")
 }
