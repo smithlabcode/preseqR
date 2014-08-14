@@ -20,8 +20,8 @@ ss = NULL, max.extrapolation = NULL, step.adjust = TRUE, header = FALSE, seed = 
     file name of the data or a variable of a matrix containing the data. The 
     data must be a two-column table. Each row (j, n_j) in the table represents
     there were n_j species with j individuals observed in each single species. 
-    Both x, y are positive integers and the first column must be sorted in an 
-    ascending order.
+    Both j and n_j are positive integers and the first column must be sorted in
+    an ascending order.
 }
   \item{header}{
     A boolean variable number representing whether or not the frequencies of 
