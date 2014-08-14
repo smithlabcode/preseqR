@@ -15,7 +15,7 @@ preseqR.ztnb.species.richness(hist, ss = NULL, max.extrapolation = NULL, header 
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{hist}{
-    Frequencies of count data in an inital survey. \code{hist} can be either a 
+    Frequencies of count data in an initial survey. \code{hist} can be either a 
     file name of the data or a variable of a matrix containing the data. The 
     data must be a two-column table. Each row (j, n_j) in the table represents
     there were n_j species with j individuals observed in each single species. 
@@ -32,7 +32,8 @@ preseqR.ztnb.species.richness(hist, ss = NULL, max.extrapolation = NULL, header 
 }
   \item{max.extrapolation}{
     A positive double representing the maximum possible size of a sample in a
-    survey. Default value is the \code{ss} times 100.
+    survey. Default value is the 100 times the size of a sample in the initial 
+    survey.
 }
 }
 \details{
