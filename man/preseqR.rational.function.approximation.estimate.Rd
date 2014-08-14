@@ -101,7 +101,7 @@ sequencing libraries." Nature methods 10.4 (2013): 325-327.
 }
 
 \seealso{
-  \code{\link{preseqR.boostrap.species.richness}}
+  \code{\link{preseqR.bootstrap.species.richness}}
 }
 
 \examples{
