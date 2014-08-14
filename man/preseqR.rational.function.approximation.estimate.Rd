@@ -6,7 +6,7 @@ Predict the number of species through a continued fraction
 }
 \description{
 The function constructs a continued fraction to estimate the expected number of
-new species, which did not appear in an intial survey, but will be detected if
+new species, which did not appear in an initial survey, but will be detected if
 sampling is continued.
 }
 \usage{
@@ -16,7 +16,7 @@ max.extrapolation = NULL, step.adjust = TRUE, header = FALSE, seed = NULL)
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{hist}{
-    Frequencies of count data in an inital survey. \code{hist} can be either a 
+    Frequencies of count data in an initial survey. \code{hist} can be either a 
     file name of the data or a variable of a matrix containing the data. The 
     data must be a two-column table. Each row (j, n_j) in the table represents
     there were n_j species with j individuals observed in each single species. 
@@ -41,12 +41,13 @@ max.extrapolation = NULL, step.adjust = TRUE, header = FALSE, seed = NULL)
 }
   \item{max.extrapolation}{
     A positive double representing the maximum possible size of a sample in a
-    survey. Default value is the \code{ss} times 100.
+    survey. Default value is 100 times the size of the sample in the initial
+    survey.
 }
   \item{step.adjust}{
     A boolean value representing whether or not the value of \code{ss} could 
     adjust if the user-defined value of \code{ss} is relatively small comparing
-    with the number of individuals observed in the inital survey. If 
+    with the number of individuals observed in the initial survey. If 
     \code{step.adjust} is TRUE, \code{ss} could adjust to around one twentieth
     size of the inital sample when the user-defined \code{ss} is too small.
   }
@@ -68,7 +69,7 @@ max.extrapolation = NULL, step.adjust = TRUE, header = FALSE, seed = NULL)
     fraction approximation to; cf.coeffs is coeffiencies of the continued
     fraction approximation; offset.coeffs is offset coeffiencies of the 
     continued fraction approximation; di is the diagonal value of the continued
-    fraction approximation; de is the degree of the continued fracton
+    fraction approximation; de is the degree of the continued fraction
     approximation.
   }
   \item{yield.estimates}{
