@@ -5,8 +5,8 @@
 Predict the number of species through a ZTNB
 }
 \description{
-The function estimates the number of species given the size of the sample in a 
-survey. It assumes that the observed count of species follows a zero-truncated
+The function extrapolates the number of species given the size of the sample in
+a survey. It assumes that the observed count of species follows a zero-truncated
 negative binomial (ZTNB) distribution.
 }
 \usage{
@@ -17,13 +17,13 @@ preseqR.ztnb.estimate(hist, n, header = FALSE)
   \item{hist}{
     Frequencies of count data in an inital survey. \code{hist} can be either a 
     file name of the data or a variable of a matrix containing the data. The 
-    data must be a two-column table. Each row (x, y) in the table represents
-    there were y species with x individuals observed in each single species. 
-    Both x, y are positive integers and the first column must be sorted in an 
-    ascending order.
+    data must be a two-column table. Each row (j, n_j) in the table represents
+    there were n_j species with j individuals observed in each single species. 
+    Both j and n_j are positive integers and the first column must be sorted in
+    an ascending order.
 }
   \item{n}{
-  A positive double representing the size of a sample in the survey.
+    A positive double representing the size of a sample in the survey.
 }
   \item{header}{
     A boolean variable number representing whether or not the frequencies of 
@@ -31,7 +31,12 @@ preseqR.ztnb.estimate(hist, n, header = FALSE)
 }
 }
 \details{
-    See supplymentary of Daley, T., & Smith, A. D. (2013).
+    The frequencies of count data is fitted into a zero-truncated negative 
+    binomial distribution. We use \code{preseqR.ztnb.em} to estimate the
+    parameters. 
+	
+	For extrapolation the number of species through a negative binomial 
+    distribution, See supplimentary of Daley, T., & Smith, A. D. (2013).
 }
 
 \value{
@@ -42,6 +47,9 @@ preseqR.ztnb.estimate(hist, n, header = FALSE)
     Chao Deng
 }
 
+\seealso{
+    \code{\link{preseqR.ztnb.em}}
+}
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 \examples{
 ## load library
