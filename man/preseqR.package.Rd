@@ -93,11 +93,11 @@ preseqR.print2file(res, 'butterfliesCI.txt')
 ## fit the data with a zero-truncated negative binomial distribution
 preseqR.ztnb.em(FisherButterflyCaptures)
 
-## estimate the number of utterflie species when the size of sample
+## estimate the number of butterfly species when the size of sample
 ## reaches 10000 through ztnb
 preseqR.ztnb.estimate(FisherButterflyCaptures, 10000)
 
-## estimate the number of butterflie specie given samples of different sizes
+## estimate the number of butterfly specie given samples of different sizes
 res <- preseqR.ztnb.species.richness(FisherButterflyCaptures)
 
 ## write results down to a file
