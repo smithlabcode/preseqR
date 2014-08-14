@@ -14,8 +14,8 @@ preseqR.print2file(X, filename = NULL, digit = NULL)
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{X}{
-    A variable representing either a continued fraction with "CF" attribute or a
-    matrix with "matrix" attribute. See details for more information.
+    A variable representing either a continued fraction with "RFA" attribute or 
+	a matrix with "matrix" attribute. See details for more information.
 }
   \item{filename}{
     A string that is the name of the output file.
@@ -36,6 +36,12 @@ preseqR.print2file(X, filename = NULL, digit = NULL)
   Chao Deng
 }
 
+\note{
+  The function uses \code{formatC} in R to control the output format. If users
+  do not concern the format, you can use \code{write.table} to write down a
+  matrix into a file.
+}
+
 \examples{
 ## load library
 library(preseqR)
@@ -43,12 +49,13 @@ library(preseqR)
 ## import data
 data(ShakespeareWordCounts)
 
-## construct a continued fraction and estimate the number of observed word types
+## construct a continued fraction approximation and estimate the number of
+## observed word types
 ## if different quantities of Shakespeare's works are discovered.
 result = preseqR.continued.fraction.estimate(ShakespeareWordCounts)
-preseqR.print2file(result$continued.fraction, "continued_fraction.txt")
+preseqR.print2file(result$continued.fraction, "continued_fraction_approximation.txt")
 preseqR.print2file(result$yield.estimates, "observed_wordtypes.txt")
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-\keyword{ print }
+\keyword{ Print }
