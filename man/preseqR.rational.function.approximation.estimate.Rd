@@ -79,6 +79,7 @@ max.extrapolation = NULL, step.adjust = TRUE, header = FALSE, seed = NULL)
   \item{NULL}{
     A NULL value when the rational function approximation failed.
 }
+}
 \references{
 Good, I. J., and G. H. Toulmin. "The number of new species, and the increase 
 in population coverage, when a sample is increased." Biometrika 43.1-2 (1956):
