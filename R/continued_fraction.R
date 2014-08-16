@@ -400,7 +400,7 @@ preseqR.rational.function.approximation.estimate <- function(
   yield.estimates <- matrix(c(index, yield.estimates), ncol = 2, byrow = FALSE)
   colnames(yield.estimates) <- c('sample.size', 'yield.estimates')
 
-  result <- list(continued.fraction = CF, yield.estimates = yield.estimates)
+  result <- list(continued.fraction = CF, estimates = yield.estimates)
   return(result)
 }
 
@@ -489,7 +489,7 @@ preseqR.bootstrap.species.richness <- function(hist, bootstrap.times = 100,
     ## eliminate NULL items in results
     out[sapply(out, is.null)] <- NULL
     ## extract yields estimation from each estimation result.
-    yields <- sapply(out, function(x) x$yield.estimates[, 2])
+    yields <- sapply(out, function(x) x$estimates[, 2])
 
     if ( !is.null( dim(yields) ) )
     {
