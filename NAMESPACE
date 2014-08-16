@@ -1,9 +1,9 @@
 useDynLib(preseqR)
 export(preseqR.rational.function.approximation.estimate)
 export(preseqR.bootstrap.species.richness)
-export(preseqR.print2file)
 export(preseqR.calculate.continued.fraction.approximation)
 export(preseqR.ztnb.em)
 export(preseqR.ztnb.estimate)
 export(preseqR.ztnb.species.richness)
+
 S3method(print, RFA)

@@ -26,7 +26,6 @@ functions: preseqR.rational.function.approximation.estimate,
            preseqR.ztnb.em,
            preseqR.ztnb.estimate,
            preseqR.ztnb.species.richness,
-           preseqR.print2file;
 
 data: FisherButterflyCaptures, ShakespeareWordCounts
 }
@@ -71,26 +70,19 @@ data(FisherButterflyCaptures)
 ## butterfly species given samples of different sizes
 res <- preseqR.rational.function.approximation.estimate(FisherButterflyCaptures)
 
-## output the continued fraction approximation
+## print the continued fraction approximation
 res$continued.fraction
 
-## output the estimated number of butterfly species
+## print the estimated number of butterfly species
 res$estimates
 
 ## calculate the function value when the argument equals to one
 preseqR.calculate.continued.fraction.approximation(res$continued.fraction, 1)
 
 
-## write results down to files
-preseqR.print2file(res$continued.fraction, 'continued_fraction_approximation.txt')
-preseqR.print2file(res$estimates, 'butterflies_estimation.txt')
-
 ## use bootstrap method to estimate number of butterfly species and 
 ## build confident intervals
-res <- preseqR.bootstrap.species.richness(FisherButterflyCaptures)
-
-## write results down to a file
-preseqR.print2file(res, 'butterfliesCI.txt')
+preseqR.bootstrap.species.richness(FisherButterflyCaptures)
 
 ## fit the data with a zero-truncated negative binomial distribution
 preseqR.ztnb.em(FisherButterflyCaptures)
@@ -100,8 +92,6 @@ preseqR.ztnb.em(FisherButterflyCaptures)
 preseqR.ztnb.estimate(FisherButterflyCaptures, 10000)
 
 ## estimate the number of butterfly specie given samples of different sizes
-res <- preseqR.ztnb.species.richness(FisherButterflyCaptures)
+preseqR.ztnb.species.richness(FisherButterflyCaptures)
 
-## write results down to a file
-preseqR.print2file(res, 'butterflies_ZTNB_estimation.txt')
 }
