@@ -5,9 +5,9 @@
 Predict the number of species through a continued fraction
 }
 \description{
-The function constructs a continued fraction to estimate the expected number of
-new species, which did not appear in an initial survey, but will be detected if
-sampling is continued.
+The function uses rational function approximation to estimate the expected
+number of new species, which did not appear in an initial survey, but will be
+detected if sampling is continued.
 }
 \usage{
 preseqR.rational.function.approximation.estimate(hist, di = 0, mt = 100, ss = NULL, 
@@ -29,7 +29,7 @@ max.extrapolation = NULL, step.adjust = TRUE, header = FALSE, seed = NULL)
 }
   \item{di}{
     An integer representing the diagonal value for a constructed continued 
-    fraction. Default value is 0.
+    fraction approximation. Default value is 0.
 }
   \item{mt}{
     An positive integer representing the maximum degree allowed in the continued
@@ -92,10 +92,10 @@ sequencing libraries." Nature methods 10.4 (2013): 325-327.
   Chao Deng
 }
 \note{
-    The format of a constructed continued fraction is totally determined by its 
-    coefficients, its diagonal value and its offset coefficients. For example,
-    when the diagonal value is zero, there are no offset coefficients. The 
-    format of a continued fraction should like this:
+    The format of a continued fraction approximation is totally determined by
+    its coefficients, its diagonal value and its offset coefficients. For 
+    example, when the diagonal value is zero, there are no offset coefficients.
+    The format of a continued fraction should like this:
     \deqn{\frac{a_0t}{1 + \frac{a_1t}{1 + \frac{a_2t}{\ldots}}}}
     See Baker, G. & Graves-Morris, P. \emph{Pade Approximants} for the detail
     of the continued fraction.
@@ -112,11 +112,11 @@ library(preseqR)
 ## import data
 data(ShakespeareWordCounts)
 
-## construct a continued fraction and estimate the number of observed word types
+## rational function approximation and estimate the number of observed word types
 ## given different quantities of Shakespeare's works
 result = preseqR.rational.function.approximation.estimate(ShakespeareWordCounts)
 
-## print the constructed continued fraction
+## print the constructed continued fraction approximation
 result$continued.fraction
 
 ## print estimated the number of word types under different quantities of 

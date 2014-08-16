@@ -37,9 +37,7 @@ preseqR.print2file(X, filename = NULL, digit = NULL)
 }
 
 \note{
-  The function uses \code{formatC} in R to control the output format. If users
-  do not concern the format, you can use \code{write.table} to write down a
-  matrix into a file.
+  User can also use write.table in R to write returning matrix down into a file.
 }
 
 \examples{
@@ -54,7 +52,7 @@ data(ShakespeareWordCounts)
 ## if different quantities of Shakespeare's works are discovered.
 result = preseqR.rational.function.approximation.estimate(ShakespeareWordCounts)
 preseqR.print2file(result$continued.fraction, "continued_fraction_approximation.txt")
-preseqR.print2file(result$yield.estimates, "observed_wordtypes.txt")
+preseqR.print2file(result$estimates, "observed_wordtypes.txt")
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

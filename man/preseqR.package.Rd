@@ -74,17 +74,19 @@ res <- preseqR.rational.function.approximation.estimate(FisherButterflyCaptures)
 ## output the continued fraction approximation
 res$continued.fraction
 
+## output the estimated number of butterfly species
+res$estimates
+
 ## calculate the function value when the argument equals to one
 preseqR.calculate.continued.fraction.approximation(res$continued.fraction, 1)
 
-## output the estimated number of butterflies species
-res$yield.estimates
 
 ## write results down to files
 preseqR.print2file(res$continued.fraction, 'continued_fraction.txt')
-preseqR.print2file(res$yield.estimate, 'butterflies_estimation.txt')
+preseqR.print2file(res$estimates, 'butterflies_estimation.txt')
 
-## use bootstrap method to build confident intervals
+## use bootstrap method to estimate number of butterfly species and 
+## build confident intervals
 res <- preseqR.bootstrap.species.richness(FisherButterflyCaptures)
 
 ## write results down to a file

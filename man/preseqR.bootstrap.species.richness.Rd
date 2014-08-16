@@ -97,6 +97,9 @@ Good, I. J., and G. H. Toulmin. "The number of new species, and the increase
 in population coverage, when a sample is increased." Biometrika 43.1-2 (1956):
 45-63.
 
+Efron, Bradley, and Ronald Thisted. "Estimating the number of unseen species: 
+How many words did Shakespeare know?." Biometrika 63.3 (1976): 435-447.
+
 Efron, Bradley. "Bootstrap methods: another look at the jackknife." The annals
 of Statistics (1979): 1-26.
 
@@ -112,7 +115,7 @@ unequal catchability." Biometrics (1987): 783-791.
   Chao Deng
 }
 \note{
-    The continued fraction approximation is only applied to extrapolation. For 
+    The rational fraction approximation is only applied to extrapolation. For 
     estimating the expected number of species given a sample with size less than
     the size of sample in the initial survey, we downsample the observed 
     individuals and count the number of species as estimation.

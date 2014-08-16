@@ -37,7 +37,7 @@ library(preseqR)
 ## import data
 data(ShakespeareWordCounts)
 
-## the continued fraction approximation
+## the rational fraction approximation
 result = preseqR.rational.function.approximation.estimate(ShakespeareWordCounts)
 
 ## record the constructed continued fraction approximation
