@@ -76,6 +76,8 @@ max.extrapolation = NULL, step.adjust = TRUE, header = FALSE, seed = NULL)
     A two-column table representing estimated number of species given samples of
     different sizes.
   }
+  \item{NULL}{
+    A NULL value when the rational function approximation failed.
 }
 \references{
 Good, I. J., and G. H. Toulmin. "The number of new species, and the increase 

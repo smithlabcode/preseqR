@@ -91,6 +91,8 @@ based on Chao, A. (1987) formula 12.
     number of species. The third column is the lower bound of the 95\% confident
     interval. The fourth column is the upper bound of the 95\% confident 
     interval.
+
+    A NULL value if bootstrapping failed.
 }
 \references{
 Good, I. J., and G. H. Toulmin. "The number of new species, and the increase 
