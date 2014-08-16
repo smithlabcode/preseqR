@@ -526,7 +526,7 @@ preseqR.bootstrap.species.richness <- function(hist, bootstrap.times = 100,
     ## combine results and output a matrix
     result <- matrix(c(index, median.estimate, left.interval, right.interval),
                     ncol = 4, byrow = FALSE)
-    colnames(result) <- c('sample.size', 'yield.estimates', 'lower.0.95CI',
+    colnames(result) <- c('sample.size', 'estimates', 'lower.0.95CI',
                          'upper.0.95CI')
     return(result)
   } else {
