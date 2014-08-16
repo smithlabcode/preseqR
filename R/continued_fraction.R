@@ -534,6 +534,55 @@ preseqR.bootstrap.species.richness <- function(hist, bootstrap.times = 100,
   }
 }
 
+print.RFA <- function(x, digit = 4, ...)
+{
+  s <- "CONTINUED FRACTION APPROXIMATION :\n\n"
+
+  ## print the degree of the continued fraction approximation
+  s <- paste(s, "DEGREE\t", toString(x$degree), "\n\n", sep = '')
+
+  ## print the diagonal value
+  s <- paste(s, "DIAGONAL VALUE\t", toString(x$diagonal.idx), "\n\n", sep = '')
+
+  ## print the coefficients depending on the value of diagonal value
+  s <- paste(s, "COEFFICIENTS:\n\n", sep = '')
+
+  di <- abs(x$diagonal.idx)
+    
+  ## the function to print a coefficient
+  ## S is the set of coefficients
+  ## shift is the difference between the index of S and the index of 
+  ## coefficients of a continued fraction approximation
+  f <- function(index, S, shift)
+  {
+    s <- formatC(S[index], digit, format = 'f')
+    s <- paste('a_', toString(index + shift), ' = ', s, sep = '')
+  }
+ 
+  ## print offset values if any
+  if (di > 0)
+  {
+    index <- 1:di
+    dim(index) <- di
+
+    tmp <- apply( index, 1, function(t) f(t, x$offset.coeffs, -1) )
+    tmp <- paste(tmp, collapse = '\n')
+    s <- paste(s, tmp, '\n', sep = '')
+  }
+
+  ## print coeffients if any
+  if (length(x$cf.coeffs) > 0)
+  {
+    index <- 1:length(x$cf.coeffs)
+    dim(index) <- length(x$cf.coeffs)
+
+    tmp <- apply( index, 1, function(t) f(t, x$cf.coeffs, di - 1) )
+    tmp <- paste(tmp, collapse = '\n')
+    s <- paste(s, tmp, '\n', sep = '')
+  }
+  cat(s)
+  invisible(x)
+}
 
 ### write a continued fraction approximation into a file
 print.continued.fraction.approximation <- function(X, filename, digit)
