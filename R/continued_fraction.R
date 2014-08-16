@@ -360,7 +360,6 @@ preseqR.rational.function.approximation.estimate <- function(
 
   if (!out$is.valid)
   {
-    write("Fail for rational function approximation", stderr())
     return(NULL)
   }
 
