@@ -77,7 +77,7 @@ max.extrapolation = NULL, step.adjust = TRUE, header = FALSE, seed = NULL)
     different sizes.
   }
   \item{NULL}{
-    A NULL value when the rational function approximation failed.
+    NULL if the rational function approximation failed.
 }
 }
 \references{

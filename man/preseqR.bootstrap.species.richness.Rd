@@ -92,7 +92,7 @@ based on Chao, A. (1987) formula 12.
     interval. The fourth column is the upper bound of the 95\% confident 
     interval.
 
-    A NULL value if bootstrapping failed.
+    NULL if bootstrapping failed.
 }
 \references{
 Good, I. J., and G. H. Toulmin. "The number of new species, and the increase 
