@@ -82,7 +82,7 @@ preseqR.calculate.continued.fraction.approximation(res$continued.fraction, 1)
 
 
 ## write results down to files
-preseqR.print2file(res$continued.fraction, 'continued_fraction.txt')
+preseqR.print2file(res$continued.fraction, 'continued_fraction_approximation.txt')
 preseqR.print2file(res$estimates, 'butterflies_estimation.txt')
 
 ## use bootstrap method to estimate number of butterfly species and 
