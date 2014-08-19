@@ -58,9 +58,10 @@ max.extrapolation = NULL, step.adjust = TRUE, header = FALSE, seed = NULL)
 }
 }
 \details{
-    The function is a quick mode of \code{preseqR.bootstrap.species.richness}.
-    It estimate the expected number of species through rational function
-    approximation without bootstrapping. 
+    The function is a quick mode of
+    \code{preseqR.bootstrap.species.accumulation.curve}. It estimate the
+    expected number of species through rational function approximation without
+    bootstrapping. 
 }
 \value{
   \item{continued.fraction}{
@@ -90,6 +91,9 @@ How many words did Shakespeare know?." Biometrika 63.3 (1976): 435-447.
 
 Daley, Timothy, and Andrew D. Smith. "Predicting the molecular complexity of 
 sequencing libraries." Nature methods 10.4 (2013): 325-327.
+
+Baker, G. & Graves-Morris, P. Pade Approximants (Cambrige University Press,
+Cambridge, UK, 1996).
 }
 \author{
   Chao Deng
@@ -100,12 +104,10 @@ sequencing libraries." Nature methods 10.4 (2013): 325-327.
     example, when the diagonal value is zero, there are no offset coefficients.
     The format of a continued fraction should like this:
     \deqn{\frac{a_0t}{1 + \frac{a_1t}{1 + \frac{a_2t}{\ldots}}}}
-    See Baker, G. & Graves-Morris, P. \emph{Pade Approximants} for the detail
-    of the continued fraction.
 }
 
 \seealso{
-  \code{\link{preseqR.bootstrap.species.richness}}
+  \code{\link{preseqR.bootstrap.species.accumulation.curve}}
 }
 
 \examples{
