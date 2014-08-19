@@ -6,8 +6,8 @@ Predict the number of species through a ZTNB
 }
 \description{
 The function extrapolates the number of species given the size of a sample in a
-survey. It assumes that the number of observations in individual species follows
-a zero-truncated negative binomial (ZTNB) distribution.
+survey. It assumes that the number of observations in an individual species
+follows a zero-truncated negative binomial (ZTNB) distribution.
 }
 \usage{
 preseqR.ztnb.estimate(hist, n, header = FALSE)
