@@ -212,9 +212,9 @@ preseqR.ztnb.estimate <- function(hist, n, header = FALSE)
 ## predict a complexity curve using EM algorithm
 ## ss is the step.size
 ## max.extrapoltion is the maximum value for extrapolation
-preseqR.ztnb.species.richness <- function(hist, ss = NULL,
-                                          max.extrapolation = NULL,
-                                          header = FALSE)
+preseqR.ztnb.species.accumulation.curve <- function(hist, ss = NULL,
+                                                    max.extrapolation = NULL,
+                                                    header = FALSE)
 {
   hist.count <- read.hist(hist, header)
 
