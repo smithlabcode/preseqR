@@ -10,8 +10,8 @@
     improve estimated results and build confidence intervals.  
 }
 \usage{
-preseqR.bootstrap.accumulation.curve(hist, bootstrap.times = 100, di = 0,
-mt = 100, ss = NULL, max.extrapolation = NULL, step.adjust = TRUE,
+preseqR.bootstrap.species.accumulation.curve(hist, bootstrap.times = 100,
+di = 0, mt = 100, ss = NULL, max.extrapolation = NULL, step.adjust = TRUE,
 header = FALSE, ci = 0.95, seed = NULL)
 }
 %- maybe also 'usage' for other objects documented here.
