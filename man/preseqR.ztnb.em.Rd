@@ -7,8 +7,8 @@ Fit a zero-truncated negative binomial distribution
 \description{
 The function fits a zero-truncated negative binomial (ZTNB) distribution
 to the frequencies of count data. Since the zero count missed in the survey, an
-EM algorithm is used to estimate the unobserved zero count and parameters of
-ZTNB.
+EM algorithm is used to estimate the unobserved zero count and the associated
+parameters of a negative binomial distribution.
 }
 \usage{
 preseqR.ztnb.em(hist, size = SIZE.INIT, mu = MU.INIT, header = FALSE)
@@ -42,10 +42,10 @@ preseqR.ztnb.em(hist, size = SIZE.INIT, mu = MU.INIT, header = FALSE)
 
 \value{
   \item{size}{
-    Estimated value of the parameter \code{size} in the ZTNB.
+    Estimated value of the parameter \code{size} in the negative binomial.
 }
   \item{mu}{
-    Estimated value of the parameter \code{mu} in the ZTNB.
+    Estimated value of the parameter \code{mu} in the negative binomial.
 }
   \item{loglik}{
     Log-likelihood under estimated ZTNB.

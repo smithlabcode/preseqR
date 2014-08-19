@@ -6,8 +6,8 @@ Predict the number of species through a ZTNB
 }
 \description{
     The function extrapolates the number of species as a function of the number
-    of captures. It assumes that the number of observed individual species
-    follows a zero-truncated negative binomial (ZTNB) distribution.
+    of captures. It assumes that the number of observations in an individual
+    species follows a zero-truncated negative binomial (ZTNB) distribution.
 }
 \usage{
 preseqR.ztnb.species.accumulation.curve(hist, ss = NULL,
