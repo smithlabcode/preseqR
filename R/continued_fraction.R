@@ -515,7 +515,7 @@ preseqR.bootstrap.species.accumulation.curve <- function(
     median.estimate <- apply(yield.estimates, 1, median)
     variance <- apply(yield.estimates, 1, var)
 
-    # 95% confidence interval based on lognormal distribution
+    # confidence interval based on lognormal distribution
     if (ci <= 0 && ci >= 1)
       ci = 0.95
     C <- exp(qnorm((1 + ci) / 2.0) * sqrt(log(1.0 + variance / (median.estimate^2))))
