@@ -526,7 +526,7 @@ preseqR.bootstrap.species.accumulation.curve <- function(
     result <- matrix(c(index, median.estimate, left.interval, right.interval),
                     ncol = 4, byrow = FALSE)
     lower.ci = sprintf('lower.%.2fCI', ci)
-	upper.ci = sprintf('uppper.%.2fCI', ci)
+    upper.ci = sprintf('uppper.%.2fCI', ci)
     colnames(result) <- c('sample.size', 'estimates', lower.ci, upper.ci)
     return(result)
   } else {
