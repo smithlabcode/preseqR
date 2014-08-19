@@ -30,7 +30,7 @@ functions: preseqR.rational.function.approximation.estimate,
 data: FisherButterflyCaptures, ShakespeareWordCounts
 }
 \author{
-Chao Deng, Timothy Dalay, and Andrew D. Smith
+Chao Deng, Timothy Daley, and Andrew D. Smith
 
 Maintainer: Chao Deng <chaodeng@usc.edu>
 }
