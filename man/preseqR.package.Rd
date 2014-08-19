@@ -3,7 +3,7 @@
 \alias{preseqR}
 \docType{package}
 \title{
-    Species richness estimation through rational function approximations
+    Species accumulation estimation through rational function approximations
 }
 \description{
     This is a R package to make the functionality of Preseq available in the R
@@ -21,11 +21,11 @@ License: \tab GPL-3\cr
 }
 
 functions: preseqR.rational.function.approximation.estimate, 
-           preseqR.bootstrap.species.richness,
+           preseqR.bootstrap.species.accumulation.curve,
            preseqR.calculate.continued.fraction.approximation,
            preseqR.ztnb.em,
            preseqR.ztnb.estimate,
-           preseqR.ztnb.species.richness,
+           preseqR.ztnb.species.accumulation.curve,
 
 data: FisherButterflyCaptures, ShakespeareWordCounts
 }

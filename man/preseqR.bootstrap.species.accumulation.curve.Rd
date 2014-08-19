@@ -59,6 +59,7 @@ header = FALSE, ci = 0.95, seed = NULL)
   \item{ci}{
     A positive double in (0, 1) representing the level of confidence intervals.
     Default value is 0.95.
+  }
   \item{seed}{
     A single value, interpreted as an integer, or NULL for random number 
     generator. Default is NULL. Set the seed if you want to reproduce the 
@@ -68,7 +69,7 @@ header = FALSE, ci = 0.95, seed = NULL)
 \details{
 In general contexts, "species" could be defined in a broad way. For example, 
 "species" could be reads in a sequencing experiment or words in a book. The 
-function can apply to any defined "species" once the number of observation for
+function can apply to any defined "species" once the number of observations for
 each single "species" follows a poisson process with rates possibly varying
 between species.
 
@@ -141,8 +142,8 @@ library(preseqR)
 ## import data
 data(FisherButterflyCaptures)
 
-## estimate the number of distinct butterflies if various sizes of butterflies
-## are captured
+## estimate the number of distinct butterflies as a function of the number of
+## captured butterflies.
 preseqR.bootstrap.species.accumulation.curve(FisherButterflyCaptures)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the

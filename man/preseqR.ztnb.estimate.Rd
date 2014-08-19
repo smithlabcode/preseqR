@@ -5,9 +5,9 @@
 Predict the number of species through a ZTNB
 }
 \description{
-The function extrapolates the number of species given the size of the sample in
-a survey. It assumes that the observed count of species follows a zero-truncated
-negative binomial (ZTNB) distribution.
+The function extrapolates the number of species given the size of a sample in a
+survey. It assumes that the number of observed individual species follows a
+zero-truncated negative binomial (ZTNB) distribution.
 }
 \usage{
 preseqR.ztnb.estimate(hist, n, header = FALSE)
@@ -40,8 +40,8 @@ preseqR.ztnb.estimate(hist, n, header = FALSE)
 }
 
 \value{
-    The expected number of species when a sample with n individuals observed in
-    the survey.
+    The expected number of species when a sample with \code{n} individuals
+    observed in the survey.
 }
 \author{
     Chao Deng
@@ -58,7 +58,7 @@ library(preseqR)
 ## import data
 data(FisherButterflyCaptures)
 
-## estimate the number of distinct butterflies if 10000 butterflies are trapped
+## estimate the number of distinct butterflies if 10000 butterflies are captured
 preseqR.ztnb.estimate(FisherButterflyCaptures, 1e4)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the

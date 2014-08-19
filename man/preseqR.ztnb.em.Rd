@@ -5,9 +5,10 @@
 Fit a zero-truncated negative binomial distribution
 }
 \description{
-The function fits the frequencies of count data with a zero-truncated negative
-binomial (ZTNB) distribution. Since the zero count missed in the survey, an EM 
-algorithm is used to estimate the unobserved zero count and parameters of ZTNB.
+The function fits a zero-truncated negative binomial (ZTNB) distribution
+to the frequencies of count data. Since the zero count missed in the survey, an
+EM algorithm is used to estimate the unobserved zero count and parameters of
+ZTNB.
 }
 \usage{
 preseqR.ztnb.em(hist, size = SIZE.INIT, mu = MU.INIT, header = FALSE)

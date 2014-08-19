@@ -118,14 +118,14 @@ library(preseqR)
 data(ShakespeareWordCounts)
 
 ## rational function approximation and estimate the number of observed word types
-## given different quantities of Shakespeare's works
+## as a function of # words in Shakespeare's works.
 result = preseqR.rational.function.approximation.estimate(ShakespeareWordCounts)
 
-## print the constructed continued fraction approximation
+## print the constructed continued fraction approximation.
 result$continued.fraction
 
-## print estimated the number of word types under different quantities of 
-## Shakespeare's work
+## print the number of observed word types as a function of # words
+## Shakespeare's works.
 result$yield.estimates
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the

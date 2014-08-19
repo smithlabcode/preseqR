@@ -5,9 +5,9 @@
 Predict the number of species through a ZTNB
 }
 \description{
-    The function extrapolates the number of species given samples with different
-    sizes. It assumes that the number of observed individual species follows a 
-    zero-truncated negative binomial (ZTNB) distribution.
+    The function extrapolates the number of species as a function of the number
+    of captures. It assumes that the number of observed individual species
+    follows a zero-truncated negative binomial (ZTNB) distribution.
 }
 \usage{
 preseqR.ztnb.species.accumulation.curve(hist, ss = NULL,
@@ -38,9 +38,10 @@ max.extrapolation = NULL, header = FALSE)
 }
 }
 \details{
-    This is multiple samples version of \code{preseqR.ztnb.estimate}. Instead of
-    extrapolating the number of species given the size of a sample, the function
-    extrapolate number of species given various sizes of samples.
+    The function applies \code{preseqR.ztnb.em} for parameter estimation.
+    Then it extrapolates the number of species as a function of the number of
+    captures through estimated negative binomial distribution. See supplementary
+    of Daley, T., & Smith, A. D. (2013)
 }
 \value{
     A two-columns table represents estimated number of species given samples
@@ -52,7 +53,7 @@ max.extrapolation = NULL, header = FALSE)
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 
 \seealso{
-  \code{\link{preseqR.ztnb.estimate}}
+  \code{\link{preseqR.ztnb.em}}
 }
 
 \examples{
