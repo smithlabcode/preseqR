@@ -30,7 +30,7 @@ functions: preseqR.rational.function.approximation.estimate,
 data: FisherButterflyCaptures, ShakespeareWordCounts
 }
 \author{
-Andrew D. Smith, Timothy Daley and Chao Deng
+Chao Deng, Timothy Dalay, and Andrew D. Smith
 
 Maintainer: Chao Deng <chaodeng@usc.edu>
 }
@@ -67,7 +67,7 @@ library(preseqR)
 data(FisherButterflyCaptures)
 
 ## construct a continued fraction approximation and extrapolate the number of
-## butterfly species given samples of different sizes
+## butterfly species as a function of total captures
 res <- preseqR.rational.function.approximation.estimate(FisherButterflyCaptures)
 
 ## print the continued fraction approximation
@@ -76,22 +76,23 @@ res$continued.fraction
 ## print the estimated number of butterfly species
 res$estimates
 
-## calculate the function value when the argument equals to one
+## calculate the rational function approximation value when the argument equals
+## to one
 preseqR.calculate.continued.fraction.approximation(res$continued.fraction, 1)
 
 
 ## use bootstrap method to estimate number of butterfly species and 
-## build confident intervals
-preseqR.bootstrap.species.richness(FisherButterflyCaptures)
+## the associated confidence intervals
+preseqR.bootstrap.species.accumulation.curve(FisherButterflyCaptures)
 
-## fit the data with a zero-truncated negative binomial distribution
+## fit a zero-truncated negative binomial distribution to the capture counts
 preseqR.ztnb.em(FisherButterflyCaptures)
 
 ## estimate the number of butterfly species when the size of sample
 ## reaches 10000 through ztnb
 preseqR.ztnb.estimate(FisherButterflyCaptures, 10000)
 
-## estimate the number of butterfly specie given samples of different sizes
-preseqR.ztnb.species.richness(FisherButterflyCaptures)
+## estimate the number of butterfly specie as a function of captures
+preseqR.ztnb.species.accumulation.curve(FisherButterflyCaptures)
 
 }
