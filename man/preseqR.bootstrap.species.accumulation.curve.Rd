@@ -1,17 +1,18 @@
-\name{preseqR.bootstrap.species.richness}
-\alias{preseqR.bootstrap.species.richness}
+\name{preseqR.bootstrap.species.accumulation.curve}
+\alias{preseqR.bootstrap.species.accumulation.curve}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-    Predict the number of species with a confident interval
+    Predict the number of species with a confidence interval
 }
 \description{
-    The function estimates expected number of species for samples of different
-    sizes. Bootstrap method is applied to improve estimated results and build 
-    confident intervals.  
+    The function estimates expected number of species as a function of the
+    number of captures. The capture counts histogram is bootstrapped to
+    improve estimated results and build confidence intervals.  
 }
 \usage{
-preseqR.bootstrap.species.richness(hist, bootstrap.times = 100, di = 0, mt = 100, 
-ss = NULL, max.extrapolation = NULL, step.adjust = TRUE, header = FALSE, seed = NULL)
+preseqR.bootstrap.accumulation.curve(hist, bootstrap.times = 100, di = 0,
+mt = 100, ss = NULL, max.extrapolation = NULL, step.adjust = TRUE,
+header = FALSE, ci = 0.95, seed = NULL)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -55,6 +56,9 @@ ss = NULL, max.extrapolation = NULL, step.adjust = TRUE, header = FALSE, seed = 
     \code{step.adjust} is TRUE, \code{ss} could adjust to around one twentieth
     size of the initial sample when the user-defined \code{ss} is too small.
 }
+  \item{ci}{
+    A positive double in (0, 1) representing the level of confidence intervals.
+    Default value is 0.95.
   \item{seed}{
     A single value, interpreted as an integer, or NULL for random number 
     generator. Default is NULL. Set the seed if you want to reproduce the 
@@ -62,35 +66,35 @@ ss = NULL, max.extrapolation = NULL, step.adjust = TRUE, header = FALSE, seed = 
 }
 }
 \details{
-In general contexts, "species" could be defined in a board way. For example, 
+In general contexts, "species" could be defined in a broad way. For example, 
 "species" could be reads in a sequencing experiment or words in a book. The 
-function can apply to any defined "species" once the count of each single 
-"species" follows a poisson distribution with rates possibly varying between
-species.
+function can apply to any defined "species" once the number of observation for
+each single "species" follows a poisson process with rates possibly varying
+between species.
 
 According to Good, I. J., & Toulmin, G. H. (1956) and Efron & Thisted (1976), if
-the count of each single species follows a compound poisson distribution, a 
-power series could be derived to estimate the number of new species when
-sampling continues. Coefficients of the power series are estimated through the
+the count of each single species follows a compound poisson process, a 
+power series could be derived to estimate the number of new species if sampling
+continues. Coefficients of the power series are estimated through the
 frequencies of count data in the initial survey. While it performs well for
 small extrapolation, the power series shows large variance in general when the
 size pasts twice the size of the initial survey.
 
-Daley, T., & Smith, A. D. (2013) use rational function approximation to the
+Daley, T., & Smith, A. D. (2013) used rational function approximation to the
 power series. The rational function approximation is locally close to the power
 series of Good & Toulmin but is constructed to be globally stable. It can apply
 to both small and larger extrapolation.
 
-The confident interval is estimated through a log normal confident interval
+The confidence interval is estimated through a log normal confidence interval
 based on Chao, A. (1987) formula 12.
 }
 \value{
     A four-column table representing estimated number of species given samples
     of different sizes or \code{NULL} representing failure of bootstrapping.
     The first column is the size of a sample. The second column is the estimated
-    number of species. The third column is the lower bound of the 95\% confident
-    interval. The fourth column is the upper bound of the 95\% confident 
-    interval.
+    number of species. The third column is the lower bound of the 95\%
+    confidence interval. The fourth column is the upper bound of the 95\%
+    confidence interval.
 
     NULL if bootstrapping failed.
 }
@@ -119,14 +123,13 @@ unequal catchability." Biometrics (1987): 783-791.
 \note{
     The rational fraction approximation is only applied to extrapolation. For 
     estimating the expected number of species given a sample with size less than
-    the size of sample in the initial survey, we downsample the observed 
-    individuals and count the number of species as estimation.
+    the size of sample in the initial survey, we subsample the observed 
+    individuals and count the number of sampled species.
 
     A global variable \code{BOOTSTRAP.factor} defines maximum resampling times 
     allowed for bootstrapping. The default value is 0.1. When resampling times
     are beyond \code{bootstrap.times} / \code{BOOTSTRAP.factor}, the function 
-    will terminate since the quality of the sample in the initial survey is
-    poor.
+    will terminate.
 }
 
 %% ~Make other sections like Warning with \section{Warning }{....} ~
@@ -140,7 +143,7 @@ data(FisherButterflyCaptures)
 
 ## estimate the number of distinct butterflies if various sizes of butterflies
 ## are captured
-preseqR.bootstrap.species.richness(FisherButterflyCaptures)
+preseqR.bootstrap.species.accumulation.curve(FisherButterflyCaptures)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

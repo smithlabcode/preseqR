@@ -405,12 +405,10 @@ preseqR.rational.function.approximation.estimate <- function(
 
 
 ### generate complexity curve through bootstrapping the histogram
-preseqR.bootstrap.species.richness <- function(hist, bootstrap.times = 100,
-                                               di = 0, mt = 100, ss = NULL,
-                                               max.extrapolation = NULL,
-                                               step.adjust=TRUE,
-                                               header = FALSE,
-                                               seed = NULL)
+preseqR.bootstrap.species.accumulation.curve <- function(
+    hist, bootstrap.times = 100, di = 0, mt = 100, ss = NULL,
+    max.extrapolation = NULL, step.adjust=TRUE, header = FALSE,
+    ci = 0.95, seed = NULL)
 {
   ## set seed to reproduce the results
   if ( !is.null(seed) ) set.seed(seed)
@@ -517,16 +515,19 @@ preseqR.bootstrap.species.richness <- function(hist, bootstrap.times = 100,
     median.estimate <- apply(yield.estimates, 1, median)
     variance <- apply(yield.estimates, 1, var)
 
-    # 95% confident interval based on lognormal distribution
-    C <- exp(qnorm(0.975) * sqrt(log(1.0 + variance / (median.estimate^2))))
+    # 95% confidence interval based on lognormal distribution
+    if (ci <= 0 && ci >= 1)
+      ci = 0.95
+    C <- exp(qnorm((1 + ci) / 2.0) * sqrt(log(1.0 + variance / (median.estimate^2))))
     left.interval <- median.estimate/C
     right.interval <- median.estimate*C
 
     ## combine results and output a matrix
     result <- matrix(c(index, median.estimate, left.interval, right.interval),
                     ncol = 4, byrow = FALSE)
-    colnames(result) <- c('sample.size', 'estimates', 'lower.0.95CI',
-                         'upper.0.95CI')
+    lower.ci = sprintf('lower.%.2fCI', ci)
+	upper.ci = sprintf('uppper.%.2fCI', ci)
+    colnames(result) <- c('sample.size', 'estimates', lower.ci, upper.ci)
     return(result)
   } else {
       write("fail to bootstrap!", stderr())
