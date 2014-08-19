@@ -2,8 +2,8 @@
 \alias{FisherButterflyCaptures}
 \docType{data}
 \title{Fisher's butterfly data}
-\description{Frequencies data of butterflies collected in Malaya was from 
-Fisher, R. A., Corbet, A. S., & Williams, C. B. (1943).}
+\description{Frequencies data of butterflies collected in the Malay peninsula
+was from Fisher, R. A., Corbet, A. S., & Williams, C. B. (1943).}
 \references{
 Fisher, R. A., Corbet, A. S., and Williams, C. B. ,1943, The Relation Between 
 the Number of Species and the Number of Individuals in a Random Sample of an 
