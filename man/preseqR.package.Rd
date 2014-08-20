@@ -12,20 +12,19 @@
     observed species for a sample with a given size.
 }
 \details{
-\tabular{ll}{
-Package: \tab preseqR\cr
-Type: \tab Package\cr
-Version: \tab 1.0\cr
-Date: \tab 2014-08-19\cr
-License: \tab GPL-3\cr
-}
+functions: 
 
-functions: preseqR.rfa.estimate,
-           preseqR.bootstrap.spec.accum.curve,
-           preseqR.calc.cf.approx,
-           preseqR.ztnb.em,
-           preseqR.ztnb.estimate,
-           preseqR.ztnb.spec.accum.curve,
+preseqR.rfa.estimate,
+
+preseqR.bootstrap.spec.accum.curve, 
+
+preseqR.calc.cf.approx,
+
+preseqR.ztnb.em,
+
+preseqR.ztnb.estimate,
+
+preseqR.ztnb.spec.accum.curve,
 
 data: FisherButterflyCaptures, ShakespeareWordCounts
 }
