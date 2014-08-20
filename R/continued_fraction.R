@@ -405,7 +405,7 @@ preseqR.rfa.curve <- function(hist, di = 0, mt = 100, ss = NULL,
 
 
 ### generate complexity curve through bootstrapping the histogram
-preseqR.boostrap.species.accum.curve <- function(
+preseqR.bootstrap.species.accum.curve <- function(
     hist, bootstrap.times = 100, di = 0, mt = 100, ss = NULL,
     max.extrapolation = NULL, step.adjust=TRUE, header = FALSE,
     ci = 0.95, seed = NULL)
