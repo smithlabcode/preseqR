@@ -22,7 +22,7 @@ preseqR.ztnb.estimate(hist, t, header = FALSE)
     Both j and n_j are positive integers and the first column must be sorted in
     an ascending order.
 }
-  \item{n}{
+  \item{t}{
     A positive double representing the size of a sample relative to the size of 
     hist.
 }
