@@ -1,5 +1,5 @@
-\name{preseqR.calc.cf.approx}
-\alias{preseqR.calc.cf.approx}
+\name{preseqR.calc.cfa.estimate}
+\alias{preseqR.calc.cfa.estimate}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
 Calculate the value of a continued fraction
@@ -35,10 +35,10 @@ preseqR.calc.cf.approx(CF, t)
 library(preseqR)
 
 ## import data
-data(ShakespeareWordCounts)
+data(ShakespeareWordHist)
 
 ## the rational fraction approximation
-result = preseqR.rfa.estimate(ShakespeareWordCounts)
+result = preseqR.rfa.estimate(ShakespeareWordHist)
 
 ## record the constructed continued fraction approximation
 CF = result$continued.fraction

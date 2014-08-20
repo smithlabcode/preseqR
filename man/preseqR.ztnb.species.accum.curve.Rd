@@ -1,5 +1,5 @@
-\name{preseqR.ztnb.spec.accum.curve}
-\alias{preseqR.ztnb.spec.accum.curve}
+\name{preseqR.ztnb.species.accum.curve}
+\alias{preseqR.ztnb.species.accum.curve}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
 Predict the number of species through a ZTNB
@@ -10,7 +10,7 @@ Predict the number of species through a ZTNB
     species follows a zero-truncated negative binomial (ZTNB) distribution.
 }
 \usage{
-preseqR.ztnb.spec.accum.curve(hist, ss = NULL,
+preseqR.ztnb.species.accum.curve(hist, ss = NULL,
 max.extrapolation = NULL, header = FALSE)
 }
 %- maybe also 'usage' for other objects documented here.
@@ -61,10 +61,10 @@ max.extrapolation = NULL, header = FALSE)
 library(preseqR)
 
 ## import data
-data(FisherButterflyCaptures)
+data(FisherButterflyHist)
 
 ## extrapolation
-preseqR.ztnb.spec.accum.curve(FisherButterflyCaptures)
+preseqR.ztnb.species.accum.curve(FisherButterflyHist)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

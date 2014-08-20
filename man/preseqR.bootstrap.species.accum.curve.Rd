@@ -1,5 +1,5 @@
-\name{preseqR.bootstrap.spec.accum.curve}
-\alias{preseqR.bootstrap.spec.accum.curve}
+\name{preseqR.bootstrap.species.accum.curve}
+\alias{preseqR.bootstrap.species.accum.curve}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
     Predict the number of species with a confidence interval
@@ -10,9 +10,9 @@
     improve estimated results and build confidence intervals.  
 }
 \usage{
-preseqR.bootstrap.spec.accum.curve(hist, bootstrap.times = 100, di = 0, mt = 100,
-ss = NULL, max.extrapolation = NULL, step.adjust = TRUE, header = FALSE,
-ci = 0.95, seed = NULL)
+preseqR.bootstrap.species.accum.curve(hist, bootstrap.times = 100, di = 0,
+mt = 100, ss = NULL, max.extrapolation = NULL, step.adjust = TRUE,
+header = FALSE, ci = 0.95, seed = NULL)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -74,12 +74,12 @@ each single "species" follows a poisson process with rates possibly varying
 between species.
 
 According to Good, I. J., & Toulmin, G. H. (1956) and Efron & Thisted (1976), if
-the count of each single species follows a compound poisson process, a 
-power series could be derived to estimate the number of new species if sampling
-continues. Coefficients of the power series are estimated through the
-frequencies of count data in the initial survey. While it performs well for
-small extrapolation, the power series shows large variance in general when the
-size pasts twice the size of the initial survey.
+the counts of each species follows an independent compound poisson process or is
+a multinomial sample, a power series could be derived to estimate the number of
+new species if sampling continues. Coefficients of the power series are
+estimated through the frequencies of count data in the initial survey. While it
+performs well for small extrapolation, the power series shows large variance in
+general when the size pasts twice the size of the initial survey.
 
 Daley, T., & Smith, A. D. (2013) used rational function approximation to the
 power series. The rational function approximation is locally close to the power
@@ -140,11 +140,11 @@ unequal catchability." Biometrics (1987): 783-791.
 library(preseqR)
 
 ## import data
-data(FisherButterflyCaptures)
+data(FisherButterflyHist)
 
 ## estimate the number of distinct butterflies as a function of the number of
 ## captured butterflies.
-preseqR.bootstrap.spec.accum.curve(FisherButterflyCaptures)
+preseqR.bootstrap.species.accum.curve(FisherButterflyHist)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

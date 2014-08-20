@@ -14,19 +14,19 @@
 \details{
 functions: 
 
-preseqR.rfa.estimate,
+preseqR.rfa.curve,
 
-preseqR.bootstrap.spec.accum.curve, 
+preseqR.bootstrap.species.accum.curve, 
 
-preseqR.calc.cf.approx,
+preseqR.calc.cfa.estimate,
 
 preseqR.ztnb.em,
 
 preseqR.ztnb.estimate,
 
-preseqR.ztnb.spec.accum.curve,
+preseqR.ztnb.species.accum.curve,
 
-data: FisherButterflyCaptures, ShakespeareWordCounts
+data: FisherButterflyHist, ShakespeareWordHist
 }
 \author{
 Chao Deng, Timothy Daley, and Andrew D. Smith
@@ -63,11 +63,11 @@ unequal catchability." Biometrics (1987): 783-791.
 library(preseqR)
 
 ## load data
-data(FisherButterflyCaptures)
+data(FisherButterflyHist)
 
 ## construct a continued fraction approximation and extrapolate the number of
 ## butterfly species as a function of total captures
-res <- preseqR.rfa.estimate(FisherButterflyCaptures)
+res <- preseqR.rfa.estimate(FisherButterflyHist)
 
 ## print the continued fraction approximation
 res$continued.fraction
@@ -77,21 +77,21 @@ res$estimates
 
 ## calculate the rational function approximation value when the argument equals
 ## to one
-preseqR.calc.cf.approx(res$continued.fraction, 1)
+preseqR.calc.cfa.estimate(res$continued.fraction, 1)
 
 
 ## use bootstrap method to estimate number of butterfly species and 
 ## the associated confidence intervals
-preseqR.bootstrap.spec.accum.curve(FisherButterflyCaptures)
+preseqR.bootstrap.species.accum.curve(FisherButterflyHist)
 
 ## fit a zero-truncated negative binomial distribution to the capture counts
-preseqR.ztnb.em(FisherButterflyCaptures)
+preseqR.ztnb.em(FisherButterflyHist)
 
-## estimate the number of butterfly species when the size of sample
-## reaches 10000 through ztnb
-preseqR.ztnb.estimate(FisherButterflyCaptures, 10000)
+## estimate the number of butterfly species when the size of sample is twice the
+## size of the inital sample
+preseqR.ztnb.estimate(FisherButterflyHist, 2)
 
 ## estimate the number of butterfly specie as a function of captures
-preseqR.ztnb.spec.accum.curve(FisherButterflyCaptures)
+preseqR.ztnb.species.accum.curve(FisherButterflyHist)
 
 }

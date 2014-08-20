@@ -1,5 +1,5 @@
-\name{preseqR.rfa.estimate}
-\alias{preseqR.rfa.estimate}
+\name{preseqR.rfa.curve}
+\alias{preseqR.rfa.curve}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
 Predict the number of species through a continued fraction
@@ -10,8 +10,8 @@ number of new species, which did not appear in an initial survey, but will be
 detected if sampling is continued.
 }
 \usage{
-preseqR.rfa.estimate(hist, di = 0, mt = 100, ss = NULL, 
-max.extrapolation = NULL, step.adjust = TRUE, header = FALSE, seed = NULL)
+preseqR.rfa.curve(hist, di = 0, mt = 100, ss = NULL, max.extrapolation = NULL,
+step.adjust = TRUE, header = FALSE, seed = NULL)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -107,7 +107,7 @@ Cambridge, UK, 1996).
 }
 
 \seealso{
-  \code{\link{preseqR.bootstrap.spec.accum.curve}}
+  \code{\link{preseqR.bootstrap.species.accum.curve}}
 }
 
 \examples{
@@ -115,11 +115,11 @@ Cambridge, UK, 1996).
 library(preseqR)
 
 ## import data
-data(ShakespeareWordCounts)
+data(ShakespeareWordHist)
 
 ## rational function approximation and estimate the number of observed word types
 ## as a function of # words in Shakespeare's works.
-result = preseqR.rfa.estimate(ShakespeareWordCounts)
+result = preseqR.rfa.estimate(ShakespeareWordHist)
 
 ## print the constructed continued fraction approximation.
 result$continued.fraction

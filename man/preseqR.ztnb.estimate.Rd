@@ -57,10 +57,11 @@ preseqR.ztnb.estimate(hist, t, header = FALSE)
 library(preseqR)
 
 ## import data
-data(FisherButterflyCaptures)
+data(FisherButterflyHist)
 
-## estimate the number of distinct butterflies if 10000 butterflies are captured
-preseqR.ztnb.estimate(FisherButterflyCaptures, 1e4)
+## estimate the number of distinct butterflies when the size of sample is twice
+## the size of the initial sample
+preseqR.ztnb.estimate(FisherButterflyHist, 2)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
