@@ -8,7 +8,7 @@ Calculate the value of a continued fraction
 The function calculates the value of a continued fraction.
 }
 \usage{
-preseqR.calc.cf.approx(CF, t)
+preseqR.calc.cfa.estimate(CF, t)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -44,7 +44,7 @@ result = preseqR.rfa.estimate(ShakespeareWordHist)
 CF = result$continued.fraction
 
 ## calculate values when the argument equals to one
-preseqR.calc.cf.approx(CF, 1)
+preseqR.calc.cfa.estimate(CF, 1)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
