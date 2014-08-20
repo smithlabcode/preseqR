@@ -1,5 +1,5 @@
-\name{preseqR.ztnb.spec.accum.curve}
-\alias{preseqR.ztnb.spec.accum.curve}
+\name{preseqR.bootstrap.spec.accum.curve}
+\alias{preseqR.bootstrap.spec.accum.curve}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
     Predict the number of species with a confidence interval
@@ -10,7 +10,7 @@
     improve estimated results and build confidence intervals.  
 }
 \usage{
-preseqR.ztnb.spec.accum.curve(hist, bootstrap.times = 100, di = 0, mt = 100,
+preseqR.bootstrap.spec.accum.curve(hist, bootstrap.times = 100, di = 0, mt = 100,
 ss = NULL, max.extrapolation = NULL, step.adjust = TRUE, header = FALSE,
 ci = 0.95, seed = NULL)
 }
@@ -144,7 +144,7 @@ data(FisherButterflyCaptures)
 
 ## estimate the number of distinct butterflies as a function of the number of
 ## captured butterflies.
-preseqR.ztnb.spec.accum.curve(FisherButterflyCaptures)
+preseqR.bootstrap.spec.accum.curve(FisherButterflyCaptures)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
