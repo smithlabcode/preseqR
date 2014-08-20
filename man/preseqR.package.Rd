@@ -67,7 +67,7 @@ data(FisherButterflyHist)
 
 ## construct a continued fraction approximation and extrapolate the number of
 ## butterfly species as a function of total captures
-res <- preseqR.rfa.estimate(FisherButterflyHist)
+res <- preseqR.rfa.curve(FisherButterflyHist)
 
 ## print the continued fraction approximation
 res$continued.fraction
