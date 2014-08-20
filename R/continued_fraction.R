@@ -57,7 +57,7 @@ read.hist <- function(hist.file, header = FALSE)
 
 ### calculate the value of the continued fraction approximation CF given the
 ### argument t
-preseqR.calc.cf.approx <- function(CF, t)
+preseqR.calc.cfa.estimate <- function(CF, t)
 {
   if (class(CF) != "RFA")
     return()
@@ -257,7 +257,7 @@ goodtoulmin.2x.extrap <- function(hist.count)
 ### data
 ### di = diagonal, mt = max_terms, 
 ### step.adjust is an indicator for whether or not to adjust step.size
-preseqR.rfa.estimate <- function(hist, di = 0, mt = 100, ss = NULL,
+preseqR.rfa.curve <- function(hist, di = 0, mt = 100, ss = NULL,
                                  max.extrapolation = NULL, step.adjust=TRUE,
                                  header = FALSE, seed = NULL)
 {
@@ -405,7 +405,7 @@ preseqR.rfa.estimate <- function(hist, di = 0, mt = 100, ss = NULL,
 
 
 ### generate complexity curve through bootstrapping the histogram
-preseqR.bootstrap.spec.accum.curve <- function(
+preseqR.boostrap.species.accum.curve <- function(
     hist, bootstrap.times = 100, di = 0, mt = 100, ss = NULL,
     max.extrapolation = NULL, step.adjust=TRUE, header = FALSE,
     ci = 0.95, seed = NULL)
@@ -470,7 +470,7 @@ preseqR.bootstrap.spec.accum.curve <- function(
     ## combine nonzero.index column and the second column to build a histogram
     ## table
     hist.table <- matrix(c(nonzero.index, x), ncol = 2, byrow = FALSE)
-    preseqR.rfa.estimate(
+    preseqR.rfa.curve(
         hist.table, di, mt, step.size, max.extrapolation, step.adjust = FALSE)
   }
 
