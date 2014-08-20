@@ -5,6 +5,6 @@ Version: 1.0
 Date: 2014-08-11
 Author: Chao Deng, Timothy Daley and Andrew D. Smith
 Maintainer: Chao Deng <chaodeng@usc.edu>
-Description: This is a R package to implement rational function approximations to Good & Toulmin's nonparametric empirical Bayes estimator for species accumulation.
+Description: This is a R package to implement rational function approximations to Good & Toulmin's nonparametric empirical Bayes estimator for species accumulation curves.
 License: GPL-3
 Keyword: Species Accumulation, Capture-recapture, Rational Function Approximation
