@@ -176,7 +176,7 @@ preseqR.ztnb.em <- function(hist, size=SIZE.INIT, mu=MU.INIT, header=FALSE)
 ### predict the number of distinct items using EM algorithm
 ### if the histogram file has a header, set header = TRUE
 ### n is the size of experiment
-preseqR.ztnb.estimate <- function(hist, n, header = FALSE)
+preseqR.ztnb.estimate <- function(hist, t, header = FALSE)
 {
   hist.count <- read.hist(hist, header)
 
@@ -200,7 +200,7 @@ preseqR.ztnb.estimate <- function(hist, n, header = FALSE)
   L <- distinct.sample/p
 
   ## update parameters of negative binomial in the experiment with size n
-  mu <- mu*n/as.double(total.sample)
+  mu <- mu*t
 
   ## the probability of being sampled under the new experiment
   P <- 1 - dnbinom(0, size = size, mu = mu)

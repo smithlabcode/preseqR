@@ -10,7 +10,7 @@ survey. It assumes that the number of observations in an individual species
 follows a zero-truncated negative binomial (ZTNB) distribution.
 }
 \usage{
-preseqR.ztnb.estimate(hist, n, header = FALSE)
+preseqR.ztnb.estimate(hist, t, header = FALSE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -23,7 +23,8 @@ preseqR.ztnb.estimate(hist, n, header = FALSE)
     an ascending order.
 }
   \item{n}{
-    A positive double representing the size of a sample in the survey.
+    A positive double representing the size of a sample relative to the size of 
+    hist.
 }
   \item{header}{
     A boolean variable number representing whether or not the frequencies of 
