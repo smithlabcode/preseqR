@@ -38,7 +38,7 @@ library(preseqR)
 data(ShakespeareWordHist)
 
 ## the rational fraction approximation
-result = preseqR.rfa.estimate(ShakespeareWordHist)
+result = preseqR.rfa.curve(ShakespeareWordHist)
 
 ## record the constructed continued fraction approximation
 CF = result$continued.fraction
