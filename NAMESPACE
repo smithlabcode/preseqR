@@ -1,9 +1,9 @@
 useDynLib(preseqR)
-export(preseqR.bootstrap.spec.accum.curve)
-export(preseqR.rfa.estimate)
-export(preseqR.calc.cf.approx)
+export(preseqR.bootstrap.species.accum.curve)
+export(preseqR.rfa.curve)
+export(preseqR.calc.cfa.estimate)
 export(preseqR.ztnb.em)
 export(preseqR.ztnb.estimate)
-export(preseqR.ztnb.spec.accum.curve)
+export(preseqR.ztnb.species.accum.curve)
 
 S3method(print, RFA)
