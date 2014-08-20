@@ -20,12 +20,12 @@ Date: \tab 2014-08-19\cr
 License: \tab GPL-3\cr
 }
 
-functions: preseqR.rational.function.approximation.estimate, 
-           preseqR.bootstrap.species.accumulation.curve,
-           preseqR.calculate.continued.fraction.approximation,
+functions: preseqR.rfa.estimate,
+           preseqR.bootstrap.spec.accum.curve,
+           preseqR.calc.cf.approx,
            preseqR.ztnb.em,
            preseqR.ztnb.estimate,
-           preseqR.ztnb.species.accumulation.curve,
+           preseqR.ztnb.spec.accum.curve,
 
 data: FisherButterflyCaptures, ShakespeareWordCounts
 }
@@ -68,7 +68,7 @@ data(FisherButterflyCaptures)
 
 ## construct a continued fraction approximation and extrapolate the number of
 ## butterfly species as a function of total captures
-res <- preseqR.rational.function.approximation.estimate(FisherButterflyCaptures)
+res <- preseqR.rfa.estimate(FisherButterflyCaptures)
 
 ## print the continued fraction approximation
 res$continued.fraction
@@ -78,12 +78,12 @@ res$estimates
 
 ## calculate the rational function approximation value when the argument equals
 ## to one
-preseqR.calculate.continued.fraction.approximation(res$continued.fraction, 1)
+preseqR.calc.cf.approx(res$continued.fraction, 1)
 
 
 ## use bootstrap method to estimate number of butterfly species and 
 ## the associated confidence intervals
-preseqR.bootstrap.species.accumulation.curve(FisherButterflyCaptures)
+preseqR.bootstrap.spec.accum.curve(FisherButterflyCaptures)
 
 ## fit a zero-truncated negative binomial distribution to the capture counts
 preseqR.ztnb.em(FisherButterflyCaptures)
@@ -93,6 +93,6 @@ preseqR.ztnb.em(FisherButterflyCaptures)
 preseqR.ztnb.estimate(FisherButterflyCaptures, 10000)
 
 ## estimate the number of butterfly specie as a function of captures
-preseqR.ztnb.species.accumulation.curve(FisherButterflyCaptures)
+preseqR.ztnb.spec.accum.curve(FisherButterflyCaptures)
 
 }
