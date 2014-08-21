@@ -14,17 +14,17 @@
 \details{
 functions: 
 
+preseqR.rfa.species.accum.curve, 
+
+preseqR.ztnb.species.accum.curve,
+
 preseqR.rfa.curve,
 
 preseqR.rfa.estimate,
 
-preseqR.rfa.species.accum.curve, 
-
-preseqR.ztnb.em,
-
 preseqR.ztnb.estimate,
 
-preseqR.ztnb.species.accum.curve,
+preseqR.ztnb.em,
 
 data: FisherButterflyHist, ShakespeareWordHist
 }
