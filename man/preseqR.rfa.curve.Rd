@@ -73,7 +73,7 @@ step.adjust = TRUE, header = FALSE, seed = NULL)
     fraction approximation; de is the degree of the continued fraction
     approximation.
   }
-  \item{yield.estimates}{
+  \item{estimates}{
     A two-column table representing estimated number of species given samples of
     different sizes.
   }
@@ -126,7 +126,7 @@ result$continued.fraction
 
 ## print the number of observed word types as a function of # words
 ## Shakespeare's works.
-result$yield.estimates
+result$estimates
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
