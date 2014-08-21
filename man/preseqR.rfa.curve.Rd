@@ -59,7 +59,7 @@ step.adjust = TRUE, header = FALSE, seed = NULL)
 }
 \details{
     The function is a quick mode of
-    \code{preseqR.bootstrap.species.accumulation.curve}. It estimate the
+    \code{preseqR.rfa.species.accumulation.curve}. It estimate the
     expected number of species through rational function approximation without
     bootstrapping. 
 }
@@ -107,7 +107,7 @@ Cambridge, UK, 1996).
 }
 
 \seealso{
-  \code{\link{preseqR.bootstrap.species.accum.curve}}
+  \code{\link{preseqR.rfa.species.accum.curve}}
 }
 
 \examples{

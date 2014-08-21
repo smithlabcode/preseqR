@@ -16,7 +16,7 @@ functions:
 
 preseqR.rfa.curve,
 
-preseqR.bootstrap.species.accum.curve, 
+preseqR.rfa.species.accum.curve, 
 
 preseqR.rfa.estimate,
 
@@ -81,7 +81,7 @@ preseqR.rfa.estimate(res$continued.fraction, 1)
 
 ## use bootstrap method to estimate number of butterfly species and 
 ## the associated confidence intervals
-preseqR.bootstrap.species.accum.curve(FisherButterflyHist)
+preseqR.rfa.species.accum.curve(FisherButterflyHist)
 
 ## fit a zero-truncated negative binomial distribution to the capture counts
 preseqR.ztnb.em(FisherButterflyHist)

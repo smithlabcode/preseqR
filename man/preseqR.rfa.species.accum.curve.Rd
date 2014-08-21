@@ -1,5 +1,5 @@
-\name{preseqR.bootstrap.species.accum.curve}
-\alias{preseqR.bootstrap.species.accum.curve}
+\name{preseqR.rfa.species.accum.curve}
+\alias{preseqR.rfa.species.accum.curve}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
     Predict the number of species with a confidence interval
@@ -10,7 +10,7 @@
     improve estimated results and build confidence intervals.  
 }
 \usage{
-preseqR.bootstrap.species.accum.curve(hist, bootstrap.times = 100, di = 0,
+preseqR.rfa.species.accum.curve(hist, bootstrap.times = 100, di = 0,
 mt = 100, ss = NULL, max.extrapolation = NULL, step.adjust = TRUE,
 header = FALSE, ci = 0.95, seed = NULL)
 }
@@ -82,9 +82,10 @@ performs well for small extrapolation, the power series shows large variance in
 general when the size pasts twice the size of the initial survey.
 
 Daley, T., & Smith, A. D. (2013) used rational function approximation to the
-power series. The rational function approximation is locally close to the power
-series of Good & Toulmin but is constructed to be globally stable. It can apply
-to both small and larger extrapolation.
+power series of Good, I. J., & Toulmin, G. H.. The rational function
+approximation is locally close to the power series of Good & Toulmin but is
+constructed to be globally stable. It can apply to both small and larger
+extrapolation.
 
 The confidence interval is estimated through a log normal confidence interval
 based on Chao, A. (1987) formula 12.
@@ -144,7 +145,7 @@ data(FisherButterflyHist)
 
 ## estimate the number of distinct butterflies as a function of the number of
 ## captured butterflies.
-preseqR.bootstrap.species.accum.curve(FisherButterflyHist)
+preseqR.rfa.species.accum.curve(FisherButterflyHist)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
