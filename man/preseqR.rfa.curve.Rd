@@ -119,7 +119,7 @@ data(ShakespeareWordHist)
 
 ## rational function approximation and estimate the number of observed word types
 ## as a function of # words in Shakespeare's works.
-result = preseqR.rfa.estimate(ShakespeareWordHist)
+result = preseqR.rfa.curve(ShakespeareWordHist)
 
 ## print the constructed continued fraction approximation.
 result$continued.fraction
