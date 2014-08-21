@@ -258,8 +258,8 @@ goodtoulmin.2x.extrap <- function(hist.count)
 ### di = diagonal, mt = max_terms, 
 ### step.adjust is an indicator for whether or not to adjust step.size
 preseqR.rfa.curve <- function(hist, di = 0, mt = 100, ss = NULL,
-                                 max.extrapolation = NULL, step.adjust=TRUE,
-                                 header = FALSE, seed = NULL)
+                              max.extrapolation = NULL, step.adjust=TRUE,
+                              header = FALSE, seed = NULL)
 {
   ## set seed to reproduce the results
   if ( !is.null(seed) ) set.seed(seed)
@@ -583,120 +583,4 @@ print.RFA <- function(x, digit = 4, ...)
   }
   cat(s)
   invisible(x)
-}
-
-### write a continued fraction approximation into a file
-print.continued.fraction.approximation <- function(X, filename, digit)
-{
-  ## use the variable name as the name of the continued fraction approximation
-  s <- paste("CONTINUED FRACTION APPROXIMATION", deparse(substitute(X)), ':\n',
-             sep = '')
-  write(s, filename)
-
-  ## print the degree of the continued fraction approximation
-  s <- paste("DEGREE", toString(X$degree), "\n", sep = '\t')
-  write(s, filename, append = TRUE)
-
-  ## print the diagonal value
-  s <- paste("DIAGONAL VALUE", toString(X$diagonal.idx), "\n", sep = '\t')
-  write(s, filename, append = TRUE)
-
-  ## print the coefficients depending on the value of diagonal value
-  write("COEFFICIENTS:", filename, append = TRUE)
-  di <- abs(X$diagonal.idx)
-    
-  ## the function to print a coefficient
-  ## S is the set of coefficients
-  ## shift is the difference between the index of S and the index of 
-  ## coefficients of a continued fraction approximation
-  f <- function(index, S, shift)
-  {
-    s <- formatC(S[index], digit, format = 'f')
-    s <- paste('a_', toString(index + shift), ' = ', s, sep = '')
-  }
- 
-  ## print offset values if any
-  if (di > 0)
-  {
-    index <- 1:di
-    dim(index) <- di
-
-    s <- apply( index, 1, function(x) f(x, X$offset.coeffs, -1) )
-    write(s, filename, append = TRUE)
-  }
-
-  ## print coeffients if any
-  if (length(X$cf.coeffs) > 0)
-  {
-    index <- 1:length(X$cf.coeffs)
-    dim(index) <- length(X$cf.coeffs)
-
-	s <- apply( index, 1, function(x) f(x, X$cf.coeffs, di - 1) )
-    write(s, filename, append = TRUE)
-  }
-}
-
-
-### write yield estimation matrix into a file
-print.yield.estimates <- function(X, filename, digit = 0)
-{
-  if (!is.null(colnames(X))) {
-    s <- formatC(toupper( colnames(X) ), width = 15, format = 's', flag = '-')
-    write(paste(s, collapse = ''), filename)
-  }
-  if (!is.null( dim(X) )) {
-    f <- function(x) {
-      s <- formatC(x, digit, width = 15, format = 'f', flag = '-')
-      write(paste(s, collapse = ''), filename, append = TRUE)
-    }
-    apply(X, 1, function(x) f(x))
-  }
-}
-
-
-### write results from exported functions into a file
-preseqR.print2file <- function(X, filename = NULL, digit = NULL)
-{
-  ## make sure user spcifies the file name to write
-  if (is.null(filename)) {
-    write("Please specify the file name!", stderr())
-    return(1)
-  }
-
-  ## check if user-defined digit is a non-negative integer
-  if ( !is.null(digit) )
-    if (digit < 0 || digit != floor(digit)) {
-      write("digit must be a non-negative integer!", stderr())
-      return(1)
-  }
-    
-  if ( !is.null(class(X)) ) {
-
-    ## check if X is a rational function approximation
-    if ( class(X) == "RFA" ) {
-
-      ## if digit is undefined
-      if (is.null(digit))
-		  ## preserve 4 digits after decimal in coefficients
-		  digit = 4
-
-      print.continued.fraction.approximation(X, filename, digit)
-      return(0)
-
-    } else if (class(X) == "matrix") {
-
-      ## preserve integer after decimal in coefficients
-      if (is.null(digit))
-		  digit = 0
-
-      print.yield.estimates(X, filename, digit)
-      return(0)
-    }
-  } else {
-
-    ## invalid parameter X
-    write("unknown input variables!", stderr())
-    write('variables must have a "RFA" or "matrix" class attribute!', stderr())
-    return(1)
-  }
 }

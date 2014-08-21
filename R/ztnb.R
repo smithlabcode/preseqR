@@ -175,7 +175,7 @@ preseqR.ztnb.em <- function(hist, size=SIZE.INIT, mu=MU.INIT, header=FALSE)
 
 ### predict the number of distinct items using EM algorithm
 ### if the histogram file has a header, set header = TRUE
-### n is the size of experiment
+### t is the relative size to inital sample
 preseqR.ztnb.estimate <- function(hist, t, header = FALSE)
 {
   hist.count <- read.hist(hist, header)
@@ -213,8 +213,8 @@ preseqR.ztnb.estimate <- function(hist, t, header = FALSE)
 ## ss is the step.size
 ## max.extrapoltion is the maximum value for extrapolation
 preseqR.ztnb.species.accum.curve <- function(hist, ss = NULL,
-                                                    max.extrapolation = NULL,
-                                                    header = FALSE)
+                                             max.extrapolation = NULL,
+                                             header = FALSE)
 {
   hist.count <- read.hist(hist, header)
 
