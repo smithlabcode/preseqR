@@ -18,7 +18,7 @@ preseqR.rfa.curve,
 
 preseqR.bootstrap.species.accum.curve, 
 
-preseqR.calc.cfa.estimate,
+preseqR.rfa.estimate,
 
 preseqR.ztnb.em,
 
@@ -77,8 +77,7 @@ res$estimates
 
 ## calculate the rational function approximation value when the argument equals
 ## to one
-preseqR.calc.cfa.estimate(res$continued.fraction, 1)
-
+preseqR.rfa.estimate(res$continued.fraction, 1)
 
 ## use bootstrap method to estimate number of butterfly species and 
 ## the associated confidence intervals
