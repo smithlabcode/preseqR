@@ -57,7 +57,7 @@ read.hist <- function(hist.file, header = FALSE)
 
 ### calculate the value of the continued fraction approximation CF given the
 ### argument t
-preseqR.calc.cfa.estimate <- function(CF, t)
+preseqR.rfa.estimate <- function(CF, t)
 {
   if (class(CF) != "RFA")
     return()

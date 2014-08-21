@@ -1,5 +1,5 @@
-\name{preseqR.calc.cfa.estimate}
-\alias{preseqR.calc.cfa.estimate}
+\name{preseqR.rfa.estimate}
+\alias{preseqR.rfa.estimate}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
 Calculate the value of a continued fraction
@@ -8,7 +8,7 @@ Calculate the value of a continued fraction
 The function calculates the value of a continued fraction.
 }
 \usage{
-preseqR.calc.cfa.estimate(CF, t)
+preseqR.rfa.estimate(CF, t)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -44,7 +44,7 @@ result = preseqR.rfa.curve(ShakespeareWordHist)
 CF = result$continued.fraction
 
 ## calculate values when the argument equals to one
-preseqR.calc.cfa.estimate(CF, 1)
+preseqR.rfa.estimate(CF, 1)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
