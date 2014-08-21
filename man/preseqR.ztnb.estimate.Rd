@@ -23,8 +23,8 @@ preseqR.ztnb.estimate(hist, t, header = FALSE)
     an ascending order.
 }
   \item{t}{
-    A positive double representing the size of a sample relative to the size of 
-    hist.
+    A positive double representing the size of a sample relative to the total
+    number of observed species in hist.
 }
   \item{header}{
     A boolean variable number representing whether or not the frequencies of 
