@@ -59,7 +59,7 @@ step.adjust = TRUE, header = FALSE, seed = NULL)
 }
 \details{
     The function is a quick mode of
-    \code{preseqR.rfa.species.accumulation.curve}. It estimate the
+    \code{preseqR.rfa.species.accum.curve}. It estimate the
     expected number of species through rational function approximation without
     bootstrapping. 
 }

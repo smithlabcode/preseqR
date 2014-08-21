@@ -16,9 +16,9 @@ functions:
 
 preseqR.rfa.curve,
 
-preseqR.rfa.species.accum.curve, 
-
 preseqR.rfa.estimate,
+
+preseqR.rfa.species.accum.curve, 
 
 preseqR.ztnb.em,
 
