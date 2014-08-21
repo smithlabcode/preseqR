@@ -397,7 +397,7 @@ preseqR.rfa.curve <- function(hist, di = 0, mt = 100, ss = NULL,
 
   ## put index and estimated yields together into a two-colunm matrix
   yield.estimates <- matrix(c(index, yield.estimates), ncol = 2, byrow = FALSE)
-  colnames(yield.estimates) <- c('sample.size', 'yield.estimates')
+  colnames(yield.estimates) <- c('sample.size', 'yield.estimate')
 
   result <- list(continued.fraction = CF, estimates = yield.estimates)
   return(result)
@@ -527,7 +527,7 @@ preseqR.bootstrap.species.accum.curve <- function(
                     ncol = 4, byrow = FALSE)
     lower.ci = sprintf('lower.%.2fCI', ci)
     upper.ci = sprintf('uppper.%.2fCI', ci)
-    colnames(result) <- c('sample.size', 'estimates', lower.ci, upper.ci)
+    colnames(result) <- c('sample.size', 'yield.estimate', lower.ci, upper.ci)
     return(result)
   } else {
       write("fail to bootstrap!", stderr())

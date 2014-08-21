@@ -266,6 +266,6 @@ preseqR.ztnb.species.accum.curve <- function(hist, ss = NULL,
 
   ## combine sample.size and yield.estimates into matrix
   yield.estimates = matrix(c(sample.size, yield.estimates), ncol = 2, byrow = FALSE)
-  colnames(yield.estimates) = c('sample.size', 'yield.estimates')
+  colnames(yield.estimates) = c('sample.size', 'yield.estimate')
   return(yield.estimates)
 }
