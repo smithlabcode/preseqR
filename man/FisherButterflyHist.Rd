@@ -1,5 +1,5 @@
-\name{FisherButterflyCaptures}
-\alias{FisherButterflyCaptures}
+\name{FisherButterflyHist}
+\alias{FisherButterflyHist}
 \docType{data}
 \title{Fisher's butterfly data}
 \description{Frequencies data of butterflies collected in the Malay peninsula
@@ -15,7 +15,7 @@ Animal Population, Journal of Animal Ecology, 12, 42-58, Table 2.
 library(preseqR)
 
 ##load data
-data(FisherButterflyCaptures)
+data(FisherButterflyHist)
 }
 
 \keyword{ data }

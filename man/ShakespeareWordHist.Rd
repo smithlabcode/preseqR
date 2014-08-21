@@ -1,5 +1,5 @@
-\name{ShakespeareWordCounts}
-\alias{ShakespeareWordCounts}
+\name{ShakespeareWordHist}
+\alias{ShakespeareWordHist}
 \docType{data}
 \title{Shakespeare's word type frequencies}
 \description{The Shakespeare's word type frequencies data was from 
@@ -14,7 +14,7 @@ How many words did Shakespeare know?." Biometrika 63.3 (1976): 435-447, Table 1.
 library(preseqR)
 
 ##load data
-data(ShakespeareWordCounts)
+data(ShakespeareWordHist)
 }
 
 \keyword{ data }
