@@ -20,7 +20,7 @@ max.extrapolation = NULL, header = FALSE)
     It can be either a file name of the data or a variable of a matrix 
     containing the data. The data must be a two-column table.  
     The first column is the frequency \eqn{j = 1,2,\dots}; and the second column
-    is \equ{n_j}, the number of species with \eqn{j} individuals observed in the
+    is \eqn{n_j}, the number of species with \eqn{j} individuals observed in the
     sample. The first column must be sorted in an ascending order.
 }
   \item{header}{
