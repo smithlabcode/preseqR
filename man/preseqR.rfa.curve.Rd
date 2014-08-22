@@ -6,10 +6,10 @@ Estimate the number of species observed as a function of captures
 with RFA to the NPEB estimator
 }
 \description{
-This function uses rational function approximations to Good and Toulmin's
-(1956) non-parametric empirical Bayes power series to estimate the expected
-number of species observed as a function of the number of total 
-individuals captured.
+This function estimates the expected number of species observed as a function of
+the number of total individuals captured. It uses rational function
+approximations to Good and Toulmin's (1965) non-parametric empirical Bayes power
+series.
 }
 \usage{
 preseqR.rfa.curve(hist, di = 0, mt = 100, ss = NULL, max.extrapolation = NULL,
@@ -19,12 +19,11 @@ step.adjust = TRUE, header = FALSE, seed = NULL)
 \arguments{
   \item{hist}{
     Frequencies of the number of individuals of each species captured. 
-    \code{hist} can be either a file name of the data or a variable of a matrix 
+    It can be either a file name of the data or a variable of a matrix 
     containing the data. The data must be a two-column table.  
-    (j, n_j) in the table represents there were n_j species with j individuals 
-    observed. 
-    Both j and n_j are positive integers and the first column must be sorted in
-    an ascending order.
+    The first column is the frequency \eqn{j = 1,2,\dots}; and the second column
+    is \equ{n_j}, the number of species with \eqn{j} individuals observed in the
+    sample. The first column must be sorted in an ascending order.
 }
   \item{header}{
     A boolean variable number representing whether or not the frequencies of 
@@ -83,18 +82,18 @@ step.adjust = TRUE, header = FALSE, seed = NULL)
 }
 }
 \references{
-Good, I. J., and G. H. Toulmin. "The number of new species, and the increase 
-in population coverage, when a sample is increased." Biometrika 43.1-2 (1956):
-45-63.
+Good, I. J., & Toulmin, G. H. (1956). The number of new species, and the
+increase in population coverage, when a sample is increased.
+Biometrika, 43(1-2), 45-63.
 
-Efron, Bradley, and Ronald Thisted. "Estimating the number of unseen species: 
-How many words did Shakespeare know?." Biometrika 63.3 (1976): 435-447.
+Efron, B., & Thisted, R. (1976). Estimating the number of unseen species:
+How many words did Shakespeare know?. Biometrika, 63(3), 435-447.
 
-Daley, Timothy, and Andrew D. Smith. "Predicting the molecular complexity of 
-sequencing libraries." Nature methods 10.4 (2013): 325-327.
+Daley, T., & Smith, A. D. (2013). Predicting the molecular complexity of
+sequencing libraries. Nature methods, 10(4), 325-327.
 
-Baker, G. & Graves-Morris, P. Pade Approximants (Cambrige University Press,
-Cambridge, UK, 1996).
+Baker, G. A., & Graves-Morris, P. (1996). Pade approximants
+(Encyclopedia of Mathematics and its Applications vol 59).
 }
 \author{
   Chao Deng

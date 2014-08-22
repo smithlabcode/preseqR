@@ -16,12 +16,11 @@ preseqR.ztnb.estimate(hist, t, header = FALSE)
 \arguments{
   \item{hist}{
     Frequencies of the number of individuals of each species captured. 
-    \code{hist} can be either a file name of the data or a variable of a matrix 
+    It can be either a file name of the data or a variable of a matrix 
     containing the data. The data must be a two-column table.  
-    (j, n_j) in the table represents there were n_j species with j individuals 
-    observed. 
-    Both j and n_j are positive integers and the first column must be sorted in
-    an ascending order.
+    The first column is the frequency \eqn{j = 1,2,\dots}; and the second column
+    is \equ{n_j}, the number of species with \eqn{j} individuals observed in the
+    sample. The first column must be sorted in an ascending order.
 }
   \item{t}{
     A positive double equal to the size of an additional sample relative to the total

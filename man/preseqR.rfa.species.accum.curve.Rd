@@ -5,10 +5,10 @@
     Predict the number of species with confidence intervals
 }
 \description{
-    The function estimates expected number of species as a function of the
+    The function estimates the expected number of species as a function of the
     number of captures using rational function approximations to Good and
     Toulmin's power series. The capture counts histogram is bootstrapped to
-    improve the accuracy of the estimated curve and build confidence intervals.  
+    improve the accuracy of the estimated curve and build confidence intervals..
 }
 \usage{
 preseqR.rfa.species.accum.curve(hist, bootstrap.times = 100, di = 0,
@@ -19,12 +19,11 @@ header = FALSE, ci = 0.95, seed = NULL)
 \arguments{
   \item{hist}{
     Frequencies of the number of individuals of each species captured. 
-    \code{hist} can be either a file name of the data or a variable of a matrix 
+    It can be either a file name of the data or a variable of a matrix 
     containing the data. The data must be a two-column table.  
-    (j, n_j) in the table represents there were n_j species with j individuals 
-    observed. 
-    Both j and n_j are positive integers and the first column must be sorted in
-    an ascending order.
+    The first column is the frequency \eqn{j = 1,2,\dots}; and the second column
+    is \equ{n_j}, the number of species with \eqn{j} individuals observed in the
+    sample. The first column must be sorted in an ascending order.
 }
   \item{header}{
     A boolean variable number representing whether or not the frequencies of 
@@ -68,7 +67,7 @@ header = FALSE, ci = 0.95, seed = NULL)
 }
 }
 \details{
-According to Good, I. J., & Toulmin, G. H. (1956) and Efron & Thisted (1976), under
+According to Good & Toulmin (1956) and Efron & Thisted (1976), under
 a multinomial or independent compound Poisson model for the number of individuals
 observed for each species in the population, 
 a non-paramtric empirical Bayes estimator can be derived for the expected number
@@ -100,21 +99,21 @@ based on Chao, A. (1987) formula 12.
     NULL if bootstrapping failed.
 }
 \references{
-Good, I. J., and G. H. Toulmin. "The number of new species, and the increase 
-in population coverage, when a sample is increased." Biometrika 43.1-2 (1956):
-45-63.
+Good, I. J., & Toulmin, G. H. (1956). The number of new species, and the
+increase in population coverage, when a sample is increased.
+Biometrika, 43(1-2), 45-63.
 
-Efron, Bradley, and Ronald Thisted. "Estimating the number of unseen species: 
-How many words did Shakespeare know?." Biometrika 63.3 (1976): 435-447.
+Efron, B., & Thisted, R. (1976). Estimating the number of unseen species:
+How many words did Shakespeare know?. Biometrika, 63(3), 435-447.
 
-Efron, Bradley. "Bootstrap methods: another look at the jackknife." The annals
-of Statistics (1979): 1-26.
+Efron, B. (1979). Bootstrap methods: another look at the jackknife.
+The annals of Statistics, 1-26.
 
-Daley, Timothy, and Andrew D. Smith. "Predicting the molecular complexity of 
-sequencing libraries." Nature methods 10.4 (2013): 325-327.
+Daley, T., & Smith, A. D. (2013). Predicting the molecular complexity of
+sequencing libraries. Nature methods, 10(4), 325-327.
 
-Chao, Anne. "Estimating the population size for capture-recapture data with
-unequal catchability." Biometrics (1987): 783-791.
+Chao, A. (1987). Estimating the population size for capture-recapture data with
+unequal catchability. Biometrics, 783-791.
 
 \url{http://smithlabresearch.org/software/preseq/}
 }

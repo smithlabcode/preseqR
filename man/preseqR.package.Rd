@@ -6,11 +6,11 @@
     An R package for estimation of species accumulation
 }
 \description{
-    preseqR provides functions to estimate species accumulation by rational function
-    approximations to Good and Toulmin's (1956) non-parametric empirical Bayes
-    power series estimator and by fitting a zero-truncated Negative Binomial
-    distibution to the observed species counts, both described in Daley
-    and Smith (2013).
+    preseqR provides functions to estimate species accumulation. Functions work
+    through either rational function approximations to Good and Toulmin's (1956)
+    non-parametric empirical Bayes power series estimator or fitting a 
+    zero-truncated Negative Binomial distibution to the observed species counts.
+    Both methods are described in Daley and Smith (2013).
 }
 \details{
 functions: 
@@ -39,24 +39,24 @@ Fisher, R. A., Corbet, A. S., and Williams, C. B. ,1943, The Relation Between
 the Number of Species and the Number of Individuals in a Random Sample of an  
 Animal Population, Journal of Animal Ecology, 12, 42-58.
 
-Efron, Bradley, and Ronald Thisted. "Estimating the number of unseen species: 
-How many words did Shakespeare know?." Biometrika 63.3 (1976): 435-447.
+Efron, B., & Thisted, R. (1976). Estimating the number of unseen species:
+How many words did Shakespeare know?. Biometrika, 63(3), 435-447.
 
-Good, I. J., and G. H. Toulmin. "The number of new species, and the increase 
-in population coverage, when a sample is increased." Biometrika 43.1-2 (1956):
-45-63.
+Good, I. J., & Toulmin, G. H. (1956). The number of new species, and the
+increase in population coverage, when a sample is increased.
+Biometrika, 43(1-2), 45-63.
 
-Daley, Timothy, and Andrew D. Smith. "Predicting the molecular complexity of 
-sequencing libraries." Nature methods 10.4 (2013): 325-327.
+Daley, T., & Smith, A. D. (2013). Predicting the molecular complexity of
+sequencing libraries. Nature methods, 10(4), 325-327.
 
-Baker, G. A., and Peter Graves-Morris. "Pade approximants (Encyclopedia of 
-Mathematics and its Applications vol 59)." (1996).
+Baker, G. A., & Graves-Morris, P. (1996). Pade approximants
+(Encyclopedia of Mathematics and its Applications vol 59).
 
-Efron, Bradley. "Bootstrap methods: another look at the jackknife." The annals
-of Statistics (1979): 1-26.
+Efron, B. (1979). Bootstrap methods: another look at the jackknife.
+The annals of Statistics, 1-26.
 
-Chao, Anne. "Estimating the population size for capture-recapture data with
-unequal catchability." Biometrics (1987): 783-791.
+Chao, A. (1987). Estimating the population size for capture-recapture data with
+unequal catchability. Biometrics, 783-791.
 }
 
 \examples{
