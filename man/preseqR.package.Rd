@@ -3,13 +3,14 @@
 \alias{preseqR}
 \docType{package}
 \title{
-    Species accumulation estimation through rational function approximations
+    An R package for estimation of species accumulation
 }
 \description{
-    This is a R package to make the functionality of Preseq available in the R
-    statistical computing environment. It provides functions to construct,
-    calculate and use rational function approximations to estimate the number of
-    observed species for a sample with a given size.
+    preseqR provides functions to estimate species accumulation by rational function
+    approximations to Good and Toulmin's (1956) non-parametric empirical Bayes
+    power series estimator and by fitting a zero-truncated Negative Binomial
+    distibution to the observed species counts, both described in Daley
+    and Smith (2013).
 }
 \details{
 functions: 
@@ -65,32 +66,40 @@ library(preseqR)
 ## load data
 data(FisherButterflyHist)
 
-## construct a continued fraction approximation and extrapolate the number of
-## butterfly species as a function of total captures
+## estimate the accumulation of butterfly species as a function
+## with rational function approximations to Good and Toulmin's
+## power series.
 res <- preseqR.rfa.curve(FisherButterflyHist)
 
-## print the continued fraction approximation
+## print the rational function approximation as a 
+## continued fraction
 res$continued.fraction
 
-## print the estimated number of butterfly species
+## print the butterfly species accumulation curve
 res$estimates
 
-## calculate the rational function approximation value when the argument equals
-## to one
-preseqR.rfa.estimate(res$continued.fraction, 1)
+## calculate the rational function approximation value for 
+## the expected number of new butterfly species observed when 
+## the experiment is doubled and 3,506 more butterflies are
+## captured, following the convention of Efron and Thisted 
+## (1976) that t = 0 corresponds to the initial experiment
+preseqR.rfa.estimate(res$continued.fraction, t = 1)
 
-## use bootstrap method to estimate number of butterfly species and 
-## the associated confidence intervals
+## Estimate the butterfly species accumulation curve by
+## bootstrapping the observed species count histogram
 preseqR.rfa.species.accum.curve(FisherButterflyHist)
 
-## fit a zero-truncated negative binomial distribution to the capture counts
+## fit a zero-truncated negative binomial distribution to 
+## the observed species counts
 preseqR.ztnb.em(FisherButterflyHist)
 
-## estimate the number of butterfly species when the size of sample is twice the
-## size of the inital sample
-preseqR.ztnb.estimate(FisherButterflyHist, 2)
+## calculate the expected number of new butterfly species
+## observed when the experiment is doubled under the 
+## Negative Binomial model
+preseqR.ztnb.estimate(FisherButterflyHist, 1)
 
-## estimate the number of butterfly specie as a function of captures
+## estimate the number of butterfly species observed as a 
+## function of total captures under the Negative Binomial model
 preseqR.ztnb.species.accum.curve(FisherButterflyHist)
 
 }

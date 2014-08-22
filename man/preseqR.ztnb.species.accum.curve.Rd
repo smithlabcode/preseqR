@@ -5,9 +5,9 @@
 Predict the number of species through a ZTNB
 }
 \description{
-    The function extrapolates the number of species as a function of the number
+    This function extrapolates the number of species as a function of the number
     of captures. It assumes that the number of observations in an individual
-    species follows a zero-truncated negative binomial (ZTNB) distribution.
+    species follows a negative binomial distribution.
 }
 \usage{
 preseqR.ztnb.species.accum.curve(hist, ss = NULL,
@@ -16,10 +16,11 @@ max.extrapolation = NULL, header = FALSE)
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{hist}{
-    Frequencies of count data in an initial survey. \code{hist} can be either a 
-    file name of the data or a variable of a matrix containing the data. The 
-    data must be a two-column table. Each row (j, n_j) in the table represents
-    there were n_j species with j individuals observed in each single species. 
+    Frequencies of the number of individuals of each species captured. 
+    \code{hist} can be either a file name of the data or a variable of a matrix 
+    containing the data. The data must be a two-column table.  
+    (j, n_j) in the table represents there were n_j species with j individuals 
+    observed. 
     Both j and n_j are positive integers and the first column must be sorted in
     an ascending order.
 }
@@ -28,11 +29,11 @@ max.extrapolation = NULL, header = FALSE)
     count data file contains a header.
 }
   \item{ss}{
-    An positive double representing the step size between samples. Default value
+    An positive double equal to the step size between samples. Default value
     is the size of the sample in the initial survey.
 }
   \item{max.extrapolation}{
-    A positive double representing the maximum possible size of a sample in a
+    A positive double equal to the maximum possible size of a sample in a
     survey. Default value is the 100 times the size of a sample in the initial 
     survey.
 }

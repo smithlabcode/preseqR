@@ -2,12 +2,13 @@
 \alias{preseqR.rfa.species.accum.curve}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-    Predict the number of species with a confidence interval
+    Predict the number of species with confidence intervals
 }
 \description{
     The function estimates expected number of species as a function of the
-    number of captures. The capture counts histogram is bootstrapped to
-    improve estimated results and build confidence intervals.  
+    number of captures using rational function approximations to Good and
+    Toulmin's power series. The capture counts histogram is bootstrapped to
+    improve the accuracy of the estimated curve and build confidence intervals.  
 }
 \usage{
 preseqR.rfa.species.accum.curve(hist, bootstrap.times = 100, di = 0,
@@ -17,10 +18,11 @@ header = FALSE, ci = 0.95, seed = NULL)
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{hist}{
-    Frequencies of count data in an initial survey. \code{hist} can be either a 
-    file name of the data or a variable of a matrix containing the data. The 
-    data must be a two-column table. Each row (j, n_j) in the table represents
-    there were n_j species with j individuals observed in each single species. 
+    Frequencies of the number of individuals of each species captured. 
+    \code{hist} can be either a file name of the data or a variable of a matrix 
+    containing the data. The data must be a two-column table.  
+    (j, n_j) in the table represents there were n_j species with j individuals 
+    observed. 
     Both j and n_j are positive integers and the first column must be sorted in
     an ascending order.
 }
@@ -33,51 +35,48 @@ header = FALSE, ci = 0.95, seed = NULL)
     estimations. See detail below.
 }
   \item{di}{
-    An integer representing the diagonal value for a continued fraction 
+    An integer equal to the diagonal value for a continued fraction 
     approximation. Default value is 0.
 }
   \item{mt}{
-    An positive integer representing the maximum degree allowed in a continued
+    An positive integer equal to the maximum degree allowed in a continued
     fraction approximation. Default is 100.
 }
   \item{ss}{
-    An positive double representing the step size between samples. Default value
+    An positive double equal to the step size between samples. Default value
     is the size of the sample in the initial survey.
 }
   \item{max.extrapolation}{
-    A positive double representing the maximum possible size of a sample in a
+    A positive double equal to the maximum possible size of a sample in a
     survey. Default value is the 100 times the size of a sample in the initial 
     survey.
 }
   \item{step.adjust}{
-    A boolean value representing whether or not the value of \code{ss} could 
-    adjust if the user-defined value of \code{ss} is relatively small comparing
-    with the number of individuals observed in the initial survey. If 
-    \code{step.adjust} is TRUE, \code{ss} could adjust to around one twentieth
+    A boolean value representing whether or not the value of \code{ss} can be
+    adjusted if the user-defined value of \code{ss} is small compared to
+    the total number of individuals observed in the initial survey. If 
+    \code{step.adjust} is TRUE, \code{ss} will adjust to around one twentieth
     size of the initial sample when the user-defined \code{ss} is too small.
 }
   \item{ci}{
-    A positive double in (0, 1) representing the level of confidence intervals.
+    A positive double in (0, 1) equal to the confidence level.
     Default value is 0.95.
   }
   \item{seed}{
     A single value, interpreted as an integer, or NULL for random number 
-    generator. Default is NULL. Set the seed if you want to reproduce the 
-    results.
+    generator. Default is NULL. 
 }
 }
 \details{
-In general contexts, "species" could be defined in a broad way. For example, 
-"species" could be reads in a sequencing experiment or words in a book. The 
-function can apply to any defined "species" once the number of observations for
-each single "species" follows a poisson process with rates possibly varying
-between species.
-
-According to Good, I. J., & Toulmin, G. H. (1956) and Efron & Thisted (1976), if
-the counts of each species follows an independent compound poisson process or is
-a multinomial sample, a power series could be derived to estimate the number of
-new species if sampling continues. Coefficients of the power series are
-estimated through the frequencies of count data in the initial survey. While it
+According to Good, I. J., & Toulmin, G. H. (1956) and Efron & Thisted (1976), under
+a multinomial or independent compound Poisson model for the number of individuals
+observed for each species in the population, 
+a non-paramtric empirical Bayes estimator can be derived for the expected number
+of new species if sampling continues in the form of an alternating power series
+in t, with t equal to the relative increase in the number of individuals captured.
+Coefficients of the power series are
+estimated through the frequencies of the number of individuals of each observed
+species in the initial survey. While it
 performs well for small extrapolation, the power series shows large variance in
 general when the size pasts twice the size of the initial survey.
 
@@ -93,10 +92,10 @@ based on Chao, A. (1987) formula 12.
 \value{
     A four-column table representing estimated number of species given samples
     of different sizes or \code{NULL} representing failure of bootstrapping.
-    The first column is the size of a sample. The second column is the estimated
-    number of species. The third column is the lower bound of the 95\%
-    confidence interval. The fourth column is the upper bound of the 95\%
-    confidence interval.
+    The first column is the total size in captured individuals of a sample. 
+    The second column is the estimated number of species. The third and fourth
+    column are the lower and upper bounds, respectively, of the corresponding
+    confidence intervals.
 
     NULL if bootstrapping failed.
 }

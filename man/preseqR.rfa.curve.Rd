@@ -2,12 +2,14 @@
 \alias{preseqR.rfa.curve}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-Predict the number of species through a continued fraction
+Estimate the number of species observed as a function of captures
+with RFA to the NPEB estimator
 }
 \description{
-The function uses rational function approximation to estimate the expected
-number of new species, which did not appear in an initial survey, but will be
-detected if sampling is continued.
+This function uses rational function approximations to Good and Toulmin's
+(1956) non-parametric empirical Bayes power series to estimate the expected
+number of species observed as a function of the number of total 
+individuals captured.
 }
 \usage{
 preseqR.rfa.curve(hist, di = 0, mt = 100, ss = NULL, max.extrapolation = NULL,
@@ -16,10 +18,11 @@ step.adjust = TRUE, header = FALSE, seed = NULL)
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{hist}{
-    Frequencies of count data in an initial survey. \code{hist} can be either a 
-    file name of the data or a variable of a matrix containing the data. The 
-    data must be a two-column table. Each row (j, n_j) in the table represents
-    there were n_j species with j individuals observed in each single species. 
+    Frequencies of the number of individuals of each species captured. 
+    \code{hist} can be either a file name of the data or a variable of a matrix 
+    containing the data. The data must be a two-column table.  
+    (j, n_j) in the table represents there were n_j species with j individuals 
+    observed. 
     Both j and n_j are positive integers and the first column must be sorted in
     an ascending order.
 }
@@ -28,47 +31,45 @@ step.adjust = TRUE, header = FALSE, seed = NULL)
     count data file contains a header.
 }
   \item{di}{
-    An integer representing the diagonal value for a constructed continued 
+    An integer equal to the diagonal value for a constructed continued 
     fraction approximation. Default value is 0.
 }
   \item{mt}{
-    An positive integer representing the maximum degree allowed in the continued
+    An positive integer equal to the maximum degree allowed in the continued
     fraction approximation. Default is 100.
 }
   \item{ss}{
-    An positive double representing the step size between samples. Default value
+    An positive double equal to the step size between samples. Default value
     is the size of the sample in the initial survey.
 }
   \item{max.extrapolation}{
-    A positive double representing the maximum possible size of a sample in a
+    A positive double equal to the maximum possible size of a sample in a
     survey. Default value is 100 times the size of the sample in the initial
     survey.
 }
   \item{step.adjust}{
-    A boolean value representing whether or not the value of \code{ss} could 
-    adjust if the user-defined value of \code{ss} is relatively small comparing
-    with the number of individuals observed in the initial survey. If 
-    \code{step.adjust} is TRUE, \code{ss} could adjust to around one twentieth
+    A boolean value representing whether or not the value of \code{ss} can be
+    adjusted if the user-defined value of \code{ss} is small compared to
+    the total number of individuals observed in the initial survey. If 
+    \code{step.adjust} is TRUE, \code{ss} will adjust to around one twentieth
     size of the initial sample when the user-defined \code{ss} is too small.
   }
   \item{seed}{
-    A single value, interpreted as an integer, or NULL for random number 
-    generator. Default is NULL. Set the seed if you want to reproduce the 
-    results.
+    A single value interpreted as an integer or NULL for random number 
+    generator. Default is NULL.
 }
 }
 \details{
-    The function is a quick mode of
-    \code{preseqR.rfa.species.accum.curve}. It estimate the
+    This function estimates the
     expected number of species through rational function approximation without
     bootstrapping. 
 }
 \value{
   \item{continued.fraction}{
     A list contains five components of a continued fraction approximation:
-    ps.coeffs is the coeffiencies of a power series, which is the continued
-    fraction approximation to; cf.coeffs is coeffiencies of the continued
-    fraction approximation; offset.coeffs is offset coeffiencies of the 
+    ps.coeffs is the coeffiencients of the Good and Toulmin power series; 
+    cf.coeffs is the coeffiencients of the associated continued
+    fraction approximation; offset.coeffs is the offset coeffiencients of the 
     continued fraction approximation; di is the diagonal value of the continued
     fraction approximation; de is the degree of the continued fraction
     approximation.

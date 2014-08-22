@@ -2,10 +2,12 @@
 \alias{preseqR.rfa.estimate}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-Calculate the value of a continued fraction
+Calculate the value of the continued fraction
 }
 \description{
-The function calculates the value of a continued fraction.
+This function calculates the value of a continued fraction at the
+value t which will correspond to the relative number of additonal
+individuals to be captured.
 }
 \usage{
 preseqR.rfa.estimate(CF, t)

@@ -5,10 +5,12 @@
 Fit a zero-truncated negative binomial distribution
 }
 \description{
-The function fits a zero-truncated negative binomial (ZTNB) distribution
-to the frequencies of count data. Since the zero count missed in the survey, an
-EM algorithm is used to estimate the unobserved zero count and the associated
-parameters of a negative binomial distribution.
+This function fits a zero-truncated negative binomial (ZTNB) distribution
+to the number of individuals captured for each observed species. 
+Since the species with zero observations are missed in the survey, an
+EM algorithm is used to estimate the parameters assuming the number of
+individuals for each species follows a Negative Binomial distribution
+with the zero counts as the missing latent data.
 }
 \usage{
 preseqR.ztnb.em(hist, size = SIZE.INIT, mu = MU.INIT, header = FALSE)
@@ -16,10 +18,11 @@ preseqR.ztnb.em(hist, size = SIZE.INIT, mu = MU.INIT, header = FALSE)
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{hist}{
-    Frequencies of count data in an initial survey. \code{hist} can be either a 
-    file name of the data or a variable of a matrix containing the data. The 
-    data must be a two-column table. Each row (j, n_j) in the table represents
-    there were n_j species with j individuals observed in each single species. 
+    Frequencies of the number of individuals of each species captured. 
+    \code{hist} can be either a file name of the data or a variable of a matrix 
+    containing the data. The data must be a two-column table.  
+    (j, n_j) in the table represents there were n_j species with j individuals 
+    observed. 
     Both j and n_j are positive integers and the first column must be sorted in
     an ascending order.
 }

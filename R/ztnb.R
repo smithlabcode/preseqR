@@ -200,13 +200,13 @@ preseqR.ztnb.estimate <- function(hist, t, header = FALSE)
   L <- distinct.sample/p
 
   ## update parameters of negative binomial in the experiment with size n
-  mu <- mu*t
+  mu <- mu*(t + 1)
 
   ## the probability of being sampled under the new experiment
   P <- 1 - dnbinom(0, size = size, mu = mu)
 
-  ## return the expected number of distinct items under the new experiment
-  return(L * P)
+  ## return the expected number of new distinct species under the new experiment
+  return(L * P - distinct.sample)
 }
 
 ## predict a complexity curve using EM algorithm

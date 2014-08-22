@@ -5,9 +5,9 @@
 Predict the number of species through a ZTNB
 }
 \description{
-The function extrapolates the number of species given the size of a sample in a
-survey. It assumes that the number of observations in an individual species
-follows a zero-truncated negative binomial (ZTNB) distribution.
+This function calculates the expected number of new species observed
+if the experiment is increased by t, relative to the number of
+individuals observed in hist.
 }
 \usage{
 preseqR.ztnb.estimate(hist, t, header = FALSE)
@@ -15,15 +15,16 @@ preseqR.ztnb.estimate(hist, t, header = FALSE)
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{hist}{
-    Frequencies of count data in an initial survey. \code{hist} can be either a 
-    file name of the data or a variable of a matrix containing the data. The 
-    data must be a two-column table. Each row (j, n_j) in the table represents
-    there were n_j species with j individuals observed in each single species. 
+    Frequencies of the number of individuals of each species captured. 
+    \code{hist} can be either a file name of the data or a variable of a matrix 
+    containing the data. The data must be a two-column table.  
+    (j, n_j) in the table represents there were n_j species with j individuals 
+    observed. 
     Both j and n_j are positive integers and the first column must be sorted in
     an ascending order.
 }
   \item{t}{
-    A positive double representing the size of a sample relative to the total
+    A positive double equal to the size of an additional sample relative to the total
     number of observed species in hist.
 }
   \item{header}{
@@ -32,17 +33,18 @@ preseqR.ztnb.estimate(hist, t, header = FALSE)
 }
 }
 \details{
-    The frequencies of count data is fitted into a zero-truncated negative 
-    binomial distribution. We use \code{preseqR.ztnb.em} to estimate the
+    A zero-truncated Negative Binomial distribution is fit to the number of
+    individuals for each observed species. 
+    We use \code{preseqR.ztnb.em} to estimate the
     parameters. 
 	
-	For extrapolation the number of species through a negative binomial 
-    distribution, See supplementary of Daley, T., & Smith, A. D. (2013).
+	For extrapolation for the number of species through a 
+	zero-truncated negative binomial distribution, 
+	see supplementary of Daley, T., & Smith, A. D. (2013).
 }
 
 \value{
-    The expected number of species when a sample with \code{n} individuals
-    observed in the survey.
+    a double as the function value.
 }
 \author{
     Chao Deng
@@ -59,9 +61,9 @@ library(preseqR)
 ## import data
 data(FisherButterflyHist)
 
-## estimate the number of distinct butterflies when the size of sample is twice
-## the size of the initial sample
-preseqR.ztnb.estimate(FisherButterflyHist, 2)
+## estimate the number of new butterfly species when the size of 
+## the new sample is twice the size of the initial observed sample
+preseqR.ztnb.estimate(FisherButterflyHist, 1)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
