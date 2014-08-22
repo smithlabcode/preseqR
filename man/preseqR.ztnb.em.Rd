@@ -28,11 +28,11 @@ preseqR.ztnb.em(hist, size = SIZE.INIT, mu = MU.INIT, header = FALSE)
 }
   \item{size}{
     A positive double setting the initial value of the parameter \code{size} in
-    a negative binomial distribution. Default value is 1. See details.
+    a negative binomial distribution for the EM algorithm. Default value is 1.
 }
   \item{mu}{
     A positive double setting the initial value of the parameter \code{mu} in a
-    negative binomial distribution. Default value is 0.5. See details.
+    negative binomial distribution for the EM algorithm. Default value is 0.5.
 }
   \item{header}{
     A boolean variable number representing whether or not the frequencies of 
