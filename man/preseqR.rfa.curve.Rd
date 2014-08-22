@@ -126,7 +126,7 @@ result = preseqR.rfa.curve(ShakespeareWordHist)
 result$continued.fraction
 
 ## print the number of observed word types as a function of # words
-## Shakespeare's works.
+## in Shakespeare's works.
 result$estimates
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
