@@ -139,11 +139,11 @@ unequal catchability. Biometrics, 783-791.
 library(preseqR)
 
 ## import data
-data(FisherButterflyHist)
+data(ShakespeareWordHist)
 
 ## estimate the number of distinct butterflies as a function of the number of
-## captured butterflies.
-preseqR.rfa.species.accum.curve(FisherButterflyHist)
+## captured butterflies. Minimum required successful estimation times is 10
+preseqR.rfa.species.accum.curve(ShakespeareWordHist, bootstrap.times = 10, seed = 19861114)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

@@ -2,7 +2,7 @@
 MAXLENGTH <- 10000000
 
 ### MULTINOMIAL.SAMPLE.TIMES number of random vectors to draw each time
-MULTINOMIAL.SAMPLE.TIMES <- 19
+MULTINOMIAL.SAMPLE.TIMES <- 11
 
 ### MINOR.correction a very small number to correct comparison result between
 ### two double type numbers when precisions can bias the result
