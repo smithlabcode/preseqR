@@ -73,7 +73,7 @@ preseqR.rfa.estimate <- function(CF, t)
             result = as.double(0));
 
   ## return the calculated function value
-  return(out$result)
+  return(out$result * t)
 }
 
 
