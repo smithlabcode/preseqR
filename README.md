@@ -12,4 +12,4 @@ supposed to work:
       continued fractions will be implemented as a wrapper for our existing
       functionality in C++.
 
-See <http://cran.r-project.org/web/packages/preseqR/index.html/> for details.
+See <http://cran.r-project.org/web/packages/preseqR/index.html> for details.
