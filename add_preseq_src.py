@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 
 ##  Copyright (C) 2014
 ##  University of Southern California, Andrew D. Smith, Chao Deng, Timothy Daley
