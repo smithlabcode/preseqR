@@ -24,8 +24,8 @@ mincount.hist <- function(hist, k) {
 				index <- j + l
 				if (i <= index) {
 					co.eff <- co.eff + (-1)^(j + 1) * get.hist.freq(hist, index) *
-						       exp( lgamma(j + l + 1) - lgamma(j + 1) - lgamma(l + 1) ) *
-									 exp( lgamma(l+1) - lgamma(i-j+1) - lgamma(l - i + j + 1) )
+						       exp( lgamma(j + l + 1) - lgamma(j + 1) - lgamma(l + 1) +
+									      lgamma(l + 1) - lgamma(i-j+1) - lgamma(l - i + j + 1) )
 				}
 			}
 		}
