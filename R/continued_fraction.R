@@ -172,6 +172,32 @@ nonreplace.sampling <- function(size, hist.count)
   return(sample(X, size, replace = FALSE))
 }
 
+### sub sampling without replacement based on a histogram
+preseqR.nonreplace.sampling(size, hist, header = FALSE)
+{
+  ## read the histogram file
+  hist.count <- read.hist(hist, header)
+  ## sub sampling
+  T <- nonreplace.sampling(size, hist.count)
+  ## record the freq of each sampled species
+	distinct <- sum(hist.count)
+	X <- vector(length=distinct, mode="numeric")
+	for (i in T) {
+    X[i] <- X[i] + 1
+  }
+  ## construct the corresponding histogram
+	H <- vector(length=max(X), mode="numeric")
+  for (i in X) {
+		if (i > 0) {
+			H[i] <- H[i] + 1
+    }
+  }
+  ind <- which(H != 0)
+	hist <- matrix(c(ind, H[ind]), ncol = 2)
+  colnames(hist) <- c("n", "n_j")
+  return(hist)
+}	
+
 
 ### the function samples n histograms given a count vector of the histogram
 ### it is based on sampling with replacement (multinomial distribution)
