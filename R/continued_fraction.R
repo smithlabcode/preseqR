@@ -173,7 +173,7 @@ nonreplace.sampling <- function(size, hist.count)
 }
 
 ### sub sampling without replacement based on a histogram
-preseqR.nonreplace.sampling(size, hist, header = FALSE)
+preseqR.nonreplace.sampling <- function(size, hist, header = FALSE)
 {
   ## read the histogram file
   hist.count <- read.hist(hist, header)
