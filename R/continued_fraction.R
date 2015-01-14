@@ -132,7 +132,10 @@ preseqR.extrapolate.distinct <- function(hist.count, CF, start.size = NULL,
             estimate = as.double(vector(mode = 'numeric', extrap.size + 1)),
             estimate.l = as.integer(0));
 
-  extrapolation <- out$estimate[ 1:out$estimate.l ] + total.reads
+  ## return to R-coded hist.count
+  hist.count <- hist.count[-1]
+  initial_sum = sum(hist.count)
+  extrapolation <- out$estimate[ 1:out$estimate.l ] + initial_sum
 
   ## sample size vector for extrapolation
   sample.size <- start.size + step.size*( (1:length(extrapolation)) - 1 )
