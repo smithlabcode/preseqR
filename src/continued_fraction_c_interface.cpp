@@ -42,6 +42,7 @@ extern "C" {
 
 /* 
  * the C-encoded interface to extralate from a continued fraction
+ * the initial experiment is not counted
  *
  * =============================================================================
  * cf_coeffs        coefficients of the continued fraction (CF)
@@ -49,8 +50,6 @@ extern "C" {
  * offset_coeffs    the offset coefficients of the CF
  * di               the diagonal diagonal value of the CF
  * de               the degree of the CF
- * hist             the count vector of the histogram
- * hist_l           the length the count vector
  * estimate         store values of the continued fraction
  * estimate_l       the number of stored values
  *
@@ -64,22 +63,17 @@ extern "C"
 {
   void c_extrapolate_distinct(double *cf_coeffs, int *cf_coeffs_l, 
                               double *offset_coeffs, int *di, int *de, 
-                              double *hist, int *hist_l, double *start_size,
+                              double *start_size,
                               double *step_size, double *max_size, 
                               double *estimate, int *estimate_l) 
   { 
-    // the number of stored values
-    double hist_sum = 0;
-    for (int i = 0; i != *hist_l; i++)
-      hist_sum += hist[i];
-
     double result = 0;
     vector<double> est;
     for (double t = *start_size; t <= *max_size; t += *step_size) 
     {
       c_calculate_continued_fraction(cf_coeffs, cf_coeffs_l, offset_coeffs, di, 
                                      de, &t, &result);
-      est.push_back( hist_sum + t*result );
+      est.push_back( t*result );
     }
 
     *estimate_l = est.size();
