@@ -30,9 +30,9 @@ extern "C" {
     CF.diagonal_idx = *di;
     CF.degree = *de;
 
-    if (CF.degree > 0)
+    if (CF.diagonal_idx > 0)
       CF.offset_coeffs.assign(offset_coeffs, offset_coeffs + *di);
-    else if (CF.degree < 0)
+    else if (CF.diagonal_idx < 0)
       CF.offset_coeffs.assign(offset_coeffs, offset_coeffs - *di);
     *result = CF(*coordinate);
 
