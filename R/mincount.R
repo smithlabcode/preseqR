@@ -152,7 +152,7 @@ preseqR.mincount.extrapolate <- function(hist.count, CF, k, start.size = NULL,
 ### construct a rational function approximation given a histogram
 ### di = diagonal, mt = max_terms, 
 ### step.adjust is an indicator for whether or not to adjust step.size
-preseqR.rfa.curve <- function(hist, k, di = 0, mt = 100, ss = NULL,
+preseqR.mincount.rfa.curve <- function(hist, k, di = 0, mt = 100, ss = NULL,
                               max.extrapolation = NULL, step.adjust=TRUE,
                               header = FALSE, seed = NULL)
 {
