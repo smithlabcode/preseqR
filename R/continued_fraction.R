@@ -106,17 +106,17 @@ preseqR.extrapolate.distinct <- function(hist.count, CF, start.size = NULL,
 
   ## set start.size, step.size, max.size if they are not defined by user
   if (is.null(start.size))
-    start.size <- total.reads
+    start.size <- 0
   if (start.size > max.size)
   {
     write("start position has already beyond the maximum prediction", stderr())
     return(NULL)
   }
   if (is.null(step.size))
-    step.size <- total.reads
+    step.size <- 1
   if (is.null(max.size)) {
     ## 100 is a magic number
-    max.size <- 100*total.reads
+    max.size <- 100
   }
 
   ## allocate memory to store extrapolation results
@@ -124,12 +124,12 @@ preseqR.extrapolate.distinct <- function(hist.count, CF, start.size = NULL,
   ## molecules into estimate, then it stores the extrapolation values
   ## thus the allocated memory size is 1 plus the size of extrapolation values,
   ## which is (max.size - start.size) / step.size) + 1
-  extrap.size <- as.integer( (max.size - start.size)/step.size ) + 1
+  extrap.size <- as.integer( max.size /step.size ) + 1
 
   out <- .C("c_extrapolate_distinct", cf.coeffs, cf.coeffs.l, offset.coeffs,
             di, de, as.double(start.size), 
             as.double(step.size), as.double(max.size), 
-            estimate = as.double(vector(mode = 'numeric', extrap.size + 1)),
+            estimate = as.double(vector(mode = 'numeric', extrap.size)),
             estimate.l = as.integer(0));
 
   ## return to R-coded hist.count
@@ -392,6 +392,9 @@ preseqR.rfa.curve <- function(hist, di = 0, mt = 100, ss = NULL,
     return(NULL)
   }
 
+  ## restore the hist.count into the R coded format
+  hist.count <- hist.count[-1]
+
   ## pass results into R variables
   length(out$ps.coeffs) <- out$ps.coeffs.l
   length(out$cf.coeffs) <- out$cf.coeffs.l
@@ -406,7 +409,7 @@ preseqR.rfa.curve <- function(hist, di = 0, mt = 100, ss = NULL,
   ## stop extrapolation
   ## MINOR.correction prevents machinary precision from biasing comparison
   ## result
-  if (starting.size > (max.extrapolation + MINOR.correction))
+  if (starting.size > max.extrapolation + MINOR.correction)
   {
     index <- as.double(step.size) * (1:length(yield.estimates))
     yield.estimates <- list(sample.size = index, yields = yield.estimates)
@@ -415,9 +418,9 @@ preseqR.rfa.curve <- function(hist, di = 0, mt = 100, ss = NULL,
   }
 
   ## extrapolation for experiment with large sample size
-  start <- ( starting.size - total.sample )/total.sample
-  end <- ( max.extrapolation + MINOR.correction - total.sample )/total.sample
-  step <- step.size/total.sample
+  start <- ( starting.size - total.sample )/step.size
+  end <- (max.extrapolation + MINOR.correction - total.sample) / step.size
+  step <- 1
   res <- preseqR.extrapolate.distinct(hist.count, CF, start, step, end)
 
   ## combine results from interpolation/extrapolation
