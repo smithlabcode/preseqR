@@ -409,7 +409,7 @@ preseqR.rfa.curve <- function(hist, di = 0, mt = 100, ss = NULL,
   ## stop extrapolation
   ## MINOR.correction prevents machinary precision from biasing comparison
   ## result
-  if (starting.size > max.extrapolation + MINOR.correction)
+  if (starting.size > (max.extrapolation + MINOR.correction))
   {
     index <- as.double(step.size) * (1:length(yield.estimates))
     yield.estimates <- list(sample.size = index, yields = yield.estimates)
