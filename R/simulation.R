@@ -61,7 +61,7 @@ preseqR.simu.interpolate <- function(L=1e8, ss, max.size, k, FUN) {
   N <- floor(max.size / ss)
   S <- vector(length = L, mode = "numeric")
   points <- c(0, 0)
-  hists <- c()
+  hists <- list()
   for (i in 1:N) {
     res <- rpois(L, lambda * t)
     S <- S + res
@@ -80,7 +80,7 @@ preseqR.simu.interpolate <- function(L=1e8, ss, max.size, k, FUN) {
     nonzero <- hist.count[nonzero.index]
     hist <- matrix(c(nonzero.index, nonzero), ncol = 2)
     colnames(hist) <- c("n", "n_j")
-    hists <- c(hists, hist)
+    hists <- c(hists, list(hist))
   }
   res <- list(histograms = hists, interpolation.curve = points)
   return(res)
