@@ -213,8 +213,8 @@ preseqR.mincount.rfa.curve <- function(hist, k, di = 0, mt = 100, ss = NULL,
   ## only use power series with non-zero coefficients
   ## effective coefficients from begining up to the first zero
   counts.before.first.zero = 1
-  while (as.integer(counts.before.first.zero) <= length(ps.coeffs) &&
-         ps.coeffs[counts.before.first.zero] != 0)
+  while (as.integer(counts.before.first.zero) <= length(PS.coeffs) &&
+         PS.coeffs[counts.before.first.zero] != 0)
     counts.before.first.zero <- counts.before.first.zero + 1
 
   ## constrain the continued fraction approximation with even degree 
