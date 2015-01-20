@@ -82,6 +82,6 @@ preseqR.simu.interpolate <- function(L=1e8, ss, max.size, k, FUN) {
     colnames(hist) <- c("n", "n_j")
     hists <- c(hists, list(hist))
   }
-  res <- list(histograms = hists, interpolation.curve = points)
+  res <- list(histograms = hists, interpolation.curve = unname(points))
   return(res)
 }
