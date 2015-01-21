@@ -42,8 +42,8 @@ preseqR.simu.hist <- function(L=1e8, n, FUN) {
   return(hist) 
 }
 
-###
-preseqR.simu.interpolate <- function(L=1e8, ss, max.size, k, FUN) {
+### simulating an interpolation curve
+preseqR.simu.interpolate <- function(L=1e7, ss, max.size, k, FUN) {
   ## too much memory if L is too large
   if (L > 1e8) {
     L <- 1e8
@@ -55,6 +55,8 @@ preseqR.simu.interpolate <- function(L=1e8, ss, max.size, k, FUN) {
   E <- get.expectation(FUN)
   t <- ss / (L * E)
   ## save the poisson parameters for each individual in the population
+  ## assume all items in the library have positive probability to be sampled
+  ## FUN should always generate positive number
   lambda <- FUN(L)
   
   ## the interpolation curve
