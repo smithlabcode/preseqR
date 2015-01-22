@@ -161,13 +161,15 @@ extern "C" {
                                   int *PS_coeffs_l, double *ps_coeffs, 
                                   int *ps_coeffs_l, double *cf_coeffs, 
                                   int *cf_coeffs_l, double *offset_coeffs, 
-                                  int *diagonal_idx, int *degree, int *is_valid)
+                                  int *diagonal_idx, int *degree,
+                                  double *step_size, int *is_valid)
   { 
     ContinuedFractionApproximation CFA(*di, *mt);
 
     //ps_coeffs and ps_coeffs_l store the given power series
     const vector<double> ps(PS_coeffs, PS_coeffs + *PS_coeffs_l);
-    ContinuedFraction CF(CFA.optimal_powerseries_to_cont_frac(ps));
+    const double ss = *step_size;
+    ContinuedFraction CF(CFA.optimal_powerseries_to_cont_frac(ps, ss));
 
     // store informatin relevent to the constructed continued fraction
     *is_valid = CF.is_valid();

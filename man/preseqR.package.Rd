@@ -27,6 +27,8 @@ preseqR.ztnb.estimate,
 
 preseqR.ztnb.em,
 
+preseqR.mincount.rfa.curve,
+
 data: FisherButterflyHist, ShakespeareWordHist
 }
 \author{
@@ -102,4 +104,7 @@ preseqR.ztnb.estimate(FisherButterflyHist, 1)
 ## function of total captures under the Negative Binomial model
 preseqR.ztnb.species.accum.curve(FisherButterflyHist)
 
+## estimate the number of butterfly species observed at least twice
+## as a function of total captures 
+preseqR.mincount.rfa.curve(FisherButterflyHist, k=2)
 }
