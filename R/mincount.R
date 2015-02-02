@@ -209,7 +209,22 @@ preseqR.mincount.rfa.curve <- function(hist, k, di = 0, mt = 100, ss = NULL,
     max.extrapolation <- 100*total.sample
   }
 
+  ## only use non zeros items in histogram from begining up to the first zero
+  counts.before.first.zero = 1
+  while (as.integer(counts.before.first.zero) <= length(hist.count) &&
+         hist.count[counts.before.first.zero] != 0)
+    counts.before.first.zero <- counts.before.first.zero + 1
+
+  ## for k > 1, the jth coefficient in the power series requires
+  ## n_{i} i = j, j + 1, ..., j + k - 1 itmes 
   PS.coeffs <- mincount.ps(hist.count, k)
+  if (counts.before.first.zero - k > 0) {
+    PS.coeffs <- PS.coeffs[1:(counts.before.first.zero - k)]
+  } else {
+    write("sample not sufficiently deep", stderr())
+    return(NULL)
+  }
+
   ## only use power series with non-zero coefficients
   ## effective coefficients from begining up to the first zero
   counts.before.first.zero = 1
@@ -232,14 +247,14 @@ preseqR.mincount.rfa.curve <- function(hist, k, di = 0, mt = 100, ss = NULL,
   }
 
   PS.coeffs <- PS.coeffs[ 1:mt ]
-  ## pre check whether the power series is valid at argument 2
-  if(sum(PS.coeffs) < 0.0)
-  {
-    m <- paste("Library expected to saturate in doubling of size",
-               " unable to extrapolate", sep = ',')
-    write(m, stderr())
-    return(NULL)
-  }
+##  ## pre check whether the power series is valid at argument 2
+##  if(sum(PS.coeffs) < 0.0)
+##  {
+##    m <- paste("Library expected to saturate in doubling of size",
+##               " unable to extrapolate", sep = ',')
+##    write(m, stderr())
+##    return(NULL)
+##  }
 
   ## allocate spaces to store constructed continued fraction approximation
   ## construct a continued fraction approximation with minimum degree
