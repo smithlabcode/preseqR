@@ -266,8 +266,7 @@ preseqR.mincount.rfa.curve <- function(hist, k, di = 0, mt = 100, ss = NULL,
             cf.coeffs.l = as.integer(0),
             offset.coeffs =as.double(vector(mode='numeric',length=MAXLENGTH)),
             diagonal.idx = as.integer(0),
-            degree = as.integer(0), as.double(step.size),
-            is.valid = as.integer(0));
+            degree = as.integer(0), is.valid = as.integer(0));
 
   if (!out$is.valid)
   {

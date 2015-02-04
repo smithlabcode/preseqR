@@ -87,3 +87,34 @@ preseqR.simu.interpolate <- function(L=1e7, ss, max.size, k, FUN) {
   res <- list(histograms = hists, interpolation.curve = unname(points))
   return(res)
 }
+
+### Construct the histogram given the size of the initial sample,
+### the underlining Gamma-Poisson distribution and the total number of distinct
+### species. Truncated the frequency when it is smaller than one and all frequencies
+### are the integeral parts of calculated expectations.
+simu.hist <- function(L, alpha, beta, n) {
+  ## coefficients of the constructed power series
+  PS <- c()
+  ## the ratio between the size of the sample to the expected size of an initial sample
+  t <- n / (L * alpha * beta)
+  ## set a upperbound for the number of items in the power series
+  mt <- 100
+
+  i = 1
+  while (i < mt) {
+    co.eff = L * dnbinom(x=i, size=alpha, prob=1/(1 + t*beta))
+    if (floor(co.eff) < 1) {
+      break
+    } else {
+      PS <- c(PS, floor(co.eff))
+    }
+    i <- i + 1
+  }
+  l <- length(PS)
+  if (l > 0) {
+    hist <- matrix(c(1:l, PS), byrow=FALSE, ncol=2)
+    return(hist)
+  } else {
+   return(NULL)
+  }
+}
