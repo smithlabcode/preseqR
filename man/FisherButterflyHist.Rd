@@ -7,7 +7,7 @@ was from Fisher, R. A., Corbet, A. S., & Williams, C. B. (1943).}
 \references{
 Fisher, R. A., Corbet, A. S., and Williams, C. B. ,1943, The Relation Between 
 the Number of Species and the Number of Individuals in a Random Sample of an 
-Animal Population, Journal of Animal Ecology, 12, 42-58, Table 2.
+Animal Population, Journal of Animal Ecology, 12, 42-58, Table 1,2.
 }
 
 \examples{
