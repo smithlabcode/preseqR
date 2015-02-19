@@ -271,6 +271,45 @@ preseqR.interpolate.distinct <- function(hist.count, ss)
   return(result)
 }
 
+### explicit calculating of interpolation
+cal.interpolate.distinct <- function(hist.count, ss)
+{
+  freq <- 1:length(hist.count)
+  total.sample <- freq %*% hist.count
+
+  initial.distinct <- sum(hist.count)
+  N <- as.integer(total.sample)
+  step.size <- as.integer(ss)
+
+  ## l is the number of interpolation points
+  l <- as.integer(N / step.size)
+
+  ## if the sample size is larger than the size of experiment, return NULL
+  if (l == 0)
+    return()
+
+  ## the formual is from K.L. Heck 1975 explicit calculation
+  expect.distinct <- function(hist.count, N, n, S) {
+    j <- which(hist.count != 0)
+    n.j <- hist.count[j]
+    denom <- lchoose(N, n)
+    numer <- lchoose(N - j, n)
+    p <- exp(numer - denom)
+    return(as.integer(S - p %*% n.j))
+  }
+
+  ## sample size vector
+  x <- step.size * ( 1:l )
+
+  yield.estimates <- sapply(x, function(x) expect.distinct(hist.count, N, x, initial.distinct))
+
+  ## put sample.size and yield.estimates together into a matrix
+  result <- matrix(c(x, yield.estimates), ncol = 2, byrow = FALSE)
+  colnames(result) <- c('sample.size', 'interpolation')
+
+  return(result)
+}
+
 
 ### check the goodness of the sample based on good Good & Toulmin's model
 goodtoulmin.2x.extrap <- function(hist.count)
