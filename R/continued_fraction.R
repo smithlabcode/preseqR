@@ -240,44 +240,8 @@ preseqR.interpolate.distinct <- function(hist.count, ss)
   freq <- 1:length(hist.count)
   total.sample <- freq %*% hist.count
 
-  inital.distint <- sum(hist.count)
-  upper.limit <- as.integer(total.sample)
-  step.size <- ss
-
-  ## l is the number of interpolation points
-  l <- as.integer(upper.limit / step.size)
-
-  ## if the sample size is larger than the size of experiment, return NULL
-  if (l == 0)
-    return()
-
-  ## sample size vector
-  x <- step.size * ( 1:l )
-
-  ## dimesion must be defined in order to use R apply
-  dim(x) <- length(x)
-
-  ## do sampling without replacement 
-  s <- lapply(x, function(x) nonreplace.sampling(x, hist.count))
-
-  ## calculate the number of distinct reads based on each sample size
-  dim(s) <- length(s)
-  yield.estimates <- sapply(s, function(x) count.distinct(x))
-
-  ## put sample.size and yield.estimates together into a matrix
-  result <- matrix(c(x, yield.estimates), ncol = 2, byrow = FALSE)
-  colnames(result) <- c('sample.size', 'interpolation')
-
-  return(result)
-}
-
-### explicit calculating of interpolation
-cal.interpolate.distinct <- function(hist.count, ss)
-{
-  freq <- 1:length(hist.count)
-  total.sample <- freq %*% hist.count
-
   initial.distinct <- sum(hist.count)
+  ## the total individuals captured
   N <- as.integer(total.sample)
   step.size <- as.integer(ss)
 
@@ -288,19 +252,23 @@ cal.interpolate.distinct <- function(hist.count, ss)
   if (l == 0)
     return()
 
-  ## the formual is from K.L. Heck 1975 explicit calculation
+  ## explicit calculating the expectation for sampling without replacement
+  ## see K.L Heck 1975
+  ## N is the size of population; n is the size of the sample;
+  ## S is the number of unique species
   expect.distinct <- function(hist.count, N, n, S) {
     j <- which(hist.count != 0)
     n.j <- hist.count[j]
     denom <- lchoose(N, n)
     numer <- lchoose(N - j, n)
     p <- exp(numer - denom)
-    return(as.integer(S - p %*% n.j))
+    return(floor(S - p %*% n.j))
   }
 
   ## sample size vector
   x <- step.size * ( 1:l )
 
+  ## calculate the number of distinct reads based on each sample size
   yield.estimates <- sapply(x, function(x) expect.distinct(hist.count, N, x, initial.distinct))
 
   ## put sample.size and yield.estimates together into a matrix
@@ -309,7 +277,6 @@ cal.interpolate.distinct <- function(hist.count, ss)
 
   return(result)
 }
-
 
 ### check the goodness of the sample based on good Good & Toulmin's model
 goodtoulmin.2x.extrap <- function(hist.count)
