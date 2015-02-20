@@ -262,7 +262,7 @@ preseqR.interpolate.distinct <- function(hist.count, ss)
     denom <- lchoose(N, n)
     numer <- lchoose(N - j, n)
     p <- exp(numer - denom)
-    return(floor(S - p %*% n.j))
+    return(S - p %*% n.j)
   }
 
   ## sample size vector
