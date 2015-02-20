@@ -6,6 +6,7 @@ export(preseqR.ztnb.em)
 export(preseqR.ztnb.estimate)
 export(preseqR.ztnb.species.accum.curve)
 export(preseqR.mincount.rfa.curve)
+export(preseqR.nonreplace.sampling)
 export(preseqR.simu.hist)
 export(preseqR.simu.interpolate)
 

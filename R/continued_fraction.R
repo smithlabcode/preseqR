@@ -197,7 +197,7 @@ preseqR.nonreplace.sampling <- function(size, hist, header = FALSE)
   }
   ind <- which(H != 0)
 	hist <- matrix(c(ind, H[ind]), ncol = 2)
-  colnames(hist) <- c("n", "n_j")
+  colnames(hist) <- c("j", "n_j")
   return(hist)
 }	
 
