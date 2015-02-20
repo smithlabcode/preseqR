@@ -291,9 +291,8 @@ goodtoulmin.2x.extrap <- function(hist.count)
 ### construct a rational function approximation given a frequencies of count
 ### data
 ### di = diagonal, mt = max_terms, 
-### step.adjust is an indicator for whether or not to adjust step.size
 preseqR.rfa.curve <- function(hist, di = 0, mt = 100, ss = NULL,
-                              max.extrapolation = NULL, step.adjust=TRUE,
+                              max.extrapolation = NULL,
                               header = FALSE, seed = NULL)
 {
   ## set seed to reproduce the results
@@ -308,6 +307,7 @@ preseqR.rfa.curve <- function(hist, di = 0, mt = 100, ss = NULL,
   ## calculate total number of sample
   freq <- 1:length(hist.count)
   total.sample <- freq %*% hist.count
+  total.sample <- as.integer(total.sample)
 
   ## set step.size as the size of the initial experiment if it is undefined
   if (is.null(ss)) {
@@ -326,16 +326,6 @@ preseqR.rfa.curve <- function(hist, di = 0, mt = 100, ss = NULL,
     starting.size <- step.size
   } else {
       ## interpolation when sample size is no more than total sample size
-
-      ## adjust step.size when it is too small
-      if (step.adjust == TRUE && step.size < (total.sample / 20)) {
-        step.size <- max(step.size,step.size*floor(total.sample/(20*step.size)))
-
-        ## output the adjusted step size to stderr
-        m <- paste("adjust step size to", toString(step.size), '\n', sep = ' ')
-        write(m, stderr())
-      }
-
       ## interpolate and set the size of sample for initial extrapolation
       out <- preseqR.interpolate.distinct(hist.count, step.size)
       yield.estimates <- out[, 2]
@@ -445,8 +435,7 @@ preseqR.rfa.curve <- function(hist, di = 0, mt = 100, ss = NULL,
 ### generate complexity curve through bootstrapping the histogram
 preseqR.rfa.species.accum.curve <- function(
     hist, bootstrap.times = 100, di = 0, mt = 100, ss = NULL,
-    max.extrapolation = NULL, step.adjust=TRUE, header = FALSE,
-    ci = 0.95, seed = NULL)
+    max.extrapolation = NULL, header = FALSE, ci = 0.95, seed = NULL)
 {
   ## set seed to reproduce the results
   if ( !is.null(seed) ) set.seed(seed)
@@ -466,16 +455,6 @@ preseqR.rfa.species.accum.curve <- function(
     step.size <- ss
   } else {
     step.size <- floor(ss)
-  }
-
-  ## adjust step.size for sampling complexity curve
-  if ( step.adjust == TRUE && step.size < total.sample/20 )
-  {
-    step.size <- max(step.size, step.size*round(total.sample / (20*step.size)))
-
-    ## output the adjusted step size to stderr
-    m <- paste("adjust step size to", toString(step.size), '\n', sep = ' ')
-    write(m, stderr())
   }
 
   ## set the maximum extrapolation size if it is undefined
@@ -508,8 +487,7 @@ preseqR.rfa.species.accum.curve <- function(
     ## combine nonzero.index column and the second column to build a histogram
     ## table
     hist.table <- matrix(c(nonzero.index, x), ncol = 2, byrow = FALSE)
-    preseqR.rfa.curve(
-        hist.table, di, mt, step.size, max.extrapolation, step.adjust = FALSE)
+    preseqR.rfa.curve(hist.table, di, mt, step.size, max.extrapolation)
   }
 
   while (bootstrap.times > 0) {
