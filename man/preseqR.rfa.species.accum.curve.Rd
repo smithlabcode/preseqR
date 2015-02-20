@@ -131,7 +131,7 @@ data(ShakespeareWordHist)
 
 ## estimate the number of distinct butterflies as a function of the number of
 ## captured butterflies. Minimum required successful estimation times is 10
-preseqR.rfa.species.accum.curve(ShakespeareWordHist, bootstrap.times = 10, seed = 19861114)
+preseqR.rfa.species.accum.curve(ShakespeareWordHist, bootstrap.times = 10)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
