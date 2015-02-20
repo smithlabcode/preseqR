@@ -12,8 +12,7 @@
 }
 \usage{
 preseqR.rfa.species.accum.curve(hist, bootstrap.times = 100, di = 0,
-mt = 100, ss = NULL, max.extrapolation = NULL, step.adjust = TRUE,
-header = FALSE, ci = 0.95, seed = NULL)
+mt = 100, ss = NULL, max.extrapolation = NULL, header = FALSE, ci = 0.95)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -50,21 +49,10 @@ header = FALSE, ci = 0.95, seed = NULL)
     survey. Default value is the 100 times the size of a sample in the initial 
     survey.
 }
-  \item{step.adjust}{
-    A boolean value representing whether or not the value of \code{ss} can be
-    adjusted if the user-defined value of \code{ss} is small compared to
-    the total number of individuals observed in the initial survey. If 
-    \code{step.adjust} is TRUE, \code{ss} will adjust to around one twentieth
-    size of the initial sample when the user-defined \code{ss} is too small.
-}
   \item{ci}{
     A positive double in (0, 1) equal to the confidence level.
     Default value is 0.95.
   }
-  \item{seed}{
-    A single value, interpreted as an integer, or NULL for random number 
-    generator. Default is NULL. 
-}
 }
 \details{
 According to Good & Toulmin (1956) and Efron & Thisted (1976), under

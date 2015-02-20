@@ -293,11 +293,8 @@ goodtoulmin.2x.extrap <- function(hist.count)
 ### di = diagonal, mt = max_terms, 
 preseqR.rfa.curve <- function(hist, di = 0, mt = 100, ss = NULL,
                               max.extrapolation = NULL,
-                              header = FALSE, seed = NULL)
+                              header = FALSE)
 {
-  ## set seed to reproduce the results
-  if ( !is.null(seed) ) set.seed(seed)
-
   hist.count <- read.hist(hist, header)
 
   ## minimum required number of terms of power series in order to construct
@@ -435,11 +432,8 @@ preseqR.rfa.curve <- function(hist, di = 0, mt = 100, ss = NULL,
 ### generate complexity curve through bootstrapping the histogram
 preseqR.rfa.species.accum.curve <- function(
     hist, bootstrap.times = 100, di = 0, mt = 100, ss = NULL,
-    max.extrapolation = NULL, header = FALSE, ci = 0.95, seed = NULL)
+    max.extrapolation = NULL, header = FALSE, ci = 0.95)
 {
-  ## set seed to reproduce the results
-  if ( !is.null(seed) ) set.seed(seed)
-
   hist.count <- read.hist(hist, header)
 
   ## calculate the total number of sample

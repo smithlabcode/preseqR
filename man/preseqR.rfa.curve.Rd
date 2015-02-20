@@ -13,7 +13,7 @@ series.
 }
 \usage{
 preseqR.rfa.curve(hist, di = 0, mt = 100, ss = NULL, max.extrapolation = NULL,
-step.adjust = TRUE, header = FALSE, seed = NULL)
+                  header = FALSE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -45,17 +45,6 @@ step.adjust = TRUE, header = FALSE, seed = NULL)
     A positive double equal to the maximum possible size of a sample in a
     survey. Default value is 100 times the size of the sample in the initial
     survey.
-}
-  \item{step.adjust}{
-    A boolean value representing whether or not the value of \code{ss} can be
-    adjusted if the user-defined value of \code{ss} is small compared to
-    the total number of individuals observed in the initial survey. If 
-    \code{step.adjust} is TRUE, \code{ss} will adjust to around one twentieth
-    size of the initial sample when the user-defined \code{ss} is too small.
-  }
-  \item{seed}{
-    A single value interpreted as an integer or NULL for random number 
-    generator. Default is NULL.
 }
 }
 \details{
