@@ -92,17 +92,7 @@ preseqR.extrapolate.distinct <- function(hist.count, CF, start.size = NULL,
   di <- as.integer(CF$diagonal.idx)
   de <- as.integer(CF$degree)
   hist.count <- as.double(hist.count)
-
-  ## the styles of the histogram count vector are different between R code
-  ## and c++ code; The first line of the histogram is always [0  0] in c++
-  ## but the line is removed in R-encoded function
-  hist.count <- c(0, hist.count)
-  hist.count.l <- as.integer(length(hist.count))
-
-  ## record the size of the sample based on the histogram count
-  total.reads = 0.0
-  for (i in 1:length(hist.count))
-    total.reads <- total.reads + i*as.integer(hist.count[i])
+  total.sample <- 1:length(hist.count) %*% hist.count
 
   ## set start.size, step.size, max.size if they are not defined by user
   if (is.null(start.size))
@@ -126,6 +116,12 @@ preseqR.extrapolate.distinct <- function(hist.count, CF, start.size = NULL,
   ## which is (max.size - start.size) / step.size) + 1
   extrap.size <- as.integer( max.size /step.size ) + 1
 
+  ## the styles of the histogram count vector are different between R code
+  ## and c++ code; The first line of the histogram is always [0  0] in c++
+  ## but the line is removed in R-encoded function
+  hist.count <- c(0, hist.count)
+  hist.count.l <- as.integer(length(hist.count))
+
   out <- .C("c_extrapolate_distinct", cf.coeffs, cf.coeffs.l, offset.coeffs,
             di, de, as.double(start.size), 
             as.double(step.size), as.double(max.size), 
@@ -138,7 +134,8 @@ preseqR.extrapolate.distinct <- function(hist.count, CF, start.size = NULL,
   extrapolation <- out$estimate[ 1:out$estimate.l ] + initial_sum
 
   ## sample size vector for extrapolation
-  sample.size <- start.size + step.size*( (1:length(extrapolation)) - 1 )
+  sample.size <- total.sample * (start.size + step.size*( (1:length(extrapolation)) - 1 ))
+  sample.size = ceiling(sample.size)
 
   ## put sample.size and extrapolation results together into a matrix
   result <- matrix(c(sample.size, extrapolation), ncol = 2, byrow = FALSE)
@@ -411,9 +408,9 @@ preseqR.rfa.curve <- function(hist, di = 0, mt = 100, ss = NULL,
   }
 
   ## extrapolation for experiment with large sample size
-  start <- ( starting.size - total.sample )/step.size
-  end <- (max.extrapolation + MINOR.correction - total.sample) / step.size
-  step <- 1
+  start <- ( starting.size - total.sample ) / total.sample
+  end <- (max.extrapolation + MINOR.correction - total.sample) / total.sample
+  step <- step.size / total.sample
   res <- preseqR.extrapolate.distinct(hist.count, CF, start, step, end)
 
   ## combine results from interpolation/extrapolation
