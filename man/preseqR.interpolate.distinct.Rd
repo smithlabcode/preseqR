@@ -8,10 +8,13 @@
     interpolating a species accumulation curve given a survey
 }
 \usage{
-  preseqR.interpolate.distinct <- function(hist.count, ss)
+  preseqR.interpolate.distinct <- function(ss, hist, header=FALSE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
+  \item{ss}{
+    An positive double equal to the step size between samples.
+}
   \item{hist}{
     Frequencies of the number of individuals of each species captured. 
     It can be either a file name of the data or a variable of a matrix 
@@ -20,13 +23,17 @@
     is \eqn{n_j}, the number of species with \eqn{j} individuals observed in the
     sample. The first column must be sorted in an ascending order.
 }
-  \item{ss}{
-    An positive double equal to the step size between samples. Default value
-    is the size of the sample in the initial survey.
+  \item{header}{
+    A boolean variable number representing whether or not the frequencies of  
+    count data file contains a header.
 }
 }
 \details{
+  Given the survey, it assumes that the sub sample follows a hypergeometric distribution. So the expected
+  number of unique species for a fixed size of the sub sample is calculated based on the formula in
+  Heck Jr, K. L., van Belle, G., & Simberloff, D. (1975).
 
+  ss should be at least one. 
 }
 \value{
     A two-column table representing a interpolated accumulation curve.
@@ -35,7 +42,9 @@
     NULL if failed.
 }
 \references{
-  Heck 1975
+Heck Jr, K. L., van Belle, G., & Simberloff, D. (1975). 
+Explicit calculation of the rarefaction diversity measurement and the
+determination of sufficient sample size. Ecology, 1459-1461.
 }
 \author{
   Chao Deng
@@ -51,8 +60,8 @@ library(preseqR)
 data(ShakespeareWordHist)
 
 ## interpolating an accumulation curve; the step size is 1e5
-preseqR.rfa.species.accum.curve(ShakespeareWordHist, 1e5)
+preseqR.interpolate.distinct(1e5, ShakespeareWordHist)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-\keyword{ Rational Function Approximation }
+\keyword{ Interpolation }

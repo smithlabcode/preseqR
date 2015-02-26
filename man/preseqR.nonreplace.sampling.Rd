@@ -57,4 +57,4 @@ preseqR.nonreplace.sampling <- function(size=1e5, ShakespeareWordHist)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-\keyword{ Rational Function Approximation }
+\keyword{Sampling without replacement}

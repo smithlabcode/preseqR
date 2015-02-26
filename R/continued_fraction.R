@@ -231,8 +231,9 @@ count.distinct <- function(sample)
 
 ### interpolate when the sample size is no more than the size of
 ### the initial experiment
-preseqR.interpolate.distinct <- function(hist.count, ss)
+preseqR.interpolate.distinct <- function(ss, hist, header=FALSE)
 {
+  hist.count <- read.hist(hist)
   ## calculate total number of sample
   freq <- 1:length(hist.count)
   total.sample <- freq %*% hist.count
@@ -245,8 +246,9 @@ preseqR.interpolate.distinct <- function(hist.count, ss)
   ## l is the number of interpolation points
   l <- as.integer(N / step.size)
 
-  ## if the sample size is larger than the size of experiment, return NULL
-  if (l == 0)
+  ## if the sample size is larger than the size of experiment or 
+  ## the step size is too small, return NULL
+  if (l == 0 || ss < 1)
     return()
 
   ## explicit calculating the expectation for sampling without replacement
@@ -321,7 +323,7 @@ preseqR.rfa.curve <- function(hist, di = 0, mt = 100, ss = NULL,
   } else {
       ## interpolation when sample size is no more than total sample size
       ## interpolate and set the size of sample for initial extrapolation
-      out <- preseqR.interpolate.distinct(hist.count, step.size)
+      out <- preseqR.interpolate.distinct(step.size, hist, header)
       yield.estimates <- out[, 2]
 
       ## starting sample size for extrapolation
