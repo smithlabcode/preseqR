@@ -37,21 +37,25 @@ mincount.distinct <- function(sample, k)
 
 ### interpolate when the sample size is no more than the size of
 ##  the initial experiment
-preseqR.mincount.interpolate <- function(hist.count, ss, k)
+preseqR.mincount.interpolate <- function(hist, ss, k=1)
 {
-  ## calculate total number of sample
-  freq <- 1:length(hist.count)
-  total.sample <- freq %*% hist.count
+  checking.hist(hist)
+  if (ss < 1)
+    return()
 
-  inital.distint <- sum(hist.count)
-  upper.limit <- as.integer(total.sample)
-  step.size <- ss
+  hist[, 2] <- floor(hist[, 2])
+  
+  total.sample <- hist[, 1] %*% hist[, 2]
+
+  inital.distint <- sum(hist[, 2])
+  upper.limit <- total.sample
+  step.size <- floor(ss)
 
   ## l is the number of interpolation points
   l <- as.integer(upper.limit / step.size)
 
   ## if the sample size is larger than the size of experiment, return NULL
-  if (l == 0)
+  if (l <= 0)
     return()
 
   ## sample size vector
@@ -61,7 +65,7 @@ preseqR.mincount.interpolate <- function(hist.count, ss, k)
   dim(x) <- length(x)
 
   ## do sampling without replacement 
-  s <- lapply(x, function(x) nonreplace.sampling(x, hist.count))
+  s <- lapply(x, function(x) nonreplace.sampling(x, hist))
 
   ## calculate the number of distinct reads with freq k>=k based on each sample sizes
   dim(s) <- length(s)
@@ -76,7 +80,7 @@ preseqR.mincount.interpolate <- function(hist.count, ss, k)
 
 ### extrapolate the mincount continued fraction function
 ### given a histogram and a continued fraction 
-preseqR.mincount.extrapolate <- function(hist.count, CF, k, start.size = NULL,
+preseqR.mincount.extrapolate <- function(hist, CF, k, start.size = NULL,
                                          step.size = NULL, max.size = NULL)
 {
   ## check CF is a continued fraction with CF attribute
@@ -89,33 +93,25 @@ preseqR.mincount.extrapolate <- function(hist.count, CF, k, start.size = NULL,
   offset.coeffs <- as.double(CF$offset.coeffs)
   di <- as.integer(CF$diagonal.idx)
   de <- as.integer(CF$degree)
-  hist.count <- as.double(hist.count)
-
-  ## the styles of the histogram count vector are different between R code
-  ## and c++ code; The first line of the histogram is always [0  0] in c++
-  ## but the line is removed in R-encoded function
-  hist.count <- c(0, hist.count)
-  hist.count.l <- as.integer(length(hist.count))
 
   ## record the size of the sample based on the histogram count
-  total.reads = 0.0
-  for (i in 1:length(hist.count))
-    total.reads <- total.reads + i*as.integer(hist.count[i])
+  hist[, 2] <- floor(total.sample)
+  total.sample <- hist[, 1] %*% hist[, 2]
 
   ## set start.size, step.size, max.size if they are not defined by user
   if (is.null(start.size))
-    start.size <- total.reads
+    start.size <- 0
+  if (is.null(max.size)) {
+    ## 100 is a magic number
+    max.size <- 100
+  }
   if (start.size > max.size)
   {
     write("start position has already beyond the maximum prediction", stderr())
     return(NULL)
   }
   if (is.null(step.size))
-    step.size <- total.reads
-  if (is.null(max.size)) {
-    ## 100 is a magic number
-    max.size <- 100*total.reads
-  }
+    step.size <- 1
 
   ## allocate memory to store extrapolation results
   ## first "c.extrapolate.distinct" stores the observed number of distinct
@@ -127,20 +123,20 @@ preseqR.mincount.extrapolate <- function(hist.count, CF, k, start.size = NULL,
   out <- .C("c_extrapolate_distinct", cf.coeffs, cf.coeffs.l, offset.coeffs,
             di, de, as.double(start.size), 
             as.double(step.size), as.double(max.size), 
-            estimate = as.double(vector(mode = 'numeric', extrap.size + 1)),
+            estimate = as.double(vector(mode = 'numeric', extrap.size)),
             estimate.l = as.integer(0));
   
-  ## return to R-coded hist.count
-  hist.count <- hist.count[-1]
-  if (k > length(hist.count)) {
-    initial_sum = 0.0
+  index <- which(hist[, 1] >= k)
+  if (length(index) == 0) {
+    distinct.k <- 0
   } else {
-    initial_sum = sum(hist.count[k:length(hist.count)])
+    distinct.k <- sum(hist[index, 2])
   }
-  extrapolation <- out$estimate[ 1:out$estimate.l ] + initial_sum
+
+  extrapolation <- out$estimate[ 1:out$estimate.l ] + distinct.k
 
   ## sample size vector for extrapolation
-  sample.size <- start.size + step.size*( (1:length(extrapolation)) - 1 )
+  sample.size <- total.sample * (start.size + step.size * ((1:length(extrapolation)) - 1))
 
   ## put sample.size and extrapolation results together into a matrix
   result <- matrix(c(sample.size, extrapolation), ncol = 2, byrow = FALSE)
@@ -153,26 +149,24 @@ preseqR.mincount.extrapolate <- function(hist.count, CF, k, start.size = NULL,
 ### di = diagonal, mt = max_terms, 
 ### step.adjust is an indicator for whether or not to adjust step.size
 preseqR.mincount.rfa.curve <- function(hist, k, di = 0, mt = 100, ss = NULL,
-                              max.extrapolation = NULL, step.adjust=TRUE,
-                              header = FALSE, seed = NULL)
+                              max.extrapolation = NULL)
 {
-  ## set seed to reproduce the results
-  if ( !is.null(seed) ) set.seed(seed)
-
-  hist.count <- read.hist(hist, header)
-
+  checking.hist(hist)
   ## minimum required number of terms of power series in order to construct
   ## a continued fraction approximation
   MIN_REQUIRED_TERMS <- 4
 
   ## calculate total number of sample
-  freq <- 1:length(hist.count)
-  total.sample <- freq %*% hist.count
+  hist[, 2] <- floor(hist[, 2])
+  total.sample <- hist[, 1] %*% hist[, 2]
 
   ## set step.size as the size of the initial experiment if it is undefined
   if (is.null(ss)) {
     ss <- floor(total.sample)
     step.size <- ss
+  } else if (ss < 1) {
+    write("The step size is too small", stderr())
+    return()
   } else {
     step.size <- floor(ss)
   }
@@ -185,23 +179,12 @@ preseqR.mincount.rfa.curve <- function(hist, k, di = 0, mt = 100, ss = NULL,
     ## starting sample size for extrapolation
     starting.size <- step.size
   } else {
-      ## interpolation when sample size is no more than total sample size
-
-      ## adjust step.size when it is too small
-      if (step.adjust == TRUE && step.size < (total.sample / 20)) {
-        step.size <- max(step.size,step.size*floor(total.sample/(20*step.size)))
-
-        ## output the adjusted step size to stderr
-        m <- paste("adjust step size to", toString(step.size), '\n', sep = ' ')
-        write(m, stderr())
-      }
-
       ## interpolate and set the size of sample for initial extrapolation
-      out <- preseqR.mincount.interpolate(hist.count, step.size, k)
+      out <- preseqR.mincount.interpolate(hist, step.size, k)
       yield.estimates <- out[, 2]
 
       ## starting sample size for extrapolation
-      starting.size <- ( as.integer(total.sample/step.size) + 1 )*step.size
+      starting.size <- ( floor(total.sample/step.size) + 1 )*step.size
   }
 
   if (is.null(max.extrapolation)) {
@@ -209,6 +192,8 @@ preseqR.mincount.rfa.curve <- function(hist, k, di = 0, mt = 100, ss = NULL,
     max.extrapolation <- 100*total.sample
   }
 
+  hist.count <- vector(length=max(hist[, 1]), mode="numeric")
+  hist.count[hist[, 1]] <- hist[, 2]
   ## only use non zeros items in histogram from begining up to the first zero
   counts.before.first.zero = 1
   while (as.integer(counts.before.first.zero) <= length(hist.count) &&
@@ -299,7 +284,7 @@ preseqR.mincount.rfa.curve <- function(hist, k, di = 0, mt = 100, ss = NULL,
   start <- ( starting.size - total.sample )/total.sample
   end <- ( max.extrapolation + MINOR.correction - total.sample )/total.sample
   step <- step.size/total.sample
-  res <- preseqR.mincount.extrapolate(hist.count, CF, k, start, step, end)
+  res <- preseqR.mincount.extrapolate(hist, CF, k, start, step, end)
 
   ## combine results from interpolation/extrapolation
   yield.estimates <- c(yield.estimates, res[, 2])

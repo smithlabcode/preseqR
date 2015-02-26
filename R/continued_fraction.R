@@ -103,29 +103,19 @@ preseqR.extrapolate.distinct <- function(hist, CF, start.size = NULL,
   ## which is (max.size - start.size) / step.size) + 1
   extrap.size <- floor( (max.size - start.size) / step.size ) + 1
 
-  ## the styles of the histogram count vector are different between R code
-  ## and c++ code; The first line of the histogram is always [0  0] in c++
-  ## but the line is removed in R-encoded function
-  hist.count <- vector(length=max(hist[, 1]), mode="numeric")
-  hist.count[hist[, 1]] <- hist[, 2]
-  hist.count <- c(0, hist.count)
-  hist.count.l <- as.integer(length(hist.count))
-
   out <- .C("c_extrapolate_distinct", cf.coeffs, cf.coeffs.l, offset.coeffs,
             di, de, as.double(start.size), 
             as.double(step.size), as.double(max.size), 
             estimate = as.double(vector(mode = 'numeric', extrap.size)),
             estimate.l = as.integer(0));
 
-  ## return to R-coded hist.count
-  hist.count <- hist.count[-1]
-  initial_sum = floor(sum(hist[, 2]))
+  initial_sum <- floor(sum(hist[, 2]))
   extrapolation <- out$estimate[ 1:out$estimate.l ] + initial_sum
 
   ## sample size vector for extrapolation
-  sample.size <- total.sample * (start.size + step.size*( (1:length(extrapolation)) - 1 ))
+  sample.size <- total.sample * (start.size + step.size*((1:length(extrapolation)) - 1))
   ## estimation should be conservative
-  sample.size = ceiling(sample.size)
+  sample.size <- ceiling(sample.size)
 
   ## put sample.size and extrapolation results together into a matrix
   result <- matrix(c(sample.size, extrapolation), ncol = 2, byrow = FALSE)
