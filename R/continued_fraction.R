@@ -13,7 +13,7 @@ BOOTSTRAP.factor <- 0.1
 
 
 ### checking the input histogram in an appropariat format
-checking.hist <- function(hist, header = FALSE)
+checking.hist <- function(hist)
 {
   if (ncol(hist)!=2 || is.numeric(hist[,1])==FALSE || is.numeric(hist[,2])==FALSE) {
     stop("Input must be a two-column matrix")
@@ -67,6 +67,7 @@ preseqR.rfa.estimate <- function(CF, t)
 preseqR.extrapolate.distinct <- function(hist, CF, start.size = NULL,
      step.size = NULL, max.size = NULL)
 {
+  checking.hist(hist)
   ## check CF is a continued fraction with CF attribute
   if (class(CF) != "RFA")
     return(NULL)
@@ -157,7 +158,7 @@ nonreplace.sampling <- function(size, hist)
 }
 
 ### sub sampling without replacement based on a histogram
-preseqR.nonreplace.sampling <- function(size, hist, header = FALSE)
+preseqR.nonreplace.sampling <- function(size, hist)
 {
   ## check the input histogram file
   checking.hist(hist)
@@ -266,8 +267,7 @@ goodtoulmin.2x.extrap <- function(hist)
 ### data
 ### di = diagonal, mt = max_terms, 
 preseqR.rfa.curve <- function(hist, di = 0, mt = 100, ss = NULL,
-                              max.extrapolation = NULL,
-                              header = FALSE)
+                              max.extrapolation = NULL)
 {
   checking.hist(hist)
 
@@ -411,7 +411,7 @@ preseqR.rfa.curve <- function(hist, di = 0, mt = 100, ss = NULL,
 ### generate complexity curve through bootstrapping the histogram
 preseqR.rfa.species.accum.curve <- function(
     hist, bootstrap.times = 100, di = 0, mt = 100, ss = NULL,
-    max.extrapolation = NULL, header = FALSE, ci = 0.95)
+    max.extrapolation = NULL, ci = 0.95)
 {
   checking.hist(hist)
   hist[, 2] <- floor(hist[, 2])
