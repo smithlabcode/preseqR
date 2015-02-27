@@ -27,7 +27,15 @@ preseqR.ztnb.estimate,
 
 preseqR.ztnb.em,
 
-preseqR.mincount.rfa.curve,
+preseqR.interpolate.distinct,
+
+preseqR.extrapolate.distinct,
+
+preseqR.nonreplace.sampling,
+
+preseqR.simu.hist,
+  
+preseqR.simu.interpolate,
 
 data: FisherButterflyHist, ShakespeareWordHist
 }
@@ -59,6 +67,10 @@ The annals of Statistics, 1-26.
 
 Chao, A. (1987). Estimating the population size for capture-recapture data with
 unequal catchability. Biometrics, 783-791.
+
+Heck Jr, K. L., van Belle, G., & Simberloff, D. (1975). 
+Explicit calculation of the rarefaction diversity measurement and the 
+determination of sufficient sample size. Ecology, 1459-1461.
 }
 
 \examples{
@@ -85,7 +97,7 @@ res$estimates
 ## the experiment is doubled and 3,506 more butterflies are
 ## captured, following the convention of Efron and Thisted 
 ## (1976) that t = 0 corresponds to the initial experiment
-preseqR.rfa.estimate(res$continued.fraction, t = 1)
+preseqR.rfa.estimate(res$continued.fraction, t = 2)
 
 ## Estimate the butterfly species accumulation curve by
 ## bootstrapping the observed species count histogram
@@ -98,13 +110,9 @@ preseqR.ztnb.em(FisherButterflyHist)
 ## calculate the expected number of new butterfly species
 ## observed when the experiment is doubled under the 
 ## Negative Binomial model
-preseqR.ztnb.estimate(FisherButterflyHist, 1)
+preseqR.ztnb.estimate(FisherButterflyHist, 2)
 
 ## estimate the number of butterfly species observed as a 
 ## function of total captures under the Negative Binomial model
 preseqR.ztnb.species.accum.curve(FisherButterflyHist)
 
-## estimate the number of butterfly species observed at least twice
-## as a function of total captures 
-preseqR.mincount.rfa.curve(FisherButterflyHist, k=2)
-}

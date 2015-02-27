@@ -1,5 +1,5 @@
-\name{preseqR.rfa.species.accum.curve}
-\alias{preseqR.rfa.species.accum.curve}
+\name{preseqR.interpolate.distinct}
+\alias{preseqR.interpolate.distinct}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
     Interpolating a species accumulation curve
@@ -8,7 +8,7 @@
     interpolating a species accumulation curve given a survey
 }
 \usage{
-  preseqR.interpolate.distinct <- function(ss, hist, header=FALSE)
+  preseqR.interpolate.distinct <- function(ss, hist)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -17,15 +17,10 @@
 }
   \item{hist}{
     Frequencies of the number of individuals of each species captured. 
-    It can be either a file name of the data or a variable of a matrix 
-    containing the data. The data must be a two-column table.  
+    The data must be a two-column matrix.  
     The first column is the frequency \eqn{j = 1,2,\dots}; and the second column
     is \eqn{n_j}, the number of species with \eqn{j} individuals observed in the
     sample. The first column must be sorted in an ascending order.
-}
-  \item{header}{
-    A boolean variable number representing whether or not the frequencies of  
-    count data file contains a header.
 }
 }
 \details{

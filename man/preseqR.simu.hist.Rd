@@ -1,0 +1,56 @@
+\name{preseqR.simu.hist}
+\alias{preseqR.simu.hist}
+%- Also NEED an '\alias' for EACH other topic documented here.
+\title{
+    Simulating a histogram 
+}
+\description{
+    The function generates a histogram based on a mixture model. 
+}
+\usage{
+  preseqR.simu.hist <- function(L=1e8, n, FUN)
+}
+%- maybe also 'usage' for other objects documented here.
+\arguments{
+  \item{L}{
+    A positive integer, the total number of unique species in a population.
+}
+  \item{n}{
+    A positive interger, the size of a survey
+  }
+  \item{FUN}{
+    An RNG generating non negative real number.
+  } 
+}
+\details{
+  The function uses a mixture model to generate a sample of size n. It assumes
+  the number of individuals captured for each species in the survey follows
+  a poisson process. The poisson rates among species are generated from a given
+  function FUN.
+
+  The function FUN must take an argument indicating the number of random numbers
+  generated and return a vector of generated numbers. 
+}
+\value{
+  The data must be a two-column matrix.  
+  The first column is the frequency \eqn{j = 1,2,\dots}; and the second column
+  is \eqn{n_j}, the number of species with \eqn{j} individuals observed in the 
+  sample.
+}
+\author{
+  Chao Deng
+}
+%% ~Make other sections like Warning with \section{Warning }{....} ~
+
+\examples{
+## load library
+library(preseqR)
+## construct a RNG
+f <- function(n) {
+  rgamma(n, shape=0.5, scale=1)
+}
+preseqR.simu.hist(L=1e6, n=1e5, f)
+}
+% Add one or more standard keywords, see file 'KEYWORDS' in the
+% R documentation directory.
+\keyword{ Simulation, Sampling}

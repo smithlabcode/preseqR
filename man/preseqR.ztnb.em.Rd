@@ -13,14 +13,13 @@ individuals for each species follows a Negative Binomial distribution
 with the zero counts as the missing latent data.
 }
 \usage{
-preseqR.ztnb.em(hist, size = SIZE.INIT, mu = MU.INIT, header = FALSE)
+preseqR.ztnb.em(hist, size = SIZE.INIT, mu = MU.INIT)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{hist}{
     Frequencies of the number of individuals of each species captured. 
-    It can be either a file name of the data or a variable of a matrix 
-    containing the data. The data must be a two-column table.  
+    The data must be a two-column matrix.  
     The first column is the frequency \eqn{j = 1,2,\dots}; and the second column
     is \eqn{n_j}, the number of species with \eqn{j} individuals observed in the
     sample. The first column must be sorted in an ascending order.
@@ -32,10 +31,6 @@ preseqR.ztnb.em(hist, size = SIZE.INIT, mu = MU.INIT, header = FALSE)
   \item{mu}{
     A positive double setting the initial value of the parameter \code{mu} in a
     negative binomial distribution for the EM algorithm. Default value is 0.5.
-}
-  \item{header}{
-    A boolean variable number representing whether or not the frequencies of 
-    count data file contains a header.
 }
 }
 \details{

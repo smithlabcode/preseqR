@@ -167,9 +167,8 @@ preseqR.ztnb.em <- function(hist, size=SIZE.INIT, mu=MU.INIT)
 
 
 ### predict the number of distinct items using EM algorithm
-### if the histogram file has a header, set header = TRUE
 ### t is the relative size to inital sample
-preseqR.ztnb.estimate <- function(hist, t, header = FALSE)
+preseqR.ztnb.estimate <- function(hist, t)
 {
   checking.hist(hist)
 

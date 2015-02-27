@@ -15,7 +15,7 @@ preseqR.rfa.estimate(CF, t)
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{CF}{
-    A continued fraction.
+    A truncated continued fraction.
   }
   \item{t}{
     A double as the argument.
@@ -45,8 +45,8 @@ result = preseqR.rfa.curve(ShakespeareWordHist)
 ## record the constructed continued fraction approximation
 CF = result$continued.fraction
 
-## calculate values when the argument equals to one
-preseqR.rfa.estimate(CF, 1)
+## calculate values when the argument equals to two
+preseqR.rfa.estimate(CF, 2)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

@@ -12,21 +12,16 @@
 }
 \usage{
 preseqR.rfa.species.accum.curve(hist, bootstrap.times = 100, di = 0,
-mt = 100, ss = NULL, max.extrapolation = NULL, header = FALSE, ci = 0.95)
+mt = 100, ss = NULL, max.extrapolation = NULL, ci = 0.95)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{hist}{
     Frequencies of the number of individuals of each species captured. 
-    It can be either a file name of the data or a variable of a matrix 
-    containing the data. The data must be a two-column table.  
+    The data must be a two-column table.  
     The first column is the frequency \eqn{j = 1,2,\dots}; and the second column
     is \eqn{n_j}, the number of species with \eqn{j} individuals observed in the
     sample. The first column must be sorted in an ascending order.
-}
-  \item{header}{
-    A boolean variable number representing whether or not the frequencies of 
-    count data file contains a header.
 }
   \item{bootstrap.times}{
     An positive integer representing the minimum required number of successful
