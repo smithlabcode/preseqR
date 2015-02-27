@@ -47,7 +47,11 @@ preseqR.rfa.estimate <- function(CF, t)
 {
   if (class(CF) != "RFA")
     return()
-
+  if (t < 1) 
+    stop("the t should be at least one!")
+  
+  ## the c function interface takes t - 1 as a parameter
+  t <- t - 1
   ## call a c-encoded function c.calculate.continued.fraction
   out <- .C("c_calculate_continued_fraction",
             cf = as.double(CF$cf.coeffs),

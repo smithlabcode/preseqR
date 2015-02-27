@@ -6,8 +6,7 @@ Calculate the value of the continued fraction
 }
 \description{
 This function calculates the value of a continued fraction at the
-value t which will correspond to the relative number of additonal
-individuals to be captured.
+value t
 }
 \usage{
 preseqR.rfa.estimate(CF, t)
@@ -21,7 +20,12 @@ preseqR.rfa.estimate(CF, t)
     A double as the argument.
   }
 }
-
+\details{
+  t is the ratio of the number of species observed between the new survey
+and the initial survey. The function value represents the number of unique 
+new species captured that are unobserved in the initial survey. The t must
+be a positive real number no less than 1. 
+}
 \value{
     A double as the function value.
 }
