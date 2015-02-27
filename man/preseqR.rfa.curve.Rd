@@ -12,7 +12,7 @@ approximations to Good and Toulmin's (1965) non-parametric empirical Bayes power
 series.
 }
 \usage{
-preseqR.rfa.curve(hist, di = 0, mt = 100, ss = NULL, max.extrapolation = NULL)
+preseqR.rfa.curve(hist, mt = 100, ss = NULL, max.extrapolation = NULL)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -22,10 +22,6 @@ preseqR.rfa.curve(hist, di = 0, mt = 100, ss = NULL, max.extrapolation = NULL)
     The first column is the frequency \eqn{j = 1,2,\dots}; and the second column
     is \eqn{n_j}, the number of species with \eqn{j} individuals observed in the
     sample. The first column must be sorted in an ascending order.
-}
-  \item{di}{
-    An integer equal to the diagonal value for a constructed continued 
-    fraction approximation. Default value is 0.
 }
   \item{mt}{
     An positive integer equal to the maximum degree allowed in the continued

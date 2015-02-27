@@ -255,12 +255,13 @@ goodtoulmin.2x.extrap <- function(hist)
 
 ### construct a rational function approximation given a frequencies of count
 ### data
-### di = diagonal, mt = max_terms, 
-preseqR.rfa.curve <- function(hist, di = 0, mt = 100, ss = NULL,
+### mt = max_terms, 
+preseqR.rfa.curve <- function(hist, mt = 100, ss = NULL,
                               max.extrapolation = NULL)
 {
   checking.hist(hist)
-
+  ## setting the diagonal value
+  di = 0
   ## minimum required number of terms of power series in order to construct
   ## a continued fraction approximation
   MIN_REQUIRED_TERMS <- 4
@@ -400,11 +401,14 @@ preseqR.rfa.curve <- function(hist, di = 0, mt = 100, ss = NULL,
 
 ### generate complexity curve through bootstrapping the histogram
 preseqR.rfa.species.accum.curve <- function(
-    hist, bootstrap.times = 100, di = 0, mt = 100, ss = NULL,
+    hist, bootstrap.times = 100, mt = 100, ss = NULL,
     max.extrapolation = NULL, ci = 0.95)
 {
   checking.hist(hist)
   hist[, 2] <- floor(hist[, 2])
+ 
+  ## setting the diagonal value
+  di = 0
 
   ## calculate the total number of sample
   total.sample <- hist[, 1] %*% hist[, 2]

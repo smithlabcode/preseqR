@@ -11,7 +11,7 @@
     improve the accuracy of the estimated curve and build confidence intervals..
 }
 \usage{
-preseqR.rfa.species.accum.curve(hist, bootstrap.times = 100, di = 0,
+preseqR.rfa.species.accum.curve(hist, bootstrap.times = 100,
 mt = 100, ss = NULL, max.extrapolation = NULL, ci = 0.95)
 }
 %- maybe also 'usage' for other objects documented here.
@@ -26,10 +26,6 @@ mt = 100, ss = NULL, max.extrapolation = NULL, ci = 0.95)
   \item{bootstrap.times}{
     An positive integer representing the minimum required number of successful
     estimations. See detail below.
-}
-  \item{di}{
-    An integer equal to the diagonal value for a continued fraction 
-    approximation. Default value is 0.
 }
   \item{mt}{
     An positive integer equal to the maximum degree allowed in a continued
