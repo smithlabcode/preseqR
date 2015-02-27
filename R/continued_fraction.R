@@ -452,7 +452,7 @@ preseqR.rfa.species.accum.curve <- function(
     ## combine nonzero.index column and the second column to build a histogram
     ## table
     hist.table <- matrix(c(hist[, 1], x), ncol = 2, byrow = FALSE)
-    preseqR.rfa.curve(hist.table, di, mt, step.size, max.extrapolation)
+    preseqR.rfa.curve(hist.table, mt, step.size, max.extrapolation)
   }
 
   while (bootstrap.times > 0) {
