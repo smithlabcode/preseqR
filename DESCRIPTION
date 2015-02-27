@@ -1,7 +1,7 @@
 Package: preseqR
 Type: Package
 Title: Predicting Species Accumulation
-Version: 1.0
+Version: 1.1
 Date: 2014-08-23
 Author: Chao Deng, Timothy Daley and Andrew D. Smith
 Maintainer: Chao Deng <chaodeng@usc.edu>

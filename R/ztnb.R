@@ -147,8 +147,8 @@ preseqR.ztnb.em <- function(hist, size=SIZE.INIT, mu=MU.INIT)
     zero.items <- floor(zero.items)
 
     ## estimated mean and variance
-    m <- (freq %*% number.items)/L
-    v <- ( (freq - m)^2 %*% number.items + m^2 * zero.items )/(L - 1)
+    m <- (hist[, 1] %*% hist[, 2])/L
+    v <- ( (hist[, 1] - m)^2 %*% hist[, 2] + m^2 * zero.items )/(L - 1)
 
 ### M step: estimate the parameters size and mu
     if (v > m) {
@@ -231,7 +231,6 @@ preseqR.ztnb.species.accum.curve <- function(hist, ss = NULL,
   }
 
   sample.size <- as.double(ss) * (1: n)
-  dim(sample.size) <- n
 
   ## estimate parameters
   opt <- preseqR.ztnb.em(hist)
@@ -242,12 +241,12 @@ preseqR.ztnb.species.accum.curve <- function(hist, ss = NULL,
   p <- 1 - dnbinom(0, size = size, mu = mu)
 
   ## L is the estimated total number of distinct items
-  L <- distinct.sample/p
+  L <- distinct/p
 
   ## estimate the item being sampled under new experiments with different size
   t = sample.size/total.sample
   dim(t) = length(t)
-  P = apply(t, 1, function(x) 1 - dnbinom(0, size, mu = x * mu))
+  P = apply(t, 1, function(x) {1 - dnbinom(0, size, mu = x * mu)})
   yield.estimates = L*P
 
   ## combine sample.size and yield.estimates into matrix

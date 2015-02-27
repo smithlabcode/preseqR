@@ -8,7 +8,7 @@
     interpolating a species accumulation curve given a survey
 }
 \usage{
-  preseqR.interpolate.distinct <- function(ss, hist)
+  preseqR.interpolate.distinct(ss, hist)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{

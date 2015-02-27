@@ -115,4 +115,4 @@ preseqR.ztnb.estimate(FisherButterflyHist, 2)
 ## estimate the number of butterfly species observed as a 
 ## function of total captures under the Negative Binomial model
 preseqR.ztnb.species.accum.curve(FisherButterflyHist)
-
+}

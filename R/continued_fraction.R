@@ -19,18 +19,18 @@ checking.hist <- function(hist)
     stop("Input must be a two-column matrix")
   }
   ## the first column is the frequencies of observed items
-  freq <- hist.table[, 1]
+  freq <- hist[, 1]
 
   ## the second column is the number of observed distinct items for each
   ## frequency
-  number.items <- hist.table[, 2]
+  number.items <- hist[, 2]
 
   ## check whether frequencies are at least one and the histogram is sorted
   for (i in 1:length(freq))
     if (freq[i] <= 0 || freq[i] != floor(freq[i])) {
       stop("The first column must be positive integers!")
-    } else if (number.items[i] <= 0) {
-      stop("The second column must be positive")
+    } else if (number.items[i] < 0) {
+      stop("The second column must be non negative")
     }
     else {
         if (i > 1 && freq[i - 1] >= freq[i])
@@ -144,7 +144,7 @@ nonreplace.sampling <- function(size, hist)
   ## times in the library, its indexes presents t times in X
   X <- rep(ind, n)
 
-  return(sample(X, size, repace = FALSE))
+  return(sample(X, size, replace = FALSE))
 }
 
 ### sub sampling without replacement based on a histogram
@@ -408,9 +408,6 @@ preseqR.rfa.species.accum.curve <- function(
 
   ## calculate the total number of sample
   total.sample <- hist[, 1] %*% hist[, 2]
-
-  ## calculate the distinct number of sample
-  distinct.sample <- sum(hist[, 2])
 
   ## set the step.size to the size of the initial experiment if it is undefined
   if (is.null(ss)) {

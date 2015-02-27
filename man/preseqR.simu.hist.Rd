@@ -8,7 +8,7 @@
     The function generates a histogram based on a mixture model. 
 }
 \usage{
-  preseqR.simu.hist <- function(L=1e8, n, FUN)
+  preseqR.simu.hist(L=1e8, n, FUN)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
