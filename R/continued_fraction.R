@@ -56,8 +56,8 @@ preseqR.rfa.estimate <- function(CF, t)
   out <- .C("c_calculate_continued_fraction",
             cf = as.double(CF$cf.coeffs),
             cf.l = as.integer(length(CF$cf.coeffs)),
-            off = as.double(CF$offset.coeffs),
-            di = as.integer(CF$diagonal.idx),
+            off = as.double(NULL),
+            di = as.integer(0),
             de = as.integer(CF$degree),
             coordinate = as.double(t),
             result = as.double(0));
@@ -79,8 +79,8 @@ preseqR.extrapolate.distinct <- function(hist, CF, start.size = NULL,
   ## parameters for calling the c-encode function c_extrapolate_distinct
   cf.coeffs <- as.double(CF$cf.coeffs)
   cf.coeffs.l <- as.integer(length(CF$cf.coeffs))
-  offset.coeffs <- as.double(CF$offset.coeffs)
-  di <- as.integer(CF$diagonal.idx)
+  offset.coeffs <- as.double(NULL)
+  di <- as.integer(0)
   de <- as.integer(CF$degree)
 
   total.sample <- floor(hist[, 1] %*% hist[, 2])
@@ -117,7 +117,7 @@ preseqR.extrapolate.distinct <- function(hist, CF, start.size = NULL,
   extrapolation <- out$estimate[ 1:out$estimate.l ] + initial_sum
 
   ## sample size vector for extrapolation
-  sample.size <- total.sample * (start.size + step.size*((1:length(extrapolation)) - 1))
+  sample.size <- total.sample * (start.size + step.size*((1:length(extrapolation)) - 1)) + total.sample
   ## estimation should be conservative
   sample.size <- ceiling(sample.size)
 
@@ -366,10 +366,8 @@ preseqR.rfa.curve <- function(hist, mt = 100, ss = NULL,
   length(out$ps.coeffs) <- out$ps.coeffs.l
   length(out$cf.coeffs) <- out$cf.coeffs.l
   length(out$offset.coeffs) <- as.integer(abs(out$diagonal.idx))
-  CF <- list(out$ps.coeffs, out$cf.coeffs, out$offset.coeffs, out$diagonal.idx,
-             out$degree)
-  names(CF) <- c('ps.coeffs', 'cf.coeffs', 'offset.coeffs', 'diagonal.idx',
-                 'degree')
+  CF <- list(out$ps.coeffs, out$cf.coeffs, out$degree)
+  names(CF) <- c('ps.coeffs', 'cf.coeffs', 'degree')
   class(CF) <- 'RFA'
 
   ## if the sample size is larger than max.extrapolation
@@ -524,12 +522,13 @@ print.RFA <- function(x, digit = 4, ...)
   s <- paste(s, "DEGREE\t", toString(x$degree), "\n\n", sep = '')
 
   ## print the diagonal value
-  s <- paste(s, "DIAGONAL VALUE\t", toString(x$diagonal.idx), "\n\n", sep = '')
+##  s <- paste(s, "DIAGONAL VALUE\t", toString(x$diagonal.idx), "\n\n", sep = '')
 
   ## print the coefficients depending on the value of diagonal value
   s <- paste(s, "COEFFICIENTS:\n\n", sep = '')
 
-  di <- abs(x$diagonal.idx)
+##  di <- abs(x$diagonal.idx)
+  di <- 0
     
   ## the function to print a coefficient
   ## S is the set of coefficients

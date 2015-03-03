@@ -44,11 +44,9 @@ preseqR.rfa.curve(hist, mt = 100, ss = NULL, max.extrapolation = NULL)
 }
 \value{
   \item{continued.fraction}{
-    A list contains five components of a continued fraction approximation:
+    A list contains three components of a continued fraction approximation:
     ps.coeffs is the coeffiencients of the Good and Toulmin power series; 
     cf.coeffs is the coeffiencients of the associated continued
-    fraction approximation; offset.coeffs is the offset coeffiencients of the 
-    continued fraction approximation; di is the diagonal value of the continued
     fraction approximation; de is the degree of the continued fraction
     approximation.
   }
