@@ -20,8 +20,9 @@ preseqR.rfa.estimate(CF, t)
   }
 }
 \details{
-  t is the relative size of the new survey to the initial survey. The function value is the gain in new species as the survey size increases. The t must
-be a positive real number no less than 1. 
+  t is the relative size of the new survey to the initial survey. 
+  The t must be a positive real number no less than 1. 
+  The function value is the gain in new species as the survey size increases.
 }
 \value{
     A double as the function value.
