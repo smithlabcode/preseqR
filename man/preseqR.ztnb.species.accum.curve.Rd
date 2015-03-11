@@ -27,7 +27,7 @@ preseqR.ztnb.species.accum.curve(hist, ss = NULL, max.extrapolation = NULL)
 }
   \item{max.extrapolation}{
     A positive double equal to the maximum possible size of a sample in a
-    survey. Default value is the 100 times the size of a sample in the initial 
+    survey. Default value is the 100 times the size of the initial 
     survey.
 }
 }

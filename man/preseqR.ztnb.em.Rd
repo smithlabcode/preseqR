@@ -34,7 +34,7 @@ preseqR.ztnb.em(hist, size = SIZE.INIT, mu = MU.INIT)
 }
 }
 \details{
-    See supplementary of Daley, T., & Smith, A. D. (2013).
+    See the supplementary of Daley, T., & Smith, A. D. (2013).
 }
 
 \value{

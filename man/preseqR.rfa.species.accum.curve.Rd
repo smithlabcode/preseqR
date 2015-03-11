@@ -37,7 +37,7 @@ mt = 100, ss = NULL, max.extrapolation = NULL, ci = 0.95)
 }
   \item{max.extrapolation}{
     A positive double equal to the maximum possible size of a sample in a
-    survey. Default value is the 100 times the size of a sample in the initial 
+    survey. Default value is the 100 times the size of the initial 
     survey.
 }
   \item{ci}{
@@ -102,8 +102,7 @@ unequal catchability. Biometrics, 783-791.
 \note{
     The rational fraction approximation is only applied to extrapolation. For 
     estimating the expected number of species given a sample with size less than
-    the size of sample in the initial survey, we subsample the observed 
-    individuals and count the number of sampled species.
+    the size of sample in the initial survey, we use \code{\link{preseqR.interpolate.distinct}} to calculate the value.
 
     A global variable \code{BOOTSTRAP.factor} defines maximum resampling times 
     allowed for bootstrapping. The default value is 0.1. When resampling times
@@ -120,6 +119,8 @@ library(preseqR)
 ## import data
 data(ShakespeareWordHist)
 
+## setting the random seed
+set.seed(123456)
 ## estimate the number of distinct butterflies as a function of the number of
 ## captured butterflies. Minimum required successful estimation times is 10
 preseqR.rfa.species.accum.curve(ShakespeareWordHist, bootstrap.times = 10)

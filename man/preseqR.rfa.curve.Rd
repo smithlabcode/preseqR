@@ -33,7 +33,7 @@ preseqR.rfa.curve(hist, mt = 100, ss = NULL, max.extrapolation = NULL)
 }
   \item{max.extrapolation}{
     A positive double equal to the maximum possible size of a sample in a
-    survey. Default value is 100 times the size of the sample in the initial
+    survey. Default value is 100 times the size of the initial
     survey.
 }
 }
@@ -80,7 +80,7 @@ Baker, G. A., & Graves-Morris, P. (1996). Pade approximants
     its coefficients, its diagonal value and its offset coefficients. For 
     example, when the diagonal value is zero, there are no offset coefficients.
     The format of a continued fraction should like this:
-    \deqn{\frac{a_0t}{1 + \frac{a_1t}{1 + \frac{a_2t}{\ldots}}}}
+    \deqn{\frac{a_0(t-1)}{1 + \frac{a_1(t-1)}{1 + \frac{a_2(t-1)}{\ldots}}}}
 }
 
 \seealso{

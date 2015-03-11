@@ -5,7 +5,7 @@
     Interpolating a species accumulation curve
 }
 \description{
-    interpolating a species accumulation curve given a survey
+    Interpolating a species accumulation curve given a survey
 }
 \usage{
   preseqR.interpolate.distinct(ss, hist)
@@ -24,15 +24,17 @@
 }
 }
 \details{
-  Given the survey, it assumes that the sub sample follows a hypergeometric distribution. So the expected
-  number of unique species for a fixed size of the sub sample is calculated based on the formula in
+  Assume that the sub sample follows a hypergeometric distribution for a
+  given survey. So the expected number of unique species for a fixed size of 
+  the sub sample is calculated based on the formula in
   Heck Jr, K. L., van Belle, G., & Simberloff, D. (1975).
 
   ss should be at least one. 
 }
 \value{
-    A two-column table representing a interpolated accumulation curve.
-    The first column is the size of the survey; the second column is the expected number of unique species.
+    A two-column matrix representing a interpolated accumulation curve.
+    The first column is the size of the survey; the second column is the 
+    expected number of unique species being observed.
 
     NULL if failed.
 }

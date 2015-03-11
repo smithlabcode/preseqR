@@ -22,8 +22,7 @@ preseqR.ztnb.estimate(hist, t)
     sample. The first column must be sorted in an ascending order.
 }
   \item{t}{
-    A positive double equal to the size of an additional sample relative to the total
-    number of observed species in hist.
+    t is the relative size of the new survey to the initial survey. 
 }
 }
 \details{
@@ -31,6 +30,7 @@ preseqR.ztnb.estimate(hist, t)
     individuals for each observed species. 
     We use \code{preseqR.ztnb.em} to estimate the
     parameters. 
+    The function value is the gain in new species as the survey size increases.
 	
 	For extrapolation for the number of species through a 
 	zero-truncated negative binomial distribution, 
@@ -38,7 +38,7 @@ preseqR.ztnb.estimate(hist, t)
 }
 
 \value{
-    a double as the function value.
+    a double as the function value. 
 }
 \author{
     Chao Deng
@@ -57,7 +57,7 @@ data(FisherButterflyHist)
 
 ## estimate the number of new butterfly species when the size of 
 ## the new sample is twice the size of the initial observed sample
-preseqR.ztnb.estimate(FisherButterflyHist, 1)
+preseqR.ztnb.estimate(FisherButterflyHist, 2)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

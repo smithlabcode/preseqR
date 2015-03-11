@@ -186,7 +186,7 @@ preseqR.ztnb.estimate <- function(hist, t)
   L <- distinct/p
 
   ## update parameters of negative binomial in the experiment with size n
-  mu <- mu*(t + 1)
+  mu <- mu*t
 
   ## the probability of being sampled under the new experiment
   P <- 1 - dnbinom(0, size = size, mu = mu)
