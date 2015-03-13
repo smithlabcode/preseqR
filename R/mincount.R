@@ -188,7 +188,7 @@ preseqR.rfa.curve.mincount <- function(hist, mt = 100, ss = NULL,
   } else {
       ## interpolation when sample size is no more than total sample size
       ## interpolate and set the size of the sample for an initial extrapolation
-      out <- preseqR.interpolate.mincount(hist, step.size, k)
+      out <- preseqR.interpolate.mincount(step.size, hist, k)
       yield.estimates <- out[, 2]
 
       ## starting sample size for extrapolation
