@@ -13,3 +13,8 @@ supposed to work:
       functionality in C++.
 
 See <http://cran.r-project.org/web/packages/preseqR/index.html> for details.
+
+UPDATES FROM PREVIOUS RELEASE
+========================================================================
+The input parameter "hist" changes to "n" to prevent confusion with the
+standard R function hist().
