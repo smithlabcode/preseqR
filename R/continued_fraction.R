@@ -152,8 +152,10 @@ nonreplace.sampling <- function(size, hist)
 }
 
 ### sub sampling without replacement based on a histogram
-preseqR.nonreplace.sampling <- function(size, hist)
+preseqR.nonreplace.sampling <- function(size, n)
 {
+  hist <- n
+
   ## check the input histogram file
   checking.hist(hist)
   ## sub sampling
@@ -205,8 +207,10 @@ count.distinct <- function(sample)
 
 ### interpolate when the sample size is no more than the size of
 ### the initial experiment
-preseqR.interpolate.distinct <- function(ss, hist)
+preseqR.interpolate.distinct <- function(ss, n)
 {
+  hist <- n
+
   checking.hist(hist)
 
   ## calculate total number of sample
@@ -260,9 +264,11 @@ goodtoulmin.2x.extrap <- function(hist)
 ### construct a rational function approximation given a frequencies of count
 ### data
 ### mt = max_terms, 
-preseqR.rfa.curve <- function(hist, mt = 100, ss = NULL,
+preseqR.rfa.curve <- function(n, mt = 100, ss = NULL,
                               max.extrapolation = NULL)
 {
+  hist <- n
+
   checking.hist(hist)
   ## setting the diagonal value
   di = 0
@@ -403,9 +409,11 @@ preseqR.rfa.curve <- function(hist, mt = 100, ss = NULL,
 
 ### generate complexity curve through bootstrapping the histogram
 preseqR.rfa.species.accum.curve <- function(
-    hist, bootstrap.times = 100, mt = 100, ss = NULL,
-    max.extrapolation = NULL, ci = 0.95)
+    n, bootstrap.times = 100, mt = 100, ss = NULL,
+    max.extrapolation = NULL, conf = 0.95)
 {
+  hist <- n
+
   checking.hist(hist)
   hist[, 2] <- floor(hist[, 2])
  
@@ -495,17 +503,17 @@ preseqR.rfa.species.accum.curve <- function(
     variance <- apply(yield.estimates, 1, var)
 
     # confidence interval based on lognormal
-    if (ci <= 0 && ci >= 1)
-      ci = 0.95
-    C <- exp(qnorm((1 + ci) / 2.0) * sqrt(log(1.0 + variance / (median.estimate^2))))
+    if (conf <= 0 && conf >= 1)
+      conf = 0.95
+    C <- exp(qnorm((1 + conf) / 2.0) * sqrt(log(1.0 + variance / (median.estimate^2))))
     left.interval <- median.estimate/C
     right.interval <- median.estimate*C
 
     ## combine results and output a matrix
     result <- matrix(c(index, median.estimate, left.interval, right.interval),
                     ncol = 4, byrow = FALSE)
-    lower.ci = sprintf('lower.%.2fCI', ci)
-    upper.ci = sprintf('uppper.%.2fCI', ci)
+    lower.ci = sprintf('lower.%.2fCI', conf)
+    upper.ci = sprintf('uppper.%.2fCI', conf)
     colnames(result) <- c('sample.size', 'yield.estimate', lower.ci, upper.ci)
     return(result)
   } else {

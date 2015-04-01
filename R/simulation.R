@@ -15,7 +15,7 @@ get.expectation <- function(FUN) {
 ### FUN is an RNG. It must take one argument as the number of random numbers
 ### generated and return the number of positive random numbers
 ### FUN can be defined by users
-preseqR.simu.hist <- function(L=1e8, n, FUN) {
+preseqR.simu.hist <- function(L=1e8, size, FUN) {
   if (L > 1e8) {
     L <- 1e8
   } else if (L <= 0) {
@@ -24,7 +24,7 @@ preseqR.simu.hist <- function(L=1e8, n, FUN) {
   }
   L <- as.integer(L)
   E <- get.expectation(FUN)
-  t <- n / (L * E)
+  t <- size / (L * E)
   ## save the poisson parameters for each individual in the population
   lambda <- FUN(L)
   ## S saves samples

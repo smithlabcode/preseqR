@@ -65,8 +65,10 @@ nb.loglikelyhood <- function(hist.table, zero.items, size, mu)
 ### EM algorithm to fit the histogram with a negative binomial distribution
 ### hist only includes information for observation
 ### the number of unobserved items is missing data
-preseqR.ztnb.em <- function(hist, size=SIZE.INIT, mu=MU.INIT)
+preseqR.ztnb.em <- function(n, size=SIZE.INIT, mu=MU.INIT)
 {
+  hist <- n
+
   checking.hist(hist)
 
   ## setting the number of unobserved items as 0
@@ -168,8 +170,10 @@ preseqR.ztnb.em <- function(hist, size=SIZE.INIT, mu=MU.INIT)
 
 ### predict the number of distinct items using EM algorithm
 ### t is the relative size to inital sample
-preseqR.ztnb.estimate <- function(hist, t)
+preseqR.ztnb.estimate <- function(n, t)
 {
+  hist <- n
+
   checking.hist(hist)
 
   distinct <- sum(hist[, 2])
@@ -198,9 +202,11 @@ preseqR.ztnb.estimate <- function(hist, t)
 ## predict a complexity curve using EM algorithm
 ## ss is the step.size
 ## max.extrapoltion is the maximum value for extrapolation
-preseqR.ztnb.species.accum.curve <- function(hist, ss = NULL,
+preseqR.ztnb.species.accum.curve <- function(n, ss = NULL,
                                              max.extrapolation = NULL)
 {
+  hist <- n
+
   checking.hist(hist)
 
   total.sample <- floor(hist[, 1] %*% hist[, 2])

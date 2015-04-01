@@ -10,11 +10,11 @@ if the experiment is increased by t, relative to the number of
 individuals observed in hist.
 }
 \usage{
-preseqR.ztnb.estimate(hist, t)
+preseqR.ztnb.estimate(n, t)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{hist}{
+  \item{n}{
     Frequencies of the number of individuals of each species captured. 
     The data must be a two-column table.  
     The first column is the frequency \eqn{j = 1,2,\dots}; and the second column

@@ -12,11 +12,11 @@ approximations to Good and Toulmin's (1965) non-parametric empirical Bayes power
 series.
 }
 \usage{
-preseqR.rfa.curve(hist, mt = 100, ss = NULL, max.extrapolation = NULL)
+preseqR.rfa.curve(n, mt = 100, ss = NULL, max.extrapolation = NULL)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{hist}{
+  \item{n}{
     Frequencies of the number of individuals of each species captured. 
     The data must be a two-column matrix.  
     The first column is the frequency \eqn{j = 1,2,\dots}; and the second column

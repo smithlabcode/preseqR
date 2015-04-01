@@ -13,11 +13,11 @@ individuals for each species follows a Negative Binomial distribution
 with the zero counts as the missing latent data.
 }
 \usage{
-preseqR.ztnb.em(hist, size = SIZE.INIT, mu = MU.INIT)
+preseqR.ztnb.em(n, size = SIZE.INIT, mu = MU.INIT)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{hist}{
+  \item{n}{
     Frequencies of the number of individuals of each species captured. 
     The data must be a two-column matrix.  
     The first column is the frequency \eqn{j = 1,2,\dots}; and the second column

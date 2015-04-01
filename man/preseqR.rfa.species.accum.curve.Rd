@@ -11,12 +11,12 @@
     improve the accuracy of the estimated curve and build confidence intervals..
 }
 \usage{
-preseqR.rfa.species.accum.curve(hist, bootstrap.times = 100,
-mt = 100, ss = NULL, max.extrapolation = NULL, ci = 0.95)
+preseqR.rfa.species.accum.curve(n, bootstrap.times = 100,
+mt = 100, ss = NULL, max.extrapolation = NULL, conf = 0.95)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{hist}{
+  \item{n}{
     Frequencies of the number of individuals of each species captured. 
     The data must be a two-column table.  
     The first column is the frequency \eqn{j = 1,2,\dots}; and the second column
@@ -40,7 +40,7 @@ mt = 100, ss = NULL, max.extrapolation = NULL, ci = 0.95)
     survey. Default value is the 100 times the size of the initial 
     survey.
 }
-  \item{ci}{
+  \item{conf}{
     A positive double in (0, 1) equal to the confidence level.
     Default value is 0.95.
   }

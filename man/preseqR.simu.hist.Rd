@@ -8,14 +8,14 @@
     Generating a histogram based on a mixture model. 
 }
 \usage{
-  preseqR.simu.hist(L=1e8, n, FUN)
+  preseqR.simu.hist(L=1e8, size, FUN)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{L}{
     A positive integer, the total number of unique species in a population.
 }
-  \item{n}{
+  \item{size}{
     A positive interger, the size of a survey
   }
   \item{FUN}{
@@ -54,7 +54,7 @@ f <- function(n) {
 ## setting a random seed
 set.seed(123456)
 
-preseqR.simu.hist(L=1e5, n=2e5, f)
+preseqR.simu.hist(L=1e5, size=2e5, f)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

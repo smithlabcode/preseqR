@@ -8,14 +8,14 @@
     Interpolating a species accumulation curve given a survey
 }
 \usage{
-  preseqR.interpolate.distinct(ss, hist)
+  preseqR.interpolate.distinct(ss, n)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{ss}{
     An positive double equal to the step size between samples.
 }
-  \item{hist}{
+  \item{n}{
     Frequencies of the number of individuals of each species captured. 
     The data must be a two-column matrix.  
     The first column is the frequency \eqn{j = 1,2,\dots}; and the second column

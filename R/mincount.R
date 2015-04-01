@@ -39,8 +39,10 @@ mincount.distinct <- function(sample, k)
 
 ### interpolate when the sample size is no more than the size of
 ### the initial experiment
-preseqR.interpolate.mincount <- function(ss, hist, k=1)
+preseqR.interpolate.mincount <- function(ss, n, k=1)
 {
+  hist <- n
+
   checking.hist(hist)
 
   ## calculate total number of sample
@@ -88,9 +90,11 @@ preseqR.interpolate.mincount <- function(ss, hist, k=1)
 
 ### extrapolating a species accumulation curve
 ### given a histogram and a continued fraction
-preseqR.extrapolate.mincount <- function(hist, CF, start.size = NULL,
+preseqR.extrapolate.mincount <- function(n, CF, start.size = NULL,
      step.size = NULL, max.size = NULL, k)
 {
+  hist <- n
+
   checking.hist(hist)
   ## check CF is a continued fraction with CF attribute
   if (class(CF) != "RFA")
@@ -153,9 +157,11 @@ preseqR.extrapolate.mincount <- function(hist, CF, start.size = NULL,
 
 ### generating an accumulation curve by interpolating and extrapolating the survey
 ### no bootstrapping
-preseqR.rfa.curve.mincount <- function(hist, mt = 100, ss = NULL,
+preseqR.rfa.curve.mincount <- function(n, mt = 100, ss = NULL,
                               max.extrapolation = NULL, k=1)
 {
+  hist <- n
+
   checking.hist(hist)
   ## setting the diagonal value
   di = 0
