@@ -219,7 +219,7 @@ preseqR.interpolate.distinct <- function(ss, n)
 
   initial.distinct <- sum(hist[, 2])
   ## the total individuals captured
-  step.size <- as.integer(ss)
+  step.size <- as.double(ss)
 
   ## l is the number of interpolation points
   l <- as.integer(N / step.size)
