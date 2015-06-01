@@ -265,7 +265,7 @@ goodtoulmin.2x.extrap <- function(hist)
 ### data
 ### mt = max_terms, 
 preseqR.rfa.curve <- function(n, mt = 100, ss = NULL,
-                              max.extrapolation = NULL)
+                              max.extrapolation = NULL, asym.linear=FALSE)
 {
   hist <- n
 
@@ -325,7 +325,11 @@ preseqR.rfa.curve <- function(n, mt = 100, ss = NULL,
   ## constrain the continued fraction approximation with even degree 
   ## conservatively estimates
   mt <- min(mt, counts.before.first.zero - 1)
-  mt <- mt - (mt %% 2)
+  if (asym.linear == TRUE && (mt %% 2 == 0)) {
+    mt = mt - 1
+	} else {
+    mt = mt - (mt %% 2)
+	}
 
   ## pre-check to make sure the sample is good for prediction
   if (mt < MIN_REQUIRED_TERMS)
@@ -410,7 +414,7 @@ preseqR.rfa.curve <- function(n, mt = 100, ss = NULL,
 ### generate complexity curve through bootstrapping the histogram
 preseqR.rfa.species.accum.curve <- function(
     n, bootstrap.times = 100, mt = 100, ss = NULL,
-    max.extrapolation = NULL, conf = 0.95)
+    max.extrapolation = NULL, conf = 0.95, asym.linear=FALSE)
 {
   hist <- n
 
@@ -458,7 +462,7 @@ preseqR.rfa.species.accum.curve <- function(
     ## combine nonzero.index column and the second column to build a histogram
     ## table
     hist.table <- matrix(c(hist[, 1], x), ncol = 2, byrow = FALSE)
-    preseqR.rfa.curve(hist.table, mt, step.size, max.extrapolation)
+    preseqR.rfa.curve(hist.table, mt, step.size, max.extrapolation, asym.linear=asym.linear)
   }
 
   while (bootstrap.times > 0) {

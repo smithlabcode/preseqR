@@ -12,7 +12,7 @@ approximations to Good and Toulmin's (1965) non-parametric empirical Bayes power
 series.
 }
 \usage{
-preseqR.rfa.curve(n, mt = 100, ss = NULL, max.extrapolation = NULL)
+preseqR.rfa.curve(n, mt = 100, ss = NULL, max.extrapolation = NULL, asym.linear=FALSE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -36,6 +36,10 @@ preseqR.rfa.curve(n, mt = 100, ss = NULL, max.extrapolation = NULL)
     survey. Default value is 100 times the size of the initial
     survey.
 }
+  \item{asym.linear}{
+		A logic, setting to be TRUE if the asymptotic behavior of the accumulation curve
+    is linear. Otherwise setting it to be FALSE.
+	}  
 }
 \details{
     This function estimates the

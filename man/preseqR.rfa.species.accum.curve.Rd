@@ -12,7 +12,7 @@
 }
 \usage{
 preseqR.rfa.species.accum.curve(n, bootstrap.times = 100,
-mt = 100, ss = NULL, max.extrapolation = NULL, conf = 0.95)
+mt = 100, ss = NULL, max.extrapolation = NULL, conf = 0.95, asym.linear=FALSE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -44,6 +44,10 @@ mt = 100, ss = NULL, max.extrapolation = NULL, conf = 0.95)
     A positive double in (0, 1) equal to the confidence level.
     Default value is 0.95.
   }
+  \item{asym.linear}{
+    A logic, setting to be TRUE if the asymptotic behavior of the accumulation curve
+    is linear. Otherwise setting it to be FALSE.
+  }   
 }
 \details{
 According to Good & Toulmin (1956) and Efron & Thisted (1976), under
