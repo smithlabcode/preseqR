@@ -217,7 +217,7 @@ preseqR.interpolate.distinct <- function(ss, n)
   total.sample <- hist[, 1] %*% hist[, 2]
   N <- floor(total.sample)
 
-  initial.distinct <- sum(hist[, 2])
+  initial.distinct <- sum(as.numeric(hist[, 2]))
   ## the total individuals captured
   step.size <- as.double(ss)
 
