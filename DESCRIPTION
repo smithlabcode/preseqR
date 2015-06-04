@@ -1,8 +1,8 @@
 Package: preseqR
 Type: Package
 Title: Predicting Species Accumulation Curves
-Version: 1.1.1
-Date: 2015-03-31
+Version: 1.2.1
+Date: 2015-06-04
 Author: Chao Deng, Timothy Daley and Andrew D. Smith
 Maintainer: Chao Deng <chaodeng@usc.edu>
 Description: Estimating species accumulation curves by rational function approximations to the non-parametric empirical Bayes estimator and by the zero-truncated Negative Binomial distribution.
