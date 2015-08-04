@@ -1,8 +1,10 @@
 #include <vector>
+#include <cmath>
 
 #include "continued_fraction.h"
 
 using std::vector;
+using std::isfinite;
 
 
 /* 
@@ -137,12 +139,13 @@ extern "C" {
   }
 }
 
+
 /*
- * a c-encoded interface to construct a continued fraction given the power series
+ * construct a continued fraction given a power series
+ * de is the degree of the constructed continued fraction
  *
  * =============================================================================
  * di               the diagonal diagonal value of the CF
- * mt               the maximum number of terms to try for a CF
  * is_valid         an indicator to show the validness of constructed CF
  * PS_coeffs        coefficients of the derived power series from the histogram
  * PS_coeffs_l      the length of the coefficients
@@ -157,24 +160,36 @@ extern "C" {
  *
  */
 extern "C" {
-  void c_powerseries_to_cont_frac(int *di, int *mt, double *PS_coeffs,
-                                  int *PS_coeffs_l, double *ps_coeffs, 
-                                  int *ps_coeffs_l, double *cf_coeffs, 
-                                  int *cf_coeffs_l, double *offset_coeffs, 
-                                  int *diagonal_idx, int *degree,
-                                  int *is_valid)
+  void c_PS2CF(int *di, int *de, double *PS_coeffs, int *PS_coeffs_l, 
+      double *ps_coeffs, int *ps_coeffs_l, double *cf_coeffs, int *cf_coeffs_l,
+      double *offset_coeffs, int *diagonal_idx, int *degree, int *is_valid)
   { 
-    ContinuedFractionApproximation CFA(*di, *mt);
-
     //ps_coeffs and ps_coeffs_l store the given power series
     const vector<double> ps(PS_coeffs, PS_coeffs + *PS_coeffs_l);
-    ContinuedFraction CF(CFA.optimal_powerseries_to_cont_frac(ps));
+
+    if (*de > ps.size()) {
+      ContinuedFraction empty;
+      *is_valid = empty.is_valid();
+      return;
+    }
+
+    ContinuedFraction CF(ps, *di, *de);  
+    vector<double> estimates;
+    CF.extrapolate_distinct(100, 0.05, estimates);
+    // checking the function is well-defined
+    for (size_t i = 1; i < estimates.size(); ++i) 
+      if (!std::isfinite(estimates[i])) {
+        ContinuedFraction empty;
+        *is_valid = empty.is_valid();
+        return;
+    }
+
 
     // store informatin relevent to the constructed continued fraction
     *is_valid = CF.is_valid();
 
-    // copy information from ContinuedFraction into points
-    //size_t converts to a int type; same things happen below
+    // copy information from ContinuedFraction into variables
+    // size_t converts to a int type; same things happen below
     for (size_t i = 0; i != CF.ps_coeffs.size(); i++)
       ps_coeffs[i] = CF.ps_coeffs[i];
     *ps_coeffs_l = CF.ps_coeffs.size();
