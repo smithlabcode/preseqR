@@ -142,12 +142,12 @@ nonreplace.sampling <- function(size, n)
   ind <- 1:distinct
 
   ## the size of each read in the library
-  n <- rep(n[, 1], n[, 2])
+  N <- rep(n[, 1], n[, 2])
 
   ## construct a sample space X 
   ## the whole library represents by its indexes. If a read presents t
   ## times in the library, its indexes presents t times in X
-  X <- rep(ind, n)
+  X <- rep(ind, N)
 
   return(sample(X, size, replace = FALSE))
 }
@@ -164,8 +164,8 @@ preseqR.nonreplace.sampling <- function(size, n)
   ## record the freq of each sampled species
   freq.counts <- hist(X, breaks=0:max(X), plot=FALSE)$count
   ## frequencies counts; frequency 0 excluded
-  n <- hist(freq.counts, breaks=-1:max(freq.counts), plot=FALSE)$counts[-1]
-  matrix(c(which(n != 0), n[which(n != 0)]), byrow = FALSE, ncol=2)
+  T <- hist(freq.counts, breaks=-1:max(freq.counts), plot=FALSE)$counts[-1]
+  matrix(c(which(T != 0), T[which(T != 0)]), byrow = FALSE, ncol=2)
 }	
 
 
@@ -193,7 +193,8 @@ preseqR.interpolate.distinct <- function(ss, n)
 
   ## explicit calculating the expectation for sampling without replacement
   ## see K.L Heck 1975
-  ## N is the size of population;   ## S is the number of unique species
+  ## N is the size of population;   
+  ## S is the number of unique species
   ## x is the size of the sub sample
   expect.distinct <- function(n, N, x, S) {
     denom <- lchoose(N, x)
