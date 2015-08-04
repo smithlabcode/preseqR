@@ -26,15 +26,13 @@ mincount.ps <- function(hist.count, r) {
 ### minimum count interpolation
 preseqR.interpolate.mincount <- function(ss, n, r=1)
 {
-  hist <- n
-
-  checking.hist(hist)
+  checking.hist(n)
 
   ## calculate total number of sample
-  total.sample <- hist[, 1] %*% hist[, 2]
+  total.sample <- n[, 1] %*% n[, 2]
   N <- floor(total.sample)
 
-  initial.distinct <- sum(hist[, 2])
+  initial.distinct <- sum(n[, 2])
   ## the total individuals captured
   step.size <- as.double(ss)
 
@@ -51,19 +49,19 @@ preseqR.interpolate.mincount <- function(ss, n, r=1)
   ## see K.L Heck 1975
   ## N is the size of population; n is the size of the sample;
   ## S is the number of unique species
-  ## n is the size of the sub sample
-  expect.distinct <- function(hist, N, n, S, r) {
-    denom <- lchoose(N, n)
-    p <- sapply(hist[, 1], function(x) {
-           sum(exp(lchoose(N - x, n - 0:(r-1)) + lchoose(x, 0:(r-1)) - denom))})
-    return(S - p %*% hist[, 2])
+  ## size is the size of the sub sample
+  expect.distinct <- function(n, N, size, S, r) {
+    denom <- lchoose(N, size)
+    p <- sapply(n[, 1], function(x) {
+           sum(exp(lchoose(N - x, size - 0:(r-1)) + lchoose(x, 0:(r-1)) - denom))})
+    return(S - p %*% n[, 2])
   }
 
   ## sample size vector
   x <- step.size * ( 1:l )
 
   ## calculate the number of distinct reads based on each sample size
-  yield.estimates <- sapply(x, function(x) expect.distinct(hist, N, x, 
+  yield.estimates <- sapply(x, function(x) expect.distinct(n, N, x, 
                             initial.distinct, r))
 
   ## put size and yield together into a matrix
@@ -79,9 +77,7 @@ preseqR.interpolate.mincount <- function(ss, n, r=1)
 preseqR.rfa.mincount <- function(n, mt = 50, ss = NULL,
                                  max.extrapolation = NULL, r=1)
 {
-  hist <- n
-
-  checking.hist(hist)
+  checking.hist(n)
   ## setting the diagonal value
   di = 0
   ## minimum required number of terms of power series in order to construct
@@ -89,7 +85,7 @@ preseqR.rfa.mincount <- function(n, mt = 50, ss = NULL,
   MIN_REQUIRED_TERMS <- 4
 
   ## calculate total number of sample
-  total.sample <- hist[, 1] %*% hist[, 2]
+  total.sample <- n[, 1] %*% n[, 2]
   total.sample <- floor(total.sample)
 
   ## set step.size as the size of the initial experiment if it is undefined
@@ -113,7 +109,7 @@ preseqR.rfa.mincount <- function(n, mt = 50, ss = NULL,
   } else {
       ## interpolation when sample size is no more than total sample size
       ## interpolate and set the size of the sample for an initial extrapolation
-      out <- preseqR.interpolate.mincount(step.size, hist, r)
+      out <- preseqR.interpolate.mincount(step.size, n, r)
       yield.estimates <- out[, 2]
 
       ## starting sample size for extrapolation
@@ -126,8 +122,8 @@ preseqR.rfa.mincount <- function(n, mt = 50, ss = NULL,
   }
 
   ## transform a histogram into a vector of frequencies
-  hist.count <- vector(length=max(hist[, 1]), mode="numeric")
-  hist.count[hist[, 1]] <- hist[, 2]
+  hist.count <- vector(length=max(n[, 1]), mode="numeric")
+  hist.count[n[, 1]] <- n[, 2]
   ## only use non zeros items in histogram from begining up to the first zero
   counts.before.first.zero = 1
   while (as.integer(counts.before.first.zero) <= length(hist.count) &&
