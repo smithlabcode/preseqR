@@ -182,7 +182,7 @@ preseqR.rfa.mincount <- function(n, mt = 50, ss = NULL,
                  out$diagonal.idx, out$degree)
       names(CF) <- c('ps.coeffs', 'cf.coeffs', 'offset.coeffs', 'diagonal.idx',
                      'degree')
-      class(CF) <- 'RFA'
+      class(CF) <- 'CF'
 
       RF <- CF2RFA(CF)
       numer.roots <- solve(RF[[1]])
@@ -383,7 +383,7 @@ preseqR.pf.mincount <- function(n, mt = 100, ss = NULL,
                  out$diagonal.idx, out$degree)
       names(CF) <- c('ps.coeffs', 'cf.coeffs', 'offset.coeffs', 'diagonal.idx',
                      'degree')
-      class(CF) <- 'RFA'
+      class(CF) <- 'CF'
 
       RF <- CF2RFA(CF)
       numer.roots <- solve(RF[[1]])

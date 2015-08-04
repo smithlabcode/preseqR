@@ -45,7 +45,7 @@ checking.hist <- function(n)
 ### argument t
 preseqR.rfa.estimate <- function(CF, t)
 {
-  if (class(CF) != "RFA")
+  if (class(CF) != "CF")
     return()
   if (t < 1) 
     stop("the t should be at least one!")
@@ -73,7 +73,7 @@ preseqR.extrapolate.distinct <- function(n, CF, start.size = NULL,
 {
   checking.hist(n)
   ## check CF is a continued fraction with CF attribute
-  if (class(CF) != "RFA")
+  if (class(CF) != "CF")
     return(NULL)
 
   ## parameters for calling the c-encode function c_extrapolate_distinct
@@ -338,7 +338,7 @@ preseqR.rfa.curve <- function(n, mt = 100, ss = NULL,
   length(out$offset.coeffs) <- as.integer(abs(out$diagonal.idx))
   CF <- list(out$ps.coeffs, out$cf.coeffs, out$degree)
   names(CF) <- c('ps.coeffs', 'cf.coeffs', 'degree')
-  class(CF) <- 'RFA'
+  class(CF) <- 'CF'
 
   ## if the sample size is larger than max.extrapolation
   ## stop extrapolation
@@ -483,7 +483,7 @@ preseqR.rfa.species.accum.curve <- function(
   }
 }
 
-print.RFA <- function(x, digit = 4, ...)
+print.CF <- function(x, digit = 4, ...)
 {
   s <- "CONTINUED FRACTION APPROXIMATION :\n\n"
 
