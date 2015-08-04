@@ -72,8 +72,47 @@ preseqR.interpolate.mincount <- function(ss, n, r=1)
 }
 
 
+### convert a continued fraction to a rational function
+### the form of the continued fraction refers to the preseq supplementary
+CF2RFA <- function(CF)
+{
+  poly.numer <- polynomial(1)
+  poly.denom <- polynomial(1)
+  cf <- CF$cf.coeffs
+  for (i in rev(cf)) {
+    tmp <- poly.numer
+    poly.numer <- poly.numer + polynomial(c(0, i)) * poly.denom
+    poly.denom <- tmp
+  }
+  ## according to the representation of the continued fraction
+  ## the first item is a_0x/... not 1 + a_0x/...
+  ## thus we need to substract one from the result
+  poly.numer <- poly.numer - poly.denom
+  polylist(poly.numer, poly.denom)
+}
+
+
+### the kth derivative of a continued fraction
+deriv.CF <- function(CF, k = 0)
+{
+  ## check CF is a continued fraction with CF attribute
+  if (class(CF) != "CF")
+    return(NULL)
+  rational.f <- CF2RFA(CF)
+
+  while (k > 0) {
+    rational.f[[1]] <- deriv(rational.f[[1]]) * rational.f[[2]] - 
+                       rational.f[[1]] * deriv(rational.f[[2]])
+    rational.f[[2]] <- rational.f[[2]]^2
+    k <- k - 1
+  }
+  rational.f
+}
+
+
 ## species accumu curve with minimum count r
-## by RFA to Good-Toulmin power series
+## by RFA to a generalized Good-Toulmin power series
+## RFA is based on roots selection
 preseqR.rfa.mincount <- function(n, mt = 50, ss = NULL,
                                  max.extrapolation = NULL, r=1)
 {
@@ -466,6 +505,201 @@ preseqR.pf.mincount <- function(n, mt = 100, ss = NULL,
 
   ## extrapolating for the general accumulation curves
   extrap <- mincount.accum.curve.f(seq(start, end, by=step)) + sum(n[, 2])
+
+  ## combine results from interpolation/extrapolation
+  yield.estimates <- c(yield.estimates, extrap)
+  index <- as.double(step.size) * (1: length(yield.estimates))
+
+  ## put index and estimated yields together into a two-colunm matrix
+  yield.estimates <- matrix(c(index, yield.estimates), ncol = 2, byrow = FALSE)
+  colnames(yield.estimates) <- c('sample.size', 'yield.estimate')
+
+  result <- list(continued.fraction = CF, estimates = yield.estimates)
+  return(result)
+}
+
+
+################################################################################
+### species accumulation curves basis on RFA that satisfies the first and 
+### second derivative requirement
+
+
+## funcion of species accum curves with minimum count k basis on a rational
+## function approximation 
+## CF is the ratinla function approximation with continued fraction representation
+mincount.f <- function(CF, k) {
+  RF <- CF2RFA(CF)
+  numer.roots <- solve(RF[[1]])
+  denom.roots <- solve(RF[[2]])
+  denom.roots <- c(-1, denom.roots)
+
+  ## record roots in the numerator that are significant different from 
+  ## roots in the denominator
+  tmp.roots <- c()
+
+  ## remove roots in both numerator and denominator if the difference is
+  ## less than the predefined PRECISION
+  for (i in 1:length(numer.roots)) {
+    d <- Mod(denom.roots - numer.roots[i])
+    REMOVE.ROOTS <- FALSE
+    for (j in 1:length(d)) {
+      if (d[j] < PRECISION) {
+        denom.roots <- denom.roots[-j]
+        REMOVE.ROOTS <- TRUE
+        break
+      }
+    }
+    if (!REMOVE.ROOTS) {
+      tmp.roots <- c(tmp.roots, numer.roots[i])
+    }
+  }
+
+  numer.roots <- tmp.roots
+  poly.numer <- as.function(poly.from.roots(numer.roots))
+  l <- length(denom.roots)
+
+  ## treat polynomials in the rational function as monic
+  ## the difference is a constant C
+  coef <- sapply(1:l, function(x) { poly.numer(denom.roots[x]) / 
+                                    prod(denom.roots[x] - denom.roots[-x]) } )
+  C <- coef(RF[[1]])[length(coef(RF[[1]]))] / coef(RF[[2]])[length(coef(RF[[2]]))]
+
+  
+  species.accum.curve.f <- function(t) {
+    Re(sapply(t, function(x) {coef %*% ( (x+1)/(x-denom.roots) )^k})) * C
+  }
+	return(function(x) { species.accum.curve.f(x - 1) })
+}
+
+
+### species accumulation curve with minimum count k basis on partial fraction
+### decomposition; 
+### the initial RFA satisfies f' > 0 and f'' < 0
+preseqR.rfa.curve.derivSelect <- function(n, mt=100, ss=NULL, 
+                                          max.extrapolation=NULL, k=1)
+{
+  checking.hist(n)
+  ## setting the diagonal value
+  di = 0
+  ## minimum required number of terms of power series in order to construct
+  ## a continued fraction approximation
+  MIN_REQUIRED_TERMS <- 4
+
+  ## calculate total number of sample
+  total.sample <- n[, 1] %*% n[, 2]
+  total.sample <- floor(total.sample)
+
+  ## set step.size as the size of the initial experiment if it is undefined
+  if (is.null(ss)) {
+    ss <- floor(total.sample)
+    step.size <- ss
+  } else if (ss < 1) {
+    write("step size is should be at least one", stderr())
+    return(NULL)
+  } else {
+    step.size <- floor(ss)
+  }
+
+  ## no interpolation if step.size is larger than the size of experiment
+  ## set the starting sample size as the step.size
+  if (step.size > total.sample) {
+    yield.estimates <- vector(mode = 'numeric', length = 0)
+
+    ## starting sample size for extrapolation
+    starting.size <- step.size
+  } else {
+      ## interpolation when sample size is no more than total sample size
+      ## interpolate and set the size of sample for initial extrapolation
+      out <- preseqR.interpolate.mincount(step.size, n, k)
+      yield.estimates <- out[, 2]
+
+      ## starting sample size for extrapolation
+      starting.size <- ( as.integer(total.sample/step.size) + 1 )*step.size
+  }
+
+  if (is.null(max.extrapolation)) {
+    ## extrapolation 100 times if it is undefined; 100 is a magic number
+    max.extrapolation <- 100*total.sample
+  }
+
+  ## transform a histogram into a vector of frequencies
+  hist.count <- vector(length=max(n[, 1]), mode="numeric")
+  hist.count[n[, 1]] <- n[, 2]
+  ## only use non zeros items in histogram from begining up to the first zero
+  counts.before.first.zero = 1
+  while (as.integer(counts.before.first.zero) <= length(hist.count) &&
+         hist.count[counts.before.first.zero] != 0)
+    counts.before.first.zero <- counts.before.first.zero + 1
+
+  ## constrain the continued fraction approximation with even degree 
+  ## conservatively estimates
+  mt <- min(mt, counts.before.first.zero - 1)
+  mt <- mt - (mt %% 2)
+
+  ## pre-check to make sure the sample is good for prediction
+  if (mt < MIN_REQUIRED_TERMS)
+  {
+    m <- paste("max count before zero is les than min required count (4)",
+               " sample not sufficiently deep or duplicates removed", sep = ',')
+    write(m, stderr())
+    return(NULL)
+  }
+
+  ## adjust the format of count vector of the histogram in order to
+  ## call the c-encoded function
+  hist.count <- c(0, hist.count)
+
+  ## allocate spaces to store constructed continued fraction approximation
+  ## construct a continued fraction approximation with minimum degree
+  out <- .C('c_continued_fraction_estimate', as.double(hist.count), 
+            as.integer(length(hist.count)), as.integer(di), as.integer(mt),
+            ps.coeffs = as.double(vector(mode = 'numeric', length=MAXLENGTH)),
+            ps.coeffs.l = as.integer(0),
+            cf.coeffs = as.double(vector(mode = 'numeric', length=MAXLENGTH)),
+            cf.coeffs.l = as.integer(0),
+            offset.coeffs =as.double(vector(mode='numeric',length=MAXLENGTH)),
+            diagonal.idx = as.integer(0),
+            degree = as.integer(0),
+            is.valid = as.integer(0));
+
+  if (!out$is.valid)
+  {
+    return(NULL)
+  }
+
+  ## restore the hist.count into the R coded format
+  hist.count <- hist.count[-1]
+
+  ## pass results into R variables
+  length(out$ps.coeffs) <- out$ps.coeffs.l
+  length(out$cf.coeffs) <- out$cf.coeffs.l
+  length(out$offset.coeffs) <- as.integer(abs(out$diagonal.idx))
+  CF <- list(out$ps.coeffs, out$cf.coeffs, out$degree)
+  names(CF) <- c('ps.coeffs', 'cf.coeffs', 'degree')
+  class(CF) <- 'CF'
+
+  ## if the sample size is larger than max.extrapolation
+  ## stop extrapolation
+  ## MINOR.correction prevents machinary precision from biasing comparison
+  ## result
+  if (starting.size > (max.extrapolation + MINOR.correction))
+  {
+    index <- as.double(step.size) * (1:length(yield.estimates))
+    yield.estimates <- list(sample.size = index, yields = yield.estimates)
+    result <- list(continued.fraction = CF, yield.estimates = yield.estimates)
+    return(result)
+  }
+
+  ## extrapolation for experiment with large sample size
+  start <- starting.size / total.sample
+  end <- (max.extrapolation + MINOR.correction) / total.sample
+  step <- step.size / total.sample
+
+  ## construct a partial fraction for extrapolating
+  f <- mincount.f(CF, k)
+
+  ## extrapolating for the general accumulation curves
+	extrap <- f(seq(start, end, by=step)) + sum(n[, 2])
 
   ## combine results from interpolation/extrapolation
   yield.estimates <- c(yield.estimates, extrap)
