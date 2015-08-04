@@ -38,8 +38,8 @@ preseqR.simu.hist <- function(L=1e8, size, FUN) {
   nonzero.index <- which(hist.count != 0)
   nonzero <- hist.count[nonzero.index]
   hist <- matrix(c(nonzero.index, nonzero), ncol = 2)
-  colnames(hist) <- c("n", "n_j")
-  return(hist) 
+  colnames(n) <- c("n", "n_j")
+  return(n) 
 }
 
 ### simulating an interpolation curve
@@ -92,11 +92,11 @@ preseqR.simu.interpolate <- function(L=1e7, ss, max.size, k, FUN) {
 ### the underlining Gamma-Poisson distribution and the total number of distinct
 ### species. Truncated the frequency when it is smaller than one and all frequencies
 ### are the integeral parts of calculated expectations.
-simu.hist <- function(L, alpha, beta, n) {
+simu.hist <- function(L, alpha, beta, N) {
   ## coefficients of the constructed power series
   PS <- c()
   ## the ratio between the size of the sample to the expected size of an initial sample
-  t <- n / (L * alpha * beta)
+  t <- N / (L * alpha * beta)
   ## set a upperbound for the number of items in the power series
   mt <- 100
 
@@ -112,8 +112,8 @@ simu.hist <- function(L, alpha, beta, n) {
   }
   l <- length(PS)
   if (l > 0) {
-    hist <- matrix(c(1:l, PS), byrow=FALSE, ncol=2)
-    return(hist)
+    n <- matrix(c(1:l, PS), byrow=FALSE, ncol=2)
+    return(n)
   } else {
    return(NULL)
   }
