@@ -8,5 +8,7 @@ export(preseqR.ztnb.species.accum.curve)
 export(preseqR.interpolate.distinct)
 export(preseqR.nonreplace.sampling)
 export(preseqR.simu.hist)
+export(preseqR.interpolate.mincount)
+export(preseqR.pf.mincount)
 
 S3method(print, RFA)
