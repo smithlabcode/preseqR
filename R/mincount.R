@@ -715,6 +715,47 @@ preseqR.rfa.curve.derivSelect <- function(n, mt=100, ss=NULL,
 }
 
 
+generating.ps <- function(n, mt) {
+  ## transform a histogram into a vector of frequencies
+  hist.count <- vector(length=max(n[, 1]), mode="numeric")
+  hist.count[n[, 1]] <- n[, 2]
+  ## only use non zeros items in histogram from begining up to the first zero
+  counts.before.first.zero = 1
+  while (as.integer(counts.before.first.zero) <= length(hist.count) &&
+         hist.count[counts.before.first.zero] != 0)
+    counts.before.first.zero <- counts.before.first.zero + 1
+
+  ## for r > 1, the jth coefficient in the power series requires
+  ## n_{i} i = j, j + 1, ..., j + r - 1 itmes 
+  PS.coeffs <- mincount.ps(hist.count, r=1)
+
+  ## only use power series with non-zero coefficients
+  ## effective coefficients from begining up to the first zero
+  counts.before.first.zero = 1
+  while (as.integer(counts.before.first.zero) <= length(PS.coeffs) &&
+         PS.coeffs[counts.before.first.zero] != 0)
+    counts.before.first.zero <- counts.before.first.zero + 1
+
+  ## constrain the continued fraction approximation with even degree 
+  ## conservatively estimates
+  mt <- min(mt, counts.before.first.zero - 1)
+  mt <- mt - ((mt + 1) %% 2)
+
+  PS.coeffs <- PS.coeffs[ 1:mt ]
+  
+  ## power series of S_1(t)
+  PS.coeffs <- c(sum(n[, 2]), PS.coeffs)
+  ## write 1 / t as a power series of t - 1
+  PS.t <- vector(mode="numeric", length=mt + 1)
+  PS.t[seq(1, mt + 1, by=2)] <- 1
+  PS.t[seq(2, mt + 1, by=2)] <- -1
+
+  ## power series of the expression E(S_1(t)) / t
+  sapply(1:(mt + 1), function(x) {
+    PS.coeffs[1:x] %*% rev(PS.t[1:x])})
+}
+
+
 ## species accum curves basis on parital fraction expansion estimation
 ## Rational function approximation to E(S_1(t)) / t instead of E(S_1(t))
 preseqR.pf.mincount <- function(n, mt = 100, ss = NULL, 

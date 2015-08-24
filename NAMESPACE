@@ -1,4 +1,5 @@
 useDynLib(preseqR)
+import(polynom)
 export(preseqR.rfa.species.accum.curve)
 export(preseqR.rfa.curve)
 export(preseqR.rfa.estimate)
@@ -11,4 +12,4 @@ export(preseqR.simu.hist)
 export(preseqR.interpolate.mincount)
 export(preseqR.pf.mincount)
 
-S3method(print, RFA)
+S3method(print, CF)
