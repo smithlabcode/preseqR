@@ -898,13 +898,19 @@ preseqR.pf.mincount <- function(n, mt = 100, ss = NULL,
           Mod(roots) / Re(roots) / 2 <= as.double(max.extrapolation / total.sample)))) {
         next
       } else {
-        valid = TRUE
         poly.numer <- as.function(poly.from.roots(numer.roots))
         l <- length(denom.roots)
         ## treat polynomials in the rational function as monic
         ## the difference is a constant C
         coef <- sapply(1:l, function(x) {
           poly.numer(denom.roots[x]) / prod(denom.roots[x] - denom.roots[-x])})
+        ## check whether the estimator is non-decreased
+        deriv.f <- function(t) {
+          Re(sapply(t, function(x) {-(coef*denom.roots) %*% ( 1 / ((x-denom.roots)^2))}))} 
+        if (length(which( deriv.f(seq(0.05, as.double(max.extrapolation / total.sample), by=0.05)) < 0 ) != 0)) {
+          next
+        }
+        valid = TRUE
         ## calculate the constant C
         C <- coef(RF[[1]])[length(coef(RF[[1]]))] / 
              coef(RF[[2]])[length(coef(RF[[2]]))]
