@@ -906,7 +906,7 @@ preseqR.pf.mincount <- function(n, mt = 100, ss = NULL,
           poly.numer(denom.roots[x]) / prod(denom.roots[x] - denom.roots[-x])})
         ## check whether the estimator is non-decreased
         deriv.f <- function(t) {
-          Re(sapply(t, function(x) {-(coef*denom.roots) %*% ( 1 / ((x-denom.roots)^2))}))} 
+          Re(sapply(t, function(x) {-(coef*roots) %*% ( 1 / ((x-denom.roots)^2))}))} 
         if (length(which( deriv.f(seq(0.05, as.double(max.extrapolation / total.sample), by=0.05)) < 0 ) != 0)) {
           next
         }
