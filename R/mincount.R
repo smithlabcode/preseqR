@@ -583,7 +583,7 @@ mincount.f <- function(CF, k) {
   species.accum.curve.f <- function(t) {
     Re(sapply(t, function(x) {coef %*% ( (x+1)/(x-denom.roots) )^k})) * C
   }
-	return(function(x) { species.accum.curve.f(x - 1) })
+  return(function(x) { species.accum.curve.f(x - 1) })
 }
 
 
@@ -715,7 +715,7 @@ preseqR.rfa.curve.derivSelect <- function(n, mt=100, ss=NULL,
   f <- mincount.f(CF, k)
 
   ## extrapolating for the general accumulation curves
-	extrap <- f(seq(start, end, by=step)) + sum(n[, 2])
+  extrap <- f(seq(start, end, by=step)) + sum(n[, 2])
 
   ## combine results from interpolation/extrapolation
   yield.estimates <- c(yield.estimates, extrap)

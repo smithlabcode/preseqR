@@ -166,7 +166,7 @@ preseqR.nonreplace.sampling <- function(size, n)
   ## frequencies counts; frequency 0 excluded
   T <- hist(freq.counts, breaks=-1:max(freq.counts), plot=FALSE)$counts[-1]
   matrix(c(which(T != 0), T[which(T != 0)]), byrow = FALSE, ncol=2)
-}	
+}
 
 
 ### interpolate when the sample size is no more than the size of
@@ -287,9 +287,9 @@ preseqR.rfa.curve <- function(n, mt = 100, ss = NULL,
   mt <- min(mt, counts.before.first.zero - 1)
   if (asym.linear == TRUE && (mt %% 2 == 0)) {
     mt = mt - 1
-	} else {
+  } else {
     mt = mt - (mt %% 2)
-	}
+  }
 
   ## pre-check to make sure the sample is good for prediction
   if (mt < MIN_REQUIRED_TERMS)
