@@ -838,7 +838,7 @@ preseqR.pf.mincount <- function(n, mt = 100, ss = NULL,
   ## construct a continued fraction approximation starting from
   ## the maximum available degree
   valid = FALSE
-  DE = seq(mt, 4, by=-2)
+  DE = seq(mt, MIN_REQUIRED_TERMS, by=-2)
   for (de in DE) {
     ## continued fraction approximation to a power series
     out <- .C('c_PS2CF', as.integer(di), 
