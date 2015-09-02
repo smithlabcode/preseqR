@@ -491,12 +491,12 @@ print.CF <- function(x, digit = 4, ...)
   s <- paste(s, "DEGREE\t", toString(x$degree), "\n\n", sep = '')
 
   ## print the diagonal value
-##  s <- paste(s, "DIAGONAL VALUE\t", toString(x$diagonal.idx), "\n\n", sep = '')
+  ## s <- paste(s, "DIAGONAL VALUE\t", toString(x$diagonal.idx), "\n\n", sep = '')
 
   ## print the coefficients depending on the value of diagonal value
   s <- paste(s, "COEFFICIENTS:\n\n", sep = '')
 
-##  di <- abs(x$diagonal.idx)
+  ##  di <- abs(x$diagonal.idx)
   di <- 0
     
   ## the function to print a coefficient
