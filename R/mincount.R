@@ -2,7 +2,7 @@
 PRECISION = 1e-3
 
 ### calculate the coefficients of the power series with freq >= r given the
-### two-column matrix of a histogram
+### vector of count frequencies
 mincount.ps <- function(hist.count, r) {
   max.freq <- length(hist.count)
   res <- vector(length = max.freq, mode = 'numeric')
@@ -24,6 +24,8 @@ mincount.ps <- function(hist.count, r) {
 }
 
 ### minimum count interpolation
+## ss step size
+## n two-column histogram
 preseqR.interpolate.mincount <- function(ss, n, r=1)
 {
   checking.hist(n)
@@ -73,7 +75,8 @@ preseqR.interpolate.mincount <- function(ss, n, r=1)
 
 
 ### convert a continued fraction to a rational function
-### the form of the continued fraction refers to the preseq supplementary
+### The form of the continued fraction refers to the Supplementary of 
+### Daley, T., & Smith, A. D.(2013)
 CF2RFA <- function(CF)
 {
   poly.numer <- polynomial(1)
@@ -113,6 +116,11 @@ deriv.CF <- function(CF, k = 0)
 ## species accumu curve with minimum count r
 ## by RFA to a generalized Good-Toulmin power series
 ## RFA is based on roots selection
+## n two-column histogram
+## ss step size
+## maximum terms used
+## minimum count r
+### CHAO: old method
 preseqR.rfa.mincount <- function(n, mt = 50, ss = NULL,
                                  max.extrapolation = NULL, r=1)
 {
@@ -201,6 +209,7 @@ preseqR.rfa.mincount <- function(n, mt = 50, ss = NULL,
   valid = FALSE
   DE = seq(mt, 4, by=-2)
   for (de in DE) {
+    ## continued fraction approximation to a power series
     out <- .C('c_PS2CF', as.integer(di), 
               as.integer(de), as.double(PS.coeffs[1:de]), 
               as.integer(length(PS.coeffs[1:de])),
@@ -268,6 +277,7 @@ preseqR.rfa.mincount <- function(n, mt = 50, ss = NULL,
              coef(RF[[2]])[length(coef(RF[[2]]))]
         ## species accum curves with minimum count r
         ## using parital fraction expansion
+        ## f is the function in terms of (t - 1)
         f <- function(t) { 
           sapply(t, function(x) {poly.numer(x) / poly.denom(x)}) * C}
         mincount.accum.curve.f <- function(x) {f(x - 1)}
@@ -315,8 +325,10 @@ preseqR.rfa.mincount <- function(n, mt = 50, ss = NULL,
 
 ## species accum curves basis on parital fraction expansion estimation
 ## Rational function approximation to E(S_1(t))
+## the function contains a constant c_0
+### CHAO: old method
 preseqR.pf.mincount.c0 <- function(n, mt = 100, ss = NULL, 
-                                max.extrapolation = NULL, r=1)
+                                   max.extrapolation = NULL, r=1)
 {
   checking.hist(n)
   ## setting the diagonal value
@@ -520,14 +532,10 @@ preseqR.pf.mincount.c0 <- function(n, mt = 100, ss = NULL,
 }
 
 
-################################################################################
-### species accumulation curves basis on RFA that satisfies the first and 
-### second derivative requirement
-
-
-## funcion of species accum curves with minimum count k basis on a rational
-## function approximation 
-## CF is the ratinla function approximation with continued fraction representation
+## funcion of species accum curves with minimum count k based on a rational
+## function approximation to \E(S_1(t))
+## CF is the RFA with continued fraction representation
+### CHAO: old method
 mincount.f <- function(CF, k) {
   RF <- CF2RFA(CF)
   numer.roots <- solve(RF[[1]])
@@ -575,7 +583,8 @@ mincount.f <- function(CF, k) {
 
 ### species accumulation curve with minimum count k basis on partial fraction
 ### decomposition; 
-### the initial RFA satisfies f' > 0 and f'' < 0
+### restrict RFA to be f' > 0 and f'' < 0
+### CHAO: old method
 preseqR.rfa.curve.derivSelect <- function(n, mt=100, ss=NULL, 
                                           max.extrapolation=NULL, k=1)
 {
@@ -715,51 +724,36 @@ preseqR.rfa.curve.derivSelect <- function(n, mt=100, ss=NULL,
 }
 
 
+### calculate the power series of E(S_1(t)) / t at t = 1
 generating.ps <- function(n, mt) {
   ## transform a histogram into a vector of frequencies
   hist.count <- vector(length=max(n[, 1]), mode="numeric")
   hist.count[n[, 1]] <- n[, 2]
-  ## only use non zeros items in histogram from begining up to the first zero
-  counts.before.first.zero = 1
-  while (as.integer(counts.before.first.zero) <= length(hist.count) &&
-         hist.count[counts.before.first.zero] != 0)
-    counts.before.first.zero <- counts.before.first.zero + 1
 
-  ## for r > 1, the jth coefficient in the power series requires
-  ## n_{i} i = j, j + 1, ..., j + r - 1 itmes 
-  PS.coeffs <- mincount.ps(hist.count, r=1)
-
-  ## only use power series with non-zero coefficients
-  ## effective coefficients from begining up to the first zero
-  counts.before.first.zero = 1
-  while (as.integer(counts.before.first.zero) <= length(PS.coeffs) &&
-         PS.coeffs[counts.before.first.zero] != 0)
-    counts.before.first.zero <- counts.before.first.zero + 1
+  PS.coeffs <- sum(n[, 2])
+  change.sign = 0
+  for (i in hist.count) {
+    if (i != 0) {
+      PS.coeffs <- c(PS.coeffs, (-1)^change.sign * i - PS.coeffs[length(PS.coeffs)])
+      change.sign = change.sign + 1
+    } else {
+      break
+    }
+  }
 
   ## constrain the continued fraction approximation with even degree 
   ## conservatively estimates
-  mt <- min(mt, counts.before.first.zero - 1)
-  mt <- mt - ((mt + 1) %% 2)
+  mt <- min(mt, length(PS.coeffs))
+  mt <- mt - (mt %% 2)
 
-  PS.coeffs <- PS.coeffs[ 1:mt ]
-  
-  ## power series of S_1(t)
-  PS.coeffs <- c(sum(n[, 2]), PS.coeffs)
-  ## write 1 / t as a power series of t - 1
-  PS.t <- vector(mode="numeric", length=mt + 1)
-  PS.t[seq(1, mt + 1, by=2)] <- 1
-  PS.t[seq(2, mt + 1, by=2)] <- -1
-
-  ## power series of the expression E(S_1(t)) / t
-  sapply(1:(mt + 1), function(x) {
-    PS.coeffs[1:x] %*% rev(PS.t[1:x])})
+  PS.coeffs[ 1:mt ]
 }
-
 
 ## species accum curves basis on parital fraction expansion estimation
 ## Rational function approximation to E(S_1(t)) / t instead of E(S_1(t))
+### CHAO: the main function
 preseqR.pf.mincount <- function(n, mt = 100, ss = NULL, 
-                                     max.extrapolation = NULL, r=1)
+                                max.extrapolation = NULL, r=1)
 {
   checking.hist(n)
   ## setting the diagonal value
@@ -959,4 +953,3 @@ preseqR.pf.mincount <- function(n, mt = 100, ss = NULL,
   result <- list(continued.fraction = CF, estimates = yield.estimates)
   return(result)
 }
-
