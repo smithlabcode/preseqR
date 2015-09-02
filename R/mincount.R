@@ -820,7 +820,7 @@ preseqR.pf.mincount <- function(n, mt = 100, ss = NULL,
   }
 
   ## constrain the continued fraction approximation with even degree 
-  ## asymptotically ~ 1 / t
+  ## asymptotically ~ C / t
   mt <- min(mt, length(PS.coeffs))
   mt <- mt - (mt %% 2)
 
@@ -1032,7 +1032,7 @@ general.preseqR.pf.mincount <- function(n, mt = 100, ss = NULL,
   }
 
   ## constrain the continued fraction approximation with even degree 
-  ## asymptotically ~ 1 / t
+  ## asymptotically ~ C / t
   mt <- min(mt, length(PS.coeffs))
   mt <- mt - (mt %% 2)
 
