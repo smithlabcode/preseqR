@@ -2,9 +2,10 @@
 PRECISION = 1e-3
 
 
-### minimum count interpolation
+### interpolating for species accumulation curve with minimum count
 ### ss step size
 ### n two-column histogram
+### r minimum count
 preseqR.interpolate.mincount <- function(ss, n, r=1)
 {
   checking.hist(n)
@@ -17,7 +18,7 @@ preseqR.interpolate.mincount <- function(ss, n, r=1)
   initial.distinct <- sum(n[, 2])
   step.size <- as.double(ss)
 
-  ## l is the number of points for interpolation
+  ## l is the number of sampled points for interpolation
   l <- as.integer(N / step.size)
 
   r <- floor(r)
@@ -26,7 +27,7 @@ preseqR.interpolate.mincount <- function(ss, n, r=1)
   if (l == 0 || ss < 1 || r < 1)
     return()
 
-  ## explicitly calculating the expectation species observed at least r times
+  ## explicitly calculating the expected species observed at least r times
   ## based on sampling without replacement
   ## see K.L Heck 1975
   ## N total individuals
@@ -39,12 +40,12 @@ preseqR.interpolate.mincount <- function(ss, n, r=1)
     return(S - p %*% n[, 2])
   }
 
-  ## sample size vector
+  ## sample sizes
   x <- step.size * ( 1:l )
 
   ## calculate the number of distinct reads based on each sample size
-  yield.estimates <- sapply(x, function(x) expect.distinct(n, N, x, 
-                            initial.distinct, r))
+  yield.estimates <- sapply(x, function(x) {
+      expect.distinct(n, N, x, initial.distinct, r)})
 
   ## put size and yield together into a matrix
   result <- matrix(c(x, yield.estimates), ncol = 2, byrow = FALSE)
@@ -55,9 +56,8 @@ preseqR.interpolate.mincount <- function(ss, n, r=1)
 
 
 ### convert a continued fraction to a rational function
-### The form of the continued fraction refers to the Supplementary of 
-### Daley, T., & Smith, A. D.(2013)
 ### the form of continued fractions e.g. a_0(t - 1) / (1 + a_1(t - 1))
+### see the Supplementary of Daley, T., & Smith, A. D.(2013)
 CF2RFA <- function(CF)
 {
   poly.numer <- polynomial(1)
@@ -70,14 +70,14 @@ CF2RFA <- function(CF)
   }
   ## according to the representation of the continued fraction
   ## the first item is a_0x/... not 1 + a_0x/...
-  ## thus we need to substract one from the result
+  ## substract one from the result
   poly.numer <- poly.numer - poly.denom
   polylist(poly.numer, poly.denom)
 }
 
 
-### constructing power series based on count frequencies starting from frequency
-### j when j = 1, it is the power series expansion of E(S_1(t)) / t at t = 1
+### power series based on count frequencies starting from frequency j
+### when j = 1, it is the power series expansion of E(S_1(t)) / t at t = 1
 generating.ps <- function(n, j) {
   ## transform a histogram into a vector of frequencies
   hist.count <- vector(length=max(n[, 1]), mode="numeric")
@@ -108,13 +108,13 @@ generating.ps <- function(n, j) {
 }
 
 
-### species accum curves based on parital fraction expansion estimation
+### species accum curves based on parital fraction expansion of
 ### rational function approximation to E(S_1(t)) / t
 ### CHAO: the main function
 preseqR.pf.mincount <- function(n, mt = 100, ss = NULL, 
                                 max.extrapolation = NULL, r=1)
 {
-  # make sure the format of the histogram
+  # check the input format of the histogram
   checking.hist(n)
   ## setting the diagonal value
   di = 0
@@ -137,7 +137,7 @@ preseqR.pf.mincount <- function(n, mt = 100, ss = NULL,
     step.size <- floor(ss)
   }
 
-  ## no interpolation if step.size is larger than the size of experiment
+  ## no interpolation if step.size is larger than the size of the iniital experiment
   ## set the starting sample size as the step.size
   if (step.size > total.sample) {
     yield.estimates <- vector(mode = 'numeric', length = 0)
@@ -167,7 +167,7 @@ preseqR.pf.mincount <- function(n, mt = 100, ss = NULL,
     return(NULL)
   }
 
-  ## constrain the continued fraction approximation with even degree 
+  ## constrain the continued fraction approximation with even terms
   ## asymptotically ~ C / t
   mt <- min(mt, length(PS.coeffs))
   mt <- mt - (mt %% 2)
@@ -210,9 +210,9 @@ preseqR.pf.mincount <- function(n, mt = 100, ss = NULL,
                      'degree')
       class(CF) <- 'CF'
 
-      ## convert the continued fraction to the RFA
+      ## convert the continued fraction to the RFA and be compatible with 
+      ## the constructed continued fraction in C extension
       RF <- CF2RFA(CF)
-      ## to be compatible with the constructed continued fraction in C extension
       RF[[1]] <- RF[[1]] / polynomial(c(0, 1))
 
       ## solving roots
@@ -254,7 +254,7 @@ preseqR.pf.mincount <- function(n, mt = 100, ss = NULL,
       roots <- denom.roots + 1
       ## assume 1 <= t <= max range
       ## max.range = max.extrapolation / total.sample
-      ## pacman rule
+      ## pacman rule checking
       if (length(which(roots == 0)) || length(which(Re(roots) > 0 & 
           Mod(roots) / Re(roots) / 2 <= as.double(max.extrapolation / total.sample)))) {
         next
@@ -263,6 +263,8 @@ preseqR.pf.mincount <- function(n, mt = 100, ss = NULL,
         l <- length(denom.roots)
         ## treat polynomials in the rational function to be monic
         ## the difference to the original RFA is a multiplier C
+
+        ## c_i in the estimator
         coef <- sapply(1:l, function(x) {
           poly.numer(denom.roots[x]) / prod(denom.roots[x] - denom.roots[-x])})
         ## check whether the estimator is non-decreased
@@ -271,6 +273,7 @@ preseqR.pf.mincount <- function(n, mt = 100, ss = NULL,
         if (length(which( deriv.f(seq(0.05, as.double(max.extrapolation / total.sample), by=0.05)) < 0 ) != 0)) {
           next
         }
+        ## the estimator passes the requirement
         valid = TRUE
         ## calculate the constant C
         C <- coef(RF[[1]])[length(coef(RF[[1]]))] / 
@@ -280,6 +283,7 @@ preseqR.pf.mincount <- function(n, mt = 100, ss = NULL,
         ## f is actually a function of "t - 1"
         f <- function(t) { 
           Re(sapply(t, function(x) {coef %*% ( (x+1)/(x-denom.roots) )^r})) * C}
+        ## convert to a function of t 
         mincount.accum.curve.f <- function(x) {f(x - 1)}
         break
       }
@@ -319,19 +323,22 @@ preseqR.pf.mincount <- function(n, mt = 100, ss = NULL,
   yield.estimates <- matrix(c(index, yield.estimates), ncol = 2, byrow = FALSE)
   colnames(yield.estimates) <- c('sample.size', 'yield.estimate')
 
-  result <- list(continued.fraction = CF, estimates = yield.estimates)
+  result <- list(estimator=mincount.accum.curve.f, estimates=yield.estimates)
   return(result)
 }
 
 
 ## species accum curves based on parital fraction expansion
+## the function is used whenever count frequency 1 is unavaible or the sample
+## size is saturated
 ## using count frequencies starting from a given count frequency instead of 1
-## CHAO: currently maybe not interested 
+## when start.freq = 1, it is identical to the function preseqR.pf.mincount
+## CHAO: save for a rainy day
 general.preseqR.pf.mincount <- function(n, mt = 100, ss = NULL, 
                                         max.extrapolation = NULL, 
                                         r=1, start.freq=1)
 {
-  # make sure the format of the histogram
+  # check the input format of the histogram
   checking.hist(n)
   ## setting the diagonal value
   di = 0
@@ -354,8 +361,7 @@ general.preseqR.pf.mincount <- function(n, mt = 100, ss = NULL,
     step.size <- floor(ss)
   }
 
-  ## no interpolation if step.size is larger than the size of experiment
-  ## set the starting sample size as the step.size
+  ## no interpolation if step.size is larger than the size of the initial experiment
   if (step.size > total.sample) {
     yield.estimates <- vector(mode = 'numeric', length = 0)
 
@@ -376,6 +382,7 @@ general.preseqR.pf.mincount <- function(n, mt = 100, ss = NULL,
     max.extrapolation <- 100*total.sample
   }
 
+  ## power series for approximation 
   PS.coeffs <- generating.ps(n, start.freq)
 
   if (is.null(PS.coeffs)) {
@@ -398,9 +405,9 @@ general.preseqR.pf.mincount <- function(n, mt = 100, ss = NULL,
     return(NULL)
   }
 
-  ## construct a continued fraction approximation with 
-  ## maximum available degree
+  ## indicator for existing an estimator satisfying the requirement
   valid = FALSE
+  ## using as many terms as possible
   DE = seq(mt, MIN_REQUIRED_TERMS, by=-2)
   for (de in DE) {
     ## continued fraction approximation to a power series
@@ -426,9 +433,9 @@ general.preseqR.pf.mincount <- function(n, mt = 100, ss = NULL,
                      'degree')
       class(CF) <- 'CF'
 
-      ## convert the continued fraction to the RFA
+      ## convert the continued fraction to the RFA and be compatible with
+      ## the constructed continued fraction in C extension
       RF <- CF2RFA(CF)
-      ## to be compatible with the constructed continued fraction in C extension
       RF[[1]] <- RF[[1]] / polynomial(c(0, 1))
 
       ## solving roots
@@ -445,8 +452,8 @@ general.preseqR.pf.mincount <- function(n, mt = 100, ss = NULL,
       tmp.roots <- c()
 
       ## simplify the rational function approximation
-      ## two roots are same if the difference is less than the 
-      ## predefined PRECISION
+      ## two roots are considered to be identical if the difference is less than
+      ## the predefined PRECISION
       if (length(numer.roots.pos) > 0) {
         for (i in 1:length(numer.roots.pos)) {
           if (length(denom.roots.pos) > 0) {
@@ -466,11 +473,11 @@ general.preseqR.pf.mincount <- function(n, mt = 100, ss = NULL,
       numer.roots <- numer.roots[!numer.roots %in% tmp.roots]
       denom.roots <- c(denom.roots.neg, denom.roots.pos)
 
-      ## convert roots from t - 1 to t for checking
+      ## convert roots from t - 1 to t for applying pacman rule
       roots <- denom.roots + 1
       ## assume 1 <= t <= max range
       ## max.range = max.extrapolation / total.sample
-      ## pacman rule
+      ## pacman rule checking
       if (length(which(roots == 0)) || length(which(Re(roots) > 0 & 
           Mod(roots) / Re(roots) / 2 <= as.double(max.extrapolation / total.sample)))) {
         next
@@ -479,6 +486,8 @@ general.preseqR.pf.mincount <- function(n, mt = 100, ss = NULL,
         l <- length(denom.roots)
         ## treat polynomials in the rational function to be monic
         ## the difference to the original RFA is a multiplier C
+
+        ## c_i in the estimator
         coef <- sapply(1:l, function(x) {
           poly.numer(denom.roots[x]) / prod(denom.roots[x] - denom.roots[-x])})
 
@@ -491,8 +500,9 @@ general.preseqR.pf.mincount <- function(n, mt = 100, ss = NULL,
         if (length(which( deriv.f(seq(0.05, as.double(max.extrapolation / total.sample), by=0.05)) < 0 ) != 0)) {
           next
         }
+        ## the estimator satisfies the requirement
         valid = TRUE
-        ## calculate the constant C
+        ## the multiplier C
         C <- coef(RF[[1]])[length(coef(RF[[1]]))] / 
              coef(RF[[2]])[length(coef(RF[[2]]))]
         ## species accum curves with minimum count r
@@ -540,6 +550,6 @@ general.preseqR.pf.mincount <- function(n, mt = 100, ss = NULL,
   yield.estimates <- matrix(c(index, yield.estimates), ncol = 2, byrow = FALSE)
   colnames(yield.estimates) <- c('sample.size', 'yield.estimate')
 
-  result <- list(continued.fraction = CF, estimates = yield.estimates)
+  result <- list(estimator=mincount.accum.curve.f, estimates=yield.estimates)
   return(result)
 }
