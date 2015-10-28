@@ -285,6 +285,7 @@ preseqR.pf.mincount <- function(n, mt = 100, ss = NULL,
           Re(sapply(t, function(x) {coef %*% ( (x+1)/(x-denom.roots) )^r})) * C}
         ## convert to a function of t 
         mincount.accum.curve.f <- function(x) {f(x - 1)}
+        mincount.f.elements <- list(coef*C, denom.roots + 1)
         break
       }
     }
@@ -552,4 +553,233 @@ general.preseqR.pf.mincount <- function(n, mt = 100, ss = NULL,
 
   result <- list(estimator=mincount.accum.curve.f, estimates=yield.estimates)
   return(result)
+}
+
+
+
+
+### species accum curves based on parital fraction expansion of
+### rational function approximation to E(S_1(t)) / t
+### CHAO: the main function
+preseqR.pf.mincount.tmp <- function(n, mt = 100, ss = NULL, 
+                                max.extrapolation = NULL, r=1)
+{
+  # check the input format of the histogram
+  checking.hist(n)
+  ## setting the diagonal value
+  di = 0
+  ## minimum required number of terms of power series in order to construct
+  ## a continued fraction approximation
+  MIN_REQUIRED_TERMS <- 4
+
+  ## total individuals
+  total.sample <- n[, 1] %*% n[, 2]
+  total.sample <- floor(total.sample)
+
+  ## set step.size as the size of the initial experiment if it is undefined
+  if (is.null(ss)) {
+    ss <- floor(total.sample)
+    step.size <- ss
+  } else if (ss < 1) {
+    write("The step size is too small", stderr())
+    return()
+  } else {
+    step.size <- floor(ss)
+  }
+
+  ## no interpolation if step.size is larger than the size of the iniital experiment
+  ## set the starting sample size as the step.size
+  if (step.size > total.sample) {
+    yield.estimates <- NULL
+
+    ## starting sample size for extrapolation
+    starting.size <- step.size
+  } else {
+      ## interpolating when sample size is no more than total sample size
+      ## and setting the size of the sample for an initial extrapolation
+      yield.estimates <- lapply(r, function(x) {preseqR.interpolate.mincount(step.size, n, x)})
+
+      ## starting sample size for extrapolation
+      starting.size <- ( floor(total.sample/step.size) + 1 )*step.size
+  }
+
+  if (is.null(max.extrapolation)) {
+    ## extrapolation 100 times if it is undefined; 100 is a magic number
+    max.extrapolation <- 100*total.sample
+  }
+
+  ## constructing the power series
+  PS.coeffs <- generating.ps(n, 1)
+
+  if (is.null(PS.coeffs)) {
+    write("the size of the initial experiment is insufficient", stderr())
+    return(NULL)
+  }
+
+  ## constrain the continued fraction approximation with even terms
+  ## asymptotically ~ C / t
+  mt <- min(mt, length(PS.coeffs))
+  mt <- mt - (mt %% 2)
+  PS.coeffs <- PS.coeffs[ 1:mt ]
+
+  ## check whether sample size is sufficient
+  if (mt < MIN_REQUIRED_TERMS)
+  {
+    m <- paste("max count before zero is les than min required count (4)",
+               " sample not sufficiently deep or duplicates removed", sep = ',')
+    write(m, stderr())
+    return(NULL)
+  }
+
+  ## construct a continued fraction approximation including as many as possible
+  ## terms
+  valid = FALSE
+  DE = seq(mt, MIN_REQUIRED_TERMS, by=-2)
+  for (de in DE) {
+    ## continued fraction approximation to a power series
+    out <- .C('c_PS2CF', as.integer(di), 
+              as.integer(de), as.double(PS.coeffs[1:de]), 
+              as.integer(length(PS.coeffs[1:de])),
+              ps.coeffs = as.double(vector(mode = 'numeric', length=MAXLENGTH)),
+              ps.coeffs.l = as.integer(0),
+              cf.coeffs = as.double(vector(mode = 'numeric', length=MAXLENGTH)),
+              cf.coeffs.l = as.integer(0),
+              offset.coeffs =as.double(vector(mode='numeric',length=MAXLENGTH)),
+              diagonal.idx = as.integer(0),
+              degree = as.integer(0), is.valid = as.integer(0));
+
+    if (out$is.valid) {
+      ## pass results into R variables
+      length(out$ps.coeffs) <- out$ps.coeffs.l
+      length(out$cf.coeffs) <- out$cf.coeffs.l
+      length(out$offset.coeffs) <- as.integer(abs(out$diagonal.idx))
+      CF <- list(out$ps.coeffs, out$cf.coeffs, out$offset.coeffs, 
+                 out$diagonal.idx, out$degree)
+      names(CF) <- c('ps.coeffs', 'cf.coeffs', 'offset.coeffs', 'diagonal.idx',
+                     'degree')
+      class(CF) <- 'CF'
+
+      ## convert the continued fraction to the RFA and be compatible with 
+      ## the constructed continued fraction in C extension
+      RF <- CF2RFA(CF)
+      RF[[1]] <- RF[[1]] / polynomial(c(0, 1))
+
+      ## solving roots
+      numer.roots <- solve(RF[[1]])
+      denom.roots <- solve(RF[[2]])
+      ## seperating roots by their real parts
+      numer.roots.neg <- numer.roots[which(Re(numer.roots) < 0)]
+      numer.roots.pos <- numer.roots[which(Re(numer.roots) >= 0)]
+      denom.roots.neg <- denom.roots[which(Re(denom.roots) < 0)]
+      denom.roots.pos <- denom.roots[which(Re(denom.roots) >= 0)]
+
+      ## record roots in the numerator that are significantly similar to
+      ## roots in the denominator
+      tmp.roots <- c()
+
+      ## simplify the rational function approximation
+      ## two roots are same if the difference is less than the 
+      ## predefined PRECISION
+      if (length(numer.roots.pos) > 0) {
+        for (i in 1:length(numer.roots.pos)) {
+          if (length(denom.roots.pos) > 0) {
+            d <- Mod(denom.roots.pos - numer.roots.pos[i])
+            for (j in 1:length(d)) {
+              if (d[j] < PRECISION) {
+                denom.roots.pos <- denom.roots.pos[-j]
+                tmp.roots <- c(tmp.roots, numer.roots.pos[i])
+                break
+              }
+            }
+          }
+        }
+      }
+
+      ## roots in simplified RFA
+      numer.roots <- numer.roots[!numer.roots %in% tmp.roots]
+      denom.roots <- c(denom.roots.neg, denom.roots.pos)
+
+      ## convert roots from t - 1 to t
+      roots <- denom.roots + 1
+      ## max.range = max.extrapolation / total.sample
+      ## pacman rule checking
+      if (length(which(roots == 0)) || length(which(Re(roots) > 0))) {
+        next
+      } else {
+        poly.numer <- as.function(poly.from.roots(numer.roots))
+        l <- length(denom.roots)
+        ## treat polynomials in the rational function to be monic
+        ## the difference to the original RFA is a multiplier C
+
+        ## c_i in the estimator
+        coef <- sapply(1:l, function(x) {
+          poly.numer(denom.roots[x]) / prod(denom.roots[x] - denom.roots[-x])})
+        ## check whether the estimator is non-decreased
+        deriv.f <- function(t) {
+          Re(sapply(t, function(x) {-(coef*roots) %*% ( 1 / ((x-denom.roots)^2))}))} 
+        if (length(which( deriv.f(seq(0.05, as.double(max.extrapolation / total.sample), by=0.05)) < 0 ) != 0)) {
+          next
+        }
+        ## the estimator passes the requirement
+        valid = TRUE
+        ## calculate the constant C
+        C <- coef(RF[[1]])[length(coef(RF[[1]]))] / 
+             coef(RF[[2]])[length(coef(RF[[2]]))]
+        ## species accum curves with minimum count r
+        ## using parital fraction expansion
+        denom.roots <- denom.roots + 1
+        coef <- coef * C
+        mincount.f.elements <- list(coef, denom.roots)
+        mincount.accum.curve.f <- lapply(r, function(x) {
+            function(t) { Re(sapply(t, function(y) {coef %*% ( y / (y-denom.roots) )^x}))}})
+        break
+      }
+    }
+  }
+
+
+  ## if the sample size is larger than max.extrapolation
+  ## stop extrapolation
+  ## MINOR.correction prevents machinary precision from biasing comparison
+  ## result
+  if (starting.size > (max.extrapolation + MINOR.correction))
+  {
+    if (length(yield.estimates) == 0) {
+      return(NULL)
+    } else {
+      l <- 1:length(r)
+      result <- lapply(l, function(x) {
+          estimates <- yield.estimates[[x]]
+          colnames(estimates) <- c("sample.size", paste("yield.estimates(r=", r[x], ")", sep=""))
+          })
+      return(result)
+    }
+  }
+
+  ## valid is true if existing a RFA that satisfies pacman rule
+  if (valid == FALSE) {
+    return(NULL)
+  }
+
+  ## extrapolation for experiment with large sample size
+  start <- starting.size / total.sample
+  end <- (max.extrapolation + MINOR.correction) / total.sample
+  step <- step.size / total.sample
+
+  ## extrapolating for the general accumulation curves
+  l = 1:length(r)
+  extrap <- lapply(l, function(x) {
+      mincount.accum.curve.f[[x]](seq(start, end, by=step))})
+
+  result <- lapply(l, function(x) {
+      ## combine results from interpolation and extrapolation
+      estimates <- c(yield.estimates[[x]], extrap[[x]])
+      index <- as.double(step.size) * (1: length(extrap[[x]]))
+      ## put index and estimated yields together into a two-colunm matrix
+      estimates <- matrix(c(index, estimates), ncol = 2, byrow = FALSE)
+      colnames(estimates) <- c("sample.size", paste("yield.estimates(r=", r[x], ")", sep=""))
+      estimates
+      })
+
+  list(PF.elements=mincount.f.elements, yield.estimates=result)
 }
