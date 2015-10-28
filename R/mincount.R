@@ -26,6 +26,12 @@ preseqR.interpolate.mincount <- function(ss, n, r=1)
   ## the step size is too small, return NULL
   if (l == 0 || ss < 1 || r < 1)
     return()
+  ## if the sample size is the size of the experiment
+  ## count the number of species observed r or more times
+  else if (l == 1) {
+    index = which(n[, 1] >= r)
+    return(sum(n[index, 2]))
+  }
 
   ## explicitly calculating the expected species observed at least r times
   ## based on sampling without replacement
@@ -323,8 +329,8 @@ preseqR.pf.mincount <- function(n, mt = 100, ss = NULL,
 
   result <- lapply(l, function(x) {
       ## combine results from interpolation and extrapolation
-      estimates <- c(yield.estimates[[x]], extrap[[x]])
-      index <- as.double(step.size) * (1: length(extrap[[x]]))
+      estimates <- c(yield.estimates[[x]][, 2], extrap[[x]])
+      index <- as.double(step.size) * (1: length(estimates))
       ## put index and estimated yields together into a two-colunm matrix
       estimates <- matrix(c(index, estimates), ncol = 2, byrow = FALSE)
       colnames(estimates) <- c("sample.size", paste("yield.estimates(r=", r[x], ")", sep=""))
@@ -560,4 +566,3 @@ general.preseqR.pf.mincount <- function(n, mt = 100, ss = NULL,
   result <- list(estimator=mincount.accum.curve.f, estimates=yield.estimates)
   return(result)
 }
-
