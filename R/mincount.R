@@ -30,7 +30,9 @@ preseqR.interpolate.mincount <- function(ss, n, r=1)
   ## count the number of species observed r or more times
   else if (l == 1) {
     index = which(n[, 1] >= r)
-    return(sum(n[index, 2]))
+    result <- matrix(c(step.size, sum(n[index, 2])), ncol = 2, byrow = FALSE)
+    colnames(result) <- c('sample.size', 'interpolation')
+    return(result)
   }
 
   ## explicitly calculating the expected species observed at least r times
