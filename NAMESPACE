@@ -12,5 +12,6 @@ export(preseqR.simu.hist)
 export(preseqR.interpolate.mincount)
 export(preseqR.pf.mincount)
 export(general.preseqR.pf.mincount)
+export(preseqR.pf.mincount.bootstrap)
 
 S3method(print, CF)

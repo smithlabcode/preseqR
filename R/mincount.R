@@ -109,7 +109,7 @@ generating.ps <- function(n, j) {
   ## truncate at coefficients where it is zero
   zero.index = which(PS.coeffs == 0)
   if (length(zero.index) > 0) {
-    PS.coeffs[1:(zero.index - 1)]
+    PS.coeffs[1:(min(zero.index) - 1)]
   } else {
     PS.coeffs
   }
@@ -567,4 +567,130 @@ general.preseqR.pf.mincount <- function(n, mt = 100, ss = NULL,
 
   result <- list(estimator=mincount.accum.curve.f, estimates=yield.estimates)
   return(result)
+}
+
+
+
+### species accum curves based on parital fraction expansion of
+### rational function approximation to E(S_1(t)) / t
+### CHAO: the main function
+preseqR.pf.mincount.bootstrap <- function(n, bootstrap.times = 100, mt = 100,
+                                          ss = NULL, max.extrapolation = NULL, 
+                                          conf = 0.95, r=1)
+{
+  # check the input format of the histogram
+  checking.hist(n)
+  ## setting the diagonal value
+  di = 0
+  ## minimum required number of terms of power series in order to construct
+  ## a continued fraction approximation
+  MIN_REQUIRED_TERMS <- 4
+
+  ## total individuals
+  total.sample <- n[, 1] %*% n[, 2]
+  total.sample <- floor(total.sample)
+
+  ## set step.size as the size of the initial experiment if it is undefined
+  if (is.null(ss)) {
+    ss <- floor(total.sample)
+    step.size <- ss
+  } else if (ss < 1) {
+    write("The step size is too small", stderr())
+    return()
+  } else {
+    step.size <- floor(ss)
+  }
+
+  if (is.null(max.extrapolation)) {
+    ## extrapolation 100 times if it is undefined; 100 is a magic number
+    max.extrapolation <- 100*total.sample
+  }
+  
+  ## record second columns of resampled histograms                                  
+  re.hist.second.col <- matrix(data = 0, nrow = length(n[, 1]),
+  ncol = MULTINOMIAL.SAMPLE.TIMES) 
+
+  ## the number of resampling times                                                 
+  counter <- 0
+
+  ## upperbound of times of iterations for bootstrapping
+  upper.limit <- bootstrap.times/BOOTSTRAP.factor
+
+  yield.estimates <- array(list(NULL), length(r))
+
+  f <- function(x)
+  {
+    ## combine nonzero.index column and the second column to build a histogram
+    ## table
+    hist.table <- matrix(c(n[, 1], x), ncol = 2, byrow = FALSE)
+    preseqR.pf.mincount(hist.table, mt=mt, ss=step.size, 
+        max.extrapolation=max.extrapolation, r=r)
+  }
+
+  while (bootstrap.times > 0) {
+    ## do sampling with replacement
+    ## re.hist.second.col saves the second columns of each resampled histogram
+    re.hist.second.col <- rmultinom(MULTINOMIAL.SAMPLE.TIMES, sum(n[, 2]), n[, 2])
+
+    ## estimate for each histogram
+    out <- apply(re.hist.second.col, 2, f)
+
+    ## eliminate NULL items in results
+    out[sapply(out, is.null)] <- NULL
+    ## extract yields estimation from each estimation result.
+    yields <- lapply(out, function(x) x$yield.estimates)
+
+    if ( !is.null( length(yields) ) )
+    {
+      ## update sampling status
+      success.times <- length(yields)
+      bootstrap.times <- bootstrap.times - success.times
+      for (i in 1:length(r)) {
+        for (j in 1:length(yields)) {
+          yield.estimates[[i]] <- cbind(yield.estimates[[i]], yields[[j]][[i]][, 2])
+        }
+      }
+    }
+
+    ## update sampling tmes
+    counter <- counter + MULTINOMIAL.SAMPLE.TIMES
+    if (counter > upper.limit)
+      break;
+  }
+
+  ## enough successful sampling
+  if (bootstrap.times <= 0) {
+
+    ## the number of sampled points for complexity curve
+    n <- dim(yield.estimates[[1]])[1]
+
+    ## sample sizes
+    index <- as.double(step.size) * ( 1:n )
+    result <- array(list(NULL), length(r))
+
+    for (i in 1:length(r)) {
+
+      # median values are used as complexity curve
+      median.estimate <- apply(yield.estimates[[i]], 1, median)
+      variance <- apply(yield.estimates[[i]], 1, var)
+
+      # confidence interval based on lognormal
+      if (conf <= 0 && conf >= 1)
+        conf = 0.95
+      C <- exp(qnorm((1 + conf) / 2.0) * sqrt(log(1.0 + variance / (median.estimate^2))))
+      left.interval <- median.estimate/C
+      right.interval <- median.estimate*C
+
+      ## combine results and output a matrix
+      result[[i]] <- matrix(c(index, median.estimate, left.interval, 
+                            right.interval), ncol = 4, byrow = FALSE)
+      lower.ci = sprintf('lower.%.2fCI', conf)
+      upper.ci = sprintf('uppper.%.2fCI', conf)
+      colnames(result[[i]]) <- c('sample.size', paste("yield.estimates(r=", r[i], ")", sep=""), lower.ci, upper.ci)
+    }
+    return(result)
+  } else {
+      write("fail to bootstrap!", stderr())
+      return(NULL)
+  }
 }

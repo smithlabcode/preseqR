@@ -9,7 +9,7 @@ MULTINOMIAL.SAMPLE.TIMES <- 11
 MINOR.correction <- 1e-1
 
 ### BOOTSTRAP.factor the cut off ratio of success times / total bootstrap times
-BOOTSTRAP.factor <- 0.1
+BOOTSTRAP.factor <- 0.4
 
 
 ### checking the input histogram in an appropariat format
