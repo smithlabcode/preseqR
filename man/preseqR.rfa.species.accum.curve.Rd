@@ -109,7 +109,7 @@ unequal catchability. Biometrics, 783-791.
     the size of sample in the initial survey, we use \code{\link{preseqR.interpolate.distinct}} to calculate the value.
 
     A global variable \code{BOOTSTRAP.factor} defines maximum resampling times 
-    allowed for bootstrapping. The default value is 0.1. When resampling times
+    allowed for bootstrapping. The default value is 0.4. When resampling times
     are beyond \code{bootstrap.times} / \code{BOOTSTRAP.factor}, the function 
     will terminate.
 }
