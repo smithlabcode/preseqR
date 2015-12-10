@@ -13,5 +13,6 @@ export(preseqR.interpolate.mincount)
 export(preseqR.pf.mincount)
 export(general.preseqR.pf.mincount)
 export(preseqR.pf.mincount.bootstrap)
+export(preseqR.ztnb.mincount)
 
 S3method(print, CF)

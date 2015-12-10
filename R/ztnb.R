@@ -253,3 +253,78 @@ preseqR.ztnb.species.accum.curve <- function(n, ss = NULL,
   colnames(yield.estimates) = c('sample.size', 'yield.estimate')
   return(yield.estimates)
 }
+
+
+## fitting the negative binoimal distribution to the data by EM algorithm
+## ss is the step.size
+## max.extrapoltion is the maximum value for extrapolation
+## r is a vector of frequencies
+preseqR.ztnb.mincount <- function(n, ss = NULL, max.extrapolation = NULL, r=1,
+                                  size=SIZE.INIT, mu=MU.INIT)
+{
+  checking.hist(n)
+
+  total.sample <- floor(n[, 1] %*% n[, 2])
+  distinct <- sum(n[, 2])
+
+  ## set step.size = total.sample if it is undefined
+  if (is.null(ss)) {
+    ss <- total.sample
+  } else if (ss < 1) {
+    write("the step size should be at least one", stderr())
+    return(NULL)
+  }
+
+  ## set max.extrapolation = 100 * ss if it is undefined
+  if (is.null(max.extrapolation)) {
+
+    ## T is the number of experiments; 100 is a magic number
+    max.extrapolation <- 100*total.sample
+    T <- as.integer( max.extrapolation/ss )
+
+  } else if (max.extrapolation < ss) {
+    write("max.extrapolation should be no less then ss", stderr())
+    return(NULL)
+  } else {
+    # T is the number of experiments
+    T <- as.integer( max.extrapolation/ss )
+  }
+
+  sample.size <- as.double(ss) * (1: T)
+
+  ## estimate parameters
+  opt <- preseqR.ztnb.em(n, size, mu)
+  size <- opt$size
+  mu <- opt$mu
+
+  ## the probability of being sampled in the initial experiment
+  p <- 1 - dnbinom(0, size = size, mu = mu)
+
+  ## L is the estimated total number of distinct items
+  L <- distinct/p
+
+  ## estimate the item being sampled under new experiments with different size
+  t = sample.size/total.sample
+  dim(t) = length(t)
+  max.r = max(r)
+  yield.estimates = list()
+  P = rep(1, length(t))
+  for (i in 1:max.r) {
+    P = P - apply(t, 1, function(x) dnbinom(i-1, size, mu=x*mu))
+    if (i %in% r) {
+      yield.estimates = c(yield.estimates, list(L * P))
+    }
+  }
+
+  #P = lapply(1:max.r, function(x) {
+  #      apply(t, 1, function(y) dnbinom(x, size, mu = y * mu))
+  #      })
+  #yield.estimates = lapply(1:length(r), function(x) {L * P[[x]]})
+  yield.estimates = lapply(1:length(r), function(x) {
+      estimates <- matrix(c(sample.size, yield.estimates[[x]]), ncol = 2, byrow = FALSE)
+      colnames(estimates) <- c("sample.size", paste("yield.estimates(r=", r[x], ")", sep=""))
+      estimates
+      })
+
+  return(yield.estimates)
+}
