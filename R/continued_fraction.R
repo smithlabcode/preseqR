@@ -436,7 +436,7 @@ preseqR.rfa.species.accum.curve <- function(
     ## extract yields estimation from each estimation result.
     yields <- sapply(out, function(x) x$estimates[, 2])
 
-    if ( !is.null( dim(yields) ) )
+    if ( length(yields) > 0 )
     {
       ## update sampling status
       success.times <- dim(yields)[2]

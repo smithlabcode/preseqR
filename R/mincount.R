@@ -640,7 +640,7 @@ preseqR.pf.mincount.bootstrap <- function(n, bootstrap.times = 100, mt = 100,
     ## extract yields estimation from each estimation result.
     yields <- lapply(out, function(x) x$yield.estimates)
 
-    if ( !is.null( length(yields) ) )
+    if ( length(yields) > 0 )
     {
       ## update sampling status
       success.times <- length(yields)
