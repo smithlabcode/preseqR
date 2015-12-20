@@ -3,18 +3,24 @@
 \alias{preseqR}
 \docType{package}
 \title{
-    An R package for estimation of species accumulation
+    An R package for estimating the number of species in a sample
 }
 \description{
-    preseqR provides functions to estimate species accumulation curves. 
+    preseqR provides functions to estimate the number of species represented at
+    least r times in a random sample based on an initial sample. 
     Functions work
-    through either rational function approximations to Good and Toulmin's (1956)
+    through either rational function approximations to a modified Good and Toulmin's (1956)
     non-parametric empirical Bayes power series estimator or fitting a 
     zero-truncated Negative Binomial distibution to the observed species counts.
-    Both methods are described in Daley and Smith (2013).
 }
 \details{
 functions: 
+
+preseqR.pf.mincount.bootstrap
+
+preseqR.pf.mincount
+
+preseqR.ztnb.mincount
 
 preseqR.rfa.species.accum.curve, 
 
@@ -27,6 +33,8 @@ preseqR.rfa.estimate,
 preseqR.ztnb.estimate,
 
 preseqR.ztnb.em,
+
+preseqR.interpolate.mincount
 
 preseqR.interpolate.distinct,
 

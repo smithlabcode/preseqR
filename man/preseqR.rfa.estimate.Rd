@@ -2,10 +2,10 @@
 \alias{preseqR.rfa.estimate}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-Calculate the value of the continued fraction
+Continued fraction calculation
 }
 \description{
-This function calculates the value of a continued fraction at \code{t}
+This function calculates the value of a truncated continued fraction at \code{t}
 }
 \usage{
 preseqR.rfa.estimate(CF, t)
@@ -20,9 +20,10 @@ preseqR.rfa.estimate(CF, t)
   }
 }
 \details{
-  t is the relative size of the new survey to the initial survey. 
+  t is the relative size of a random sample to the initial sample. 
   The t must be a positive real number no less than 1. 
-  The function value is the gain in new species as the survey size increases.
+  The function value is the gain in new species as the size of the ranodm sample
+  increases..
 }
 \value{
     A double as the function value.

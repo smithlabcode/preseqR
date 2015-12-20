@@ -2,14 +2,17 @@
 \alias{preseqR.rfa.curve}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-Estimate the number of species observed as a function of captures
-with RFA to the NPEB estimator
+Predicting the number of species represented in a random sample
 }
 \description{
-This function estimates the expected number of species observed as a function of
-the number of total individuals captured. It uses rational function
-approximations to Good and Toulmin's (1965) non-parametric empirical Bayes power
-series.
+The function estimates the expected number of species represented in a random
+sample using rational function approximation to Good and Toulmin's power series.
+The only difference between this function and 
+\code{\link{preseqR.rfa.species.accum.curve}} is that no bootstrapping for the 
+initial sample. Therefore the function can not construct confidence intervals.
+However, the function is much faster. In general, we recommand
+\code{\link{preseqR.rfa.species.accum.curve}} for estimating the expected number
+of species represented in a sample. 
 }
 \usage{
 preseqR.rfa.curve(n, mt = 100, ss = NULL, max.extrapolation = NULL, asym.linear=FALSE)
@@ -17,11 +20,10 @@ preseqR.rfa.curve(n, mt = 100, ss = NULL, max.extrapolation = NULL, asym.linear=
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{n}{
-    Frequencies of the number of individuals of each species captured. 
-    The data must be a two-column matrix.  
-    The first column is the frequency \eqn{j = 1,2,\dots}; and the second column
-    is \eqn{n_j}, the number of species with \eqn{j} individuals observed in the
-    sample. The first column must be sorted in an ascending order.
+    A two-column matrix.
+    The first column is the frequency \eqn{j = 1,2,\dots}; and the second column 
+    is \eqn{n_j}, the number of species with each species represented by \eqn{j} 
+    individuals in the sample. The first column must be sorted in an ascending order.
 }
   \item{mt}{
     An positive integer equal to the maximum degree allowed in the continued
@@ -29,12 +31,11 @@ preseqR.rfa.curve(n, mt = 100, ss = NULL, max.extrapolation = NULL, asym.linear=
 }
   \item{ss}{
     An positive double equal to the step size between samples. Default value
-    is the size of the sample in the initial survey.
+    is the size of the initial sample.
 }
   \item{max.extrapolation}{
-    A positive double equal to the maximum possible size of a sample in a
-    survey. Default value is 100 times the size of the initial
-    survey.
+    A positive double equal to the maximum possible size of a random sample.
+    Default value is the 100 times the size of the initial sample.
 }
   \item{asym.linear}{
 		A logic, setting to be TRUE if the asymptotic behavior of the accumulation curve
@@ -55,11 +56,13 @@ preseqR.rfa.curve(n, mt = 100, ss = NULL, max.extrapolation = NULL, asym.linear=
     approximation.
   }
   \item{estimates}{
-    A two-column table representing estimated number of species given samples of
-    different sizes.
+    A two-column matrix representing for estimates of the expected number of 
+    species represented in a random sample. The first column is the size of the
+    random sample; the second column is estimates of the expected number of species
+    represented in the sample. 
   }
   \item{NULL}{
-    NULL if the rational function approximation failed.
+    NULL if the function failed to construct a rational functiona approximation.
 }
 }
 \references{
@@ -99,14 +102,13 @@ library(preseqR)
 data(ShakespeareWordHist)
 
 ## rational function approximation and estimate the number of observed word types
-## as a function of # words in Shakespeare's works.
+## as a function of total words
 result = preseqR.rfa.curve(ShakespeareWordHist)
 
 ## print the constructed continued fraction approximation.
 result$continued.fraction
 
-## print the number of observed word types as a function of # words
-## in Shakespeare's works.
+## print the estimates
 result$estimates
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the

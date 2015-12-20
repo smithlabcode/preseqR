@@ -2,44 +2,52 @@
 \alias{preseqR.ztnb.species.accum.curve}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-Predict the number of species through a ZTNB
+Predicting the number of species through a ZTNB
 }
 \description{
-    This function extrapolates the number of species as a function of the number
-    of captures. It assumes that the number of observations in an individual
-    species follows a negative binomial distribution.
+  The function estimates the expected number of species represented in a random 
+  sample by fitting a negative binomial distribution to the initial sample.
 }
 \usage{
-preseqR.ztnb.species.accum.curve(n, ss = NULL, max.extrapolation = NULL)
+preseqR.ztnb.species.accum.curve(n, ss = NULL, max.extrapolation = NULL, size=SIZE.INIT, mu=MU.INIT)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{n}{
-    Frequencies of the number of individuals of each species captured. 
-    The data must be a two-column table.  
+    A two-column matrix.  
     The first column is the frequency \eqn{j = 1,2,\dots}; and the second column
-    is \eqn{n_j}, the number of species with \eqn{j} individuals observed in the
-    sample. The first column must be sorted in an ascending order.
+    is \eqn{n_j}, the number of species with each species represented by \eqn{j}
+    individuals in the sample. The first column must be sorted in an ascending order.
 }
   \item{ss}{
     An positive double equal to the step size between samples. Default value
-    is the size of the sample in the initial survey.
+    is the size of the initial sample.
 }
   \item{max.extrapolation}{
-    A positive double equal to the maximum possible size of a sample in a
-    survey. Default value is the 100 times the size of the initial 
-    survey.
+    A positive double equal to the maximum possible size of a random sample.
+    Default value is the 100 times the size of the initial sample.
+}
+  \item{size}{
+    A positive double setting the initial value of the parameter \code{size} in
+    a negative binomial distribution for the EM algorithm. Default value is 1.
+}
+  \item{mu}{
+    A positive double setting the initial value of the parameter \code{mu} in a
+    negative binomial distribution for the EM algorithm. Default value is 0.5.
 }
 }
 \details{
-    The function applies \code{preseqR.ztnb.em} for parameter estimation.
-    Then it extrapolates the number of species as a function of the number of
-    captures through estimated negative binomial distribution. See supplementary
-    of Daley, T., & Smith, A. D. (2013)
+    The statistical assumption is that the number of individuals in a species
+    follows a negative binomial distribution. The parameters are estimated by
+    the function \code{preseqR.ztnb.em}. Based on the estimated distribution,
+    we calculate the expected number of species in a random sample. Details of
+    the method see supplementary of Daley, T., & Smith, A. D. (2013).
 }
 \value{
-    A two-columns table represents estimated number of species given samples
-    with different sizes.
+    A two-column matrix representing for estimates of the expected number of        
+    species represented in a random sample. The first column is the size of the  
+    random sample; the second column is estimates of the expected number of species
+    represented in the sample. 
 }
 \author{
   Chao Deng

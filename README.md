@@ -14,7 +14,14 @@ supposed to work:
 
 See <http://cran.r-project.org/web/packages/preseqR/index.html> for details.
 
-UPDATES FROM PREVIOUS RELEASE
+
+UPDATES TO VERSION 2.0.0
+========================================================================
+We have added new functions, which include "mincount" as part of their function names,
+to estimate the number of species represented r or more times in a random sample.
+
+
+UPDATES TO VERSION 1.2.1
 ========================================================================
 We have added an option to make use of the asymptotic behavior of the target
 accumulation curve.

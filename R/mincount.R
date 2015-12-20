@@ -574,7 +574,7 @@ general.preseqR.pf.mincount <- function(n, mt = 100, ss = NULL,
 ### species accum curves based on parital fraction expansion of
 ### rational function approximation to E(S_1(t)) / t
 ### CHAO: the main function
-preseqR.pf.mincount.bootstrap <- function(n, bootstrap.times = 100, mt = 100,
+preseqR.pf.mincount.bootstrap <- function(n, bootstrap.times = 20, mt = 100,
                                           ss = NULL, max.extrapolation = NULL, 
                                           conf = 0.95, r=1)
 {
@@ -626,6 +626,8 @@ preseqR.pf.mincount.bootstrap <- function(n, bootstrap.times = 100, mt = 100,
     preseqR.pf.mincount(hist.table, mt=mt, ss=step.size, 
         max.extrapolation=max.extrapolation, r=r)
   }
+  
+  BOOTSTRAP.times = bootstrap.times
 
   while (bootstrap.times > 0) {
     ## do sampling with replacement
@@ -660,6 +662,10 @@ preseqR.pf.mincount.bootstrap <- function(n, bootstrap.times = 100, mt = 100,
 
   ## enough successful sampling
   if (bootstrap.times <= 0) {
+    
+    if (BOOTSTRAP.times < 30) {
+      warning("The confidence interval is not reliable because of insufficient iterations of bootstrapping.
+  Set the variable bootstrap.times at least 30 in order to construct confidence intervals")}
 
     ## the number of sampled points for complexity curve
     n <- dim(yield.estimates[[1]])[1]

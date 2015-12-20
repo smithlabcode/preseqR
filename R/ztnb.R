@@ -168,14 +168,14 @@ preseqR.ztnb.em <- function(n, size=SIZE.INIT, mu=MU.INIT)
 
 ### predict the number of distinct items using EM algorithm
 ### t is the relative size to inital sample
-preseqR.ztnb.estimate <- function(n, t)
+preseqR.ztnb.estimate <- function(n, t, size=SIZE.INIT, mu=MU.INIT)
 {
   checking.hist(n)
 
   distinct <- sum(n[, 2])
 
   ## estimate the parameters
-  opt <- preseqR.ztnb.em(n)
+  opt <- preseqR.ztnb.em(n, size, mu)
   size <- opt$size
   mu <- opt$mu
 
@@ -198,8 +198,8 @@ preseqR.ztnb.estimate <- function(n, t)
 ## predict a complexity curve using EM algorithm
 ## ss is the step.size
 ## max.extrapoltion is the maximum value for extrapolation
-preseqR.ztnb.species.accum.curve <- function(n, ss = NULL,
-                                             max.extrapolation = NULL)
+preseqR.ztnb.species.accum.curve <- function(n, ss = NULL, max.extrapolation = NULL,
+                                             size=SIZE.INIT, mu=MU.INIT)
 {
   checking.hist(n)
 
@@ -232,7 +232,7 @@ preseqR.ztnb.species.accum.curve <- function(n, ss = NULL,
   sample.size <- as.double(ss) * (1: T)
 
   ## estimate parameters
-  opt <- preseqR.ztnb.em(n)
+  opt <- preseqR.ztnb.em(n, size, mu)
   size <- opt$size
   mu <- opt$mu
 

@@ -373,7 +373,7 @@ preseqR.rfa.curve <- function(n, mt = 100, ss = NULL,
 
 ### generate complexity curve through bootstrapping the histogram
 preseqR.rfa.species.accum.curve <- function(
-    n, bootstrap.times = 100, mt = 100, ss = NULL,
+    n, bootstrap.times = 20, mt = 100, ss = NULL,
     max.extrapolation = NULL, conf = 0.95, asym.linear=FALSE)
 {
   checking.hist(n)
@@ -423,6 +423,8 @@ preseqR.rfa.species.accum.curve <- function(
     preseqR.rfa.curve(hist.table, mt, step.size, max.extrapolation, asym.linear=asym.linear)
   }
 
+  BOOTSTRAP.times = bootstrap.times
+
   while (bootstrap.times > 0) {
     ## do sampling with replacement
     ## re.hist.second.col saves the second columns of each resampled histogram
@@ -452,6 +454,10 @@ preseqR.rfa.species.accum.curve <- function(
 
   ## enough successful sampling
   if (bootstrap.times <= 0) {
+
+    if (BOOTSTRAP.times < 30) {
+      warning("The confidence interval is not reliable because of insufficient iterations of bootstrapping.
+  Set the variable bootstrap.times at least 30 in order to construct confidence intervals")}
 
     ## the number of sampled points for complexity curve
     n <- dim(yield.estimates)[1]
