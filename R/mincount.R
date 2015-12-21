@@ -11,26 +11,25 @@ preseqR.interpolate.mincount <- function(ss, n, r=1)
   checking.hist(n)
 
   ## total individuals captured
-  total.sample <- n[, 1] %*% n[, 2]
-  N <- floor(total.sample)
+  total.sample <- as.double(n[, 1] %*% n[, 2])
+  N <- total.sample
 
   ## total species
-  initial.distinct <- sum(n[, 2])
+  initial.distinct <- sum(as.numeric(n[, 2]))
   step.size <- as.double(ss)
 
   ## l is the number of sampled points for interpolation
-  l <- as.integer(N / step.size)
+  l <- N / step.size
 
-  r <- floor(r)
   ## if the sample size is larger than the size of experiment or 
   ## the step size is too small, return NULL
-  if (l == 0 || ss < 1 || r < 1)
+  if (l < 1 || ss < 1 || r < 1)
     return()
   ## if the sample size is the size of the experiment
   ## count the number of species observed r or more times
   else if (l == 1) {
     index = which(n[, 1] >= r)
-    result <- matrix(c(step.size, sum(n[index, 2])), ncol = 2, byrow = FALSE)
+    result <- matrix(c(step.size, sum(as.numeric(n[index, 2]))), ncol = 2, byrow = FALSE)
     colnames(result) <- c('sample.size', 'interpolation')
     return(result)
   }
@@ -131,18 +130,17 @@ preseqR.pf.mincount <- function(n, mt = 100, ss = NULL,
   MIN_REQUIRED_TERMS <- 4
 
   ## total individuals
-  total.sample <- n[, 1] %*% n[, 2]
-  total.sample <- floor(total.sample)
+  total.sample <- as.double(n[, 1] %*% n[, 2])
 
   ## set step.size as the size of the initial experiment if it is undefined
   if (is.null(ss)) {
-    ss <- floor(total.sample)
+    ss <- total.sample
     step.size <- ss
   } else if (ss < 1) {
     write("The step size is too small", stderr())
     return()
   } else {
-    step.size <- floor(ss)
+    step.size <- ss
   }
 
   ## no interpolation if step.size is larger than the size of the iniital experiment
@@ -362,18 +360,17 @@ general.preseqR.pf.mincount <- function(n, mt = 100, ss = NULL,
   MIN_REQUIRED_TERMS <- 4
 
   ## total individuals
-  total.sample <- n[, 1] %*% n[, 2]
-  total.sample <- floor(total.sample)
+  total.sample <- as.double(n[, 1] %*% n[, 2])
 
   ## set step.size as the size of the initial experiment if it is undefined
   if (is.null(ss)) {
-    ss <- floor(total.sample)
+    ss <- total.sample
     step.size <- ss
   } else if (ss < 1) {
     write("The step size is too small", stderr())
     return()
   } else {
-    step.size <- floor(ss)
+    step.size <- ss
   }
 
   ## no interpolation if step.size is larger than the size of the initial experiment
@@ -587,18 +584,17 @@ preseqR.pf.mincount.bootstrap <- function(n, bootstrap.times = 20, mt = 100,
   MIN_REQUIRED_TERMS <- 4
 
   ## total individuals
-  total.sample <- n[, 1] %*% n[, 2]
-  total.sample <- floor(total.sample)
+  total.sample <- as.double(n[, 1] %*% n[, 2])
 
   ## set step.size as the size of the initial experiment if it is undefined
   if (is.null(ss)) {
-    ss <- floor(total.sample)
+    ss <- total.sample
     step.size <- ss
   } else if (ss < 1) {
     write("The step size is too small", stderr())
     return()
   } else {
-    step.size <- floor(ss)
+    step.size <- ss
   }
 
   if (is.null(max.extrapolation)) {
