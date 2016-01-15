@@ -100,15 +100,15 @@ unequal catchability. Biometrics, 783-791.
   Chao Deng
 }
 \note{
-    The rational fraction approximation is only applied to extrapolation. For 
-    estimating the expected number of species given a sample with size less than
+    The rational fraction approximation can be only applied to extrapolation. For 
+    estimating the expected number of species in a random sample of size less than
     the size of the initial sample, we use 
     \code{\link{preseqR.interpolate.distinct}} to calculate the value.
 
     A global variable \code{BOOTSTRAP.factor} defines maximum resampling times 
     allowed for bootstrapping. The default value is 0.4. When resampling times
-    are beyond \code{bootstrap.times} / \code{BOOTSTRAP.factor}, the function 
-    will terminate.
+    are greater than \code{bootstrap.times} / \code{BOOTSTRAP.factor}, 
+    the function will terminate.
 }
 
 %% ~Make other sections like Warning with \section{Warning }{....} ~

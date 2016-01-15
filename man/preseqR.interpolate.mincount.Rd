@@ -63,4 +63,4 @@ preseqR.interpolate.mincount(1e5, ShakespeareWordHist, r=2)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-\keyword{ Interpolation, Mincount}
+\keyword{ Interpolation, Sufficient representation}

@@ -1,0 +1,18 @@
+citHeader("To cite preseqR in publications use:")
+
+citEntry(entry = "article",
+  title        = "Applications of species accumulation curves in large-scale biological data analysis",
+  author       = personList(as.person("Chao Deng"), as.person("Timothy Daley"), as.person("Andrew D. Smith")),
+  journal      = "Quantitative Biology",
+  year         = "2015",
+  volume       = "3",
+  number       = "3",
+  pages        = "135--144",
+  url          = "http://dx.doi.org/10.1007/s40484-015-0049-7",
+
+  textVersion  =
+  paste("Deng C, Daley T and Smith A (2015).",
+        "Applications of species accumulation curves in large-scale biological data analysis.",
+        "Quantitative Biology, 3(3), 135-144.",
+        "URL http://dx.doi.org/10.1007/s40484-015-0049-7.")
+)

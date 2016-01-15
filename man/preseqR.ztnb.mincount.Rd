@@ -1,16 +1,17 @@
-\name{preseqR.ztnb.species.accum.curve}
-\alias{preseqR.ztnb.species.accum.curve}
+\name{preseqR.ztnb.mincount}
+\alias{preseqR.ztnb.mincount}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-Predicting the number of species through a ZTNB
+Predicting the number of species represented at least r times in a random sample
 }
 \description{
-  The function estimates the expected number of species represented in a random 
-  sample by fitting a negative binomial distribution to the initial sample.
+  The function estimates the expected number of species represented at least r
+  times in a random sample by fitting a zero-truncated negative binomial (ZTNB)
+  distribution to the initial sample.
 }
 \usage{
-preseqR.ztnb.species.accum.curve(n, ss = NULL, max.extrapolation = NULL,
-size=SIZE.INIT, mu=MU.INIT)
+preseqR.ztnb.mincount(n, ss = NULL, max.extrapolation = NULL, r=1,
+    size=SIZE.INIT, mu=MU.INIT)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -36,28 +37,24 @@ size=SIZE.INIT, mu=MU.INIT)
     A positive double setting the initial value of the parameter \code{mu} in a
     negative binomial distribution for the EM algorithm. Default value is 0.5.
 }
+  \item{r}{
+    A vector of positive integers. Default is 1.
+  }
 }
 \details{
-    The statistical assumption is that the number of individuals in a species
-    follows a negative binomial distribution. The parameters are estimated by
-    the function \code{preseqR.ztnb.em}. Based on the estimated distribution,
-    we calculate the expected number of species in a random sample. Details of
-    the method see supplementary of Daley, T., & Smith, A. D. (2013).
+  See \code{\link{preseqR.ztnb.species.accum.curve}}.
 }
 \value{
-    A two-column matrix representing for estimates of the expected number of        
-    species represented in a random sample. The first column is the size of the  
-    random sample; the second column is estimates of the expected number of species
-    represented in the sample. 
+    A list of two-column matrices representing estimates of the expected number
+    of species represented r or more times in a random sample. Each matrix 
+    in the list corresponds to a value of r. The first column of a matrix is 
+    the size of a random sample; the second column is the estimate of the
+    number of species represented r or more times in the sample. 
 }
 \author{
   Chao Deng
 }
 %% ~Make other sections like Warning with \section{Warning }{....} ~
-
-\seealso{
-  \code{\link{preseqR.ztnb.em}}
-}
 
 \examples{
 ## load library
@@ -67,8 +64,12 @@ library(preseqR)
 data(FisherButterflyHist)
 
 ## extrapolation
-preseqR.ztnb.species.accum.curve(FisherButterflyHist)
+result = preseqR.ztnb.mincount(FisherButterflyHist, r=c(1,2))
+## estimates of the number of butterflies represented at least once in a random sample
+result[[1]]
+## estimates of the number of butterflies represented at least twice
+result[[2]]
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-\keyword{ ZTNB }
+\keyword{ ZTNB, Sufficient representation }
