@@ -2,11 +2,12 @@
 \alias{preseqR.ztnb.estimate}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-Predict the number of new species through a ZTNB
+Estimating the number of new species through a ZTNB
 }
 \description{
 This function estimates the expected number of new species in a random sample
-that is t times larger than the initial sample.
+that is t times size of the initial sample based on a zero truncated negative
+binomial.
 }
 \usage{
 preseqR.ztnb.estimate(n, t, size=SIZE.INIT, mu=MU.INIT)
@@ -17,7 +18,8 @@ preseqR.ztnb.estimate(n, t, size=SIZE.INIT, mu=MU.INIT)
     A two-column matrix.  
     The first column is the frequency \eqn{j = 1,2,\dots}; and the second column
     is \eqn{n_j}, the number of species with each species represented by \eqn{j}
-    individuals in the sample. The first column must be sorted in an ascending order.
+    individuals in the initial sample. The first column must be sorted in an
+    ascending order.
 }
   \item{t}{
     t is the relative size of a random sample to the initial sample. 
@@ -32,8 +34,8 @@ preseqR.ztnb.estimate(n, t, size=SIZE.INIT, mu=MU.INIT)
 }
 }
 \details{
-    A zero-truncated Negative Binomial distribution is fitted to the initial
-    sample. The function \code{preseqR.ztnb.em} is used to estimate the parameters. 
+    A zero-truncated negative binomial distribution is fitted to the initial
+    sample. The function \cr \code{preseqR.ztnb.em} is used to estimate the parameters. 
     Based on the estimated distribution, we calculate the expected gain in new
     species in a random sample. Details of the method see supplementary
     of Daley, T., & Smith, A. D. (2013).
@@ -63,4 +65,4 @@ preseqR.ztnb.estimate(FisherButterflyHist, 2)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-\keyword{ ZTNB }
+\keyword{ Zero truncated negative binomial }

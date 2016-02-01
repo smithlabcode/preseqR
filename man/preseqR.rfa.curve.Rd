@@ -2,7 +2,7 @@
 \alias{preseqR.rfa.curve}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-Predicting the number of species represented in a random sample
+Estimating the number of species represented in a random sample
 }
 \description{
 The function estimates the expected number of species represented in a random
@@ -88,6 +88,9 @@ Baker, G. A., & Graves-Morris, P. (1996). Pade approximants
     example, when the diagonal value is zero, there are no offset coefficients.
     The format of a continued fraction should like this:
     \deqn{\frac{a_0(t-1)}{1 + \frac{a_1(t-1)}{1 + \frac{a_2(t-1)}{\ldots}}}}
+
+    This is a special case of \code{\link{preseqR.pf.mincount}} by setting
+    the parameter r=1. 
 }
 
 \seealso{

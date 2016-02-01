@@ -2,7 +2,7 @@
 \alias{preseqR.ztnb.species.accum.curve}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-Predicting the number of species through a ZTNB
+Estimating the number of species through a ZTNB
 }
 \description{
   The function estimates the expected number of species represented in a random 
@@ -18,7 +18,8 @@ size=SIZE.INIT, mu=MU.INIT)
     A two-column matrix.  
     The first column is the frequency \eqn{j = 1,2,\dots}; and the second column
     is \eqn{n_j}, the number of species with each species represented by \eqn{j}
-    individuals in the sample. The first column must be sorted in an ascending order.
+    individuals in the initial sample. The first column must be sorted in an
+    ascending order.
 }
   \item{ss}{
     An positive double equal to the step size between samples. Default value
@@ -71,4 +72,4 @@ preseqR.ztnb.species.accum.curve(FisherButterflyHist)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-\keyword{ ZTNB }
+\keyword{ Zero truncated negative binomial }

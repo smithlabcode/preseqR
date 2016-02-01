@@ -22,11 +22,11 @@ preseqR.rfa.estimate(CF, t)
 \details{
   t is the relative size of a random sample to the initial sample. 
   The t must be a positive real number no less than 1. 
-  The function value is the gain in new species as the size of the ranodm sample
+  The function value is the gain in new species as the size of a ranodm sample
   increases.
 }
 \value{
-    A double as the function value.
+  A double as the function value.
 }
 
 \author{

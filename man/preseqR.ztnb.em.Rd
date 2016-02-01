@@ -21,7 +21,8 @@ preseqR.ztnb.em(n, size = SIZE.INIT, mu = MU.INIT)
     A two-column matrix.  
     The first column is the frequency \eqn{j = 1,2,\dots}; and the second column
     is \eqn{n_j}, the number of species with each species represented by \eqn{j}
-    individuals in the sample. The first column must be sorted in an ascending order.
+    individuals in the initial sample. The first column must be sorted in an
+    ascending order.
 }
   \item{size}{
     A positive double setting the initial value of the parameter \code{size} in
@@ -66,4 +67,4 @@ preseqR.ztnb.em(FisherButterflyHist)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-\keyword{ ZTNB }
+\keyword{ Zero truncated negative binomial }

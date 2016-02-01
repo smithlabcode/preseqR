@@ -19,7 +19,8 @@
     A two-column matrix.
     The first column is the frequency \eqn{j = 1,2,\dots}; and the second column
     is \eqn{n_j}, the number of species with each species represented by \eqn{j}
-    individuals in the sample. The first column must be sorted in an ascending order.
+    individuals in the initial sample. The first column must be sorted in an
+    ascending order.
   }
 }
 \details{
@@ -30,7 +31,7 @@
     A two-column matrix as a subsample.
     The first column is the frequency \eqn{j = 1,2,\dots}; and the second column
     is \eqn{n_j}, the number of species with each species represented by \eqn{j}
-    individuals in the sample. 
+    individuals in the subsample. 
 }
 \references{
 \url{https://stat.ethz.ch/R-manual/R-patched/library/base/html/sample.html}
@@ -48,10 +49,8 @@ library(preseqR)
 ## import data
 data(FisherButterflyHist)
 
-## setting a random seed
-set.seed(123456)
 ## generate a sub sample of size 1000.
-preseqR.nonreplace.sampling(size=1e3, FisherButterflyHist)
+preseqR.nonreplace.sampling(size=1000, FisherButterflyHist)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

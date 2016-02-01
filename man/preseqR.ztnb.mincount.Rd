@@ -2,7 +2,7 @@
 \alias{preseqR.ztnb.mincount}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-Predicting the number of species represented at least r times in a random sample
+Estimating the number of species represented at least r times in a random sample
 }
 \description{
   The function estimates the expected number of species represented at least r
@@ -10,8 +10,8 @@ Predicting the number of species represented at least r times in a random sample
   distribution to the initial sample.
 }
 \usage{
-preseqR.ztnb.mincount(n, ss = NULL, max.extrapolation = NULL, r=1,
-    size=SIZE.INIT, mu=MU.INIT)
+preseqR.ztnb.mincount(n, ss = NULL, max.extrapolation = NULL, r=1, 
+                      size=SIZE.INIT, mu=MU.INIT)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -19,7 +19,8 @@ preseqR.ztnb.mincount(n, ss = NULL, max.extrapolation = NULL, r=1,
     A two-column matrix.  
     The first column is the frequency \eqn{j = 1,2,\dots}; and the second column
     is \eqn{n_j}, the number of species with each species represented by \eqn{j}
-    individuals in the sample. The first column must be sorted in an ascending order.
+    individuals in the initial sample. The first column must be sorted in an
+    ascending order.
 }
   \item{ss}{
     An positive double equal to the step size between samples. Default value
@@ -47,9 +48,9 @@ preseqR.ztnb.mincount(n, ss = NULL, max.extrapolation = NULL, r=1,
 \value{
     A list of two-column matrices representing estimates of the expected number
     of species represented r or more times in a random sample. Each matrix 
-    in the list corresponds to a value of r. The first column of a matrix is 
-    the size of a random sample; the second column is the estimate of the
-    number of species represented r or more times in the sample. 
+    in the list corresponds to a specified value of r. The first column of a
+    matrix is the size of a random sample; the second column is the estimate of
+    the number of species represented r or more times in the sample. 
 }
 \author{
   Chao Deng
@@ -72,4 +73,4 @@ result[[2]]
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-\keyword{ ZTNB, Sufficient representation }
+\keyword{ Zero truncated negative binomial, Sufficient representation }

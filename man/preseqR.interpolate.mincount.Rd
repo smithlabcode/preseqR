@@ -20,22 +20,25 @@
     A two-column matrix.  
     The first column is the frequency \eqn{j = 1,2,\dots}; and the second column
     is \eqn{n_j}, the number of species with each species represented by \eqn{j}
-    individuals in the sample. The first column must be sorted in an ascending order.
+    individuals in the initial sample. The first column must be sorted in an
+    ascending order.
 }
   \item{r}{
-    A positive integer equal to a specified minimum count.
+    A positive integer.
   }
 }
 \details{
-  Assume that a random sample (subsample) follows a hypergeometric distribution given an
-  initial sample. The expected number of unique species represented at least r 
-  times in the subsample is then calculated by an extension version of the formula in
+  Assume that a random sample (subsample) follows a multivariant hypergeometric
+  distribution given an initial sample. The expected number of unique species
+  represented at least r times in the subsample is then calculated by an 
+  expended version of the formula in 
   Heck Jr, K. L., van Belle, G., & Simberloff, D. (1975).
 }
 \value{
-    A two-column matrices for the number of species represented at least r times in a random sample.
-    The first column is the size of the random sample; the second column is the 
-    expected number of species represented at least r times in the sample.
+    A two-column matrix for the number of species represented at least r times
+    in a random sample. The first column is the size of the random sample; 
+    the second column is the expected number of species represented at least r
+    times in the sample.
 
     NULL if failed.
 }

@@ -20,17 +20,18 @@
     A two-column matrix.
     The first column is the frequency \eqn{j = 1,2,\dots}; and the second column 
     is \eqn{n_j}, the number of species with each species represented by \eqn{j} 
-    individuals in the sample. The first column must be sorted in an ascending order.
+    individuals in the initial sample. The first column must be sorted in an
+    ascending order.
 }
 }
 \details{
-    Assume that a random sample (subsample) follows a hypergeometric distribution given an
-    initial sample. The expected number of unique species represented in the 
-    subsample is then calculated by the formula in 
+    Assume that a random sample (subsample) follows a multivariant hypergeometric 
+    distribution given an initial sample. The expected number of unique species
+    represented in the subsample is then calculated by the formula (1) in 
     Heck Jr, K. L., van Belle, G., & Simberloff, D. (1975).   
 }
 \value{
-    A two-column matrices for the expected number of species represented in a random sample.
+    A two-column matrix for the expected number of species represented in a random sample.
     The first column is the size of the random sample; the second column is the 
     expected number of species represented in the sample.  
 
@@ -54,8 +55,8 @@ library(preseqR)
 ## import data
 data(ShakespeareWordHist)
 
-## interpolating an accumulation curve; the step size is 1e5
-preseqR.interpolate.distinct(1e5, ShakespeareWordHist)
+## interpolating an accumulation curve; the step size is 100,000
+preseqR.interpolate.distinct(100000, ShakespeareWordHist)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

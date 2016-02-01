@@ -2,7 +2,7 @@
 \alias{preseqR.rfa.species.accum.curve}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-    Predicting the number of species in a sample
+    Predicting the number of species in a random sample
 }
 \description{
   The function estimates the expected number of species represented in a random
@@ -20,7 +20,8 @@ mt = 100, ss = NULL, max.extrapolation = NULL, conf = 0.95, asym.linear=FALSE)
     A two-column matrix.
     The first column is the frequency \eqn{j = 1,2,\dots}; and the second column 
     is \eqn{n_j}, the number of species with each species represented by \eqn{j} 
-    individuals in the sample. The first column must be sorted in an ascending order.
+    individuals in the initial sample. The first column must be sorted in an
+    ascending order.
 }
   \item{bootstrap.times}{
     An positive integer representing the minimum required times of successful
@@ -106,26 +107,32 @@ unequal catchability. Biometrics, 783-791.
     \code{\link{preseqR.interpolate.distinct}} to calculate the value.
 
     A global variable \code{BOOTSTRAP.factor} defines maximum resampling times 
-    allowed for bootstrapping. The default value is 0.4. When resampling times
-    are greater than \code{bootstrap.times} / \code{BOOTSTRAP.factor}, 
-    the function will terminate.
+    allowed for bootstrapping. The default value is 0.4. 
+    
+    When resampling times are greater than
+    \code{bootstrap.times} / \code{BOOTSTRAP.factor}, the function will terminate.
+
+    This is a special case of \code{\link{preseqR.pf.mincount.bootstrap}} by
+    setting the parameter r=1. 
 }
 
-%% ~Make other sections like Warning with \section{Warning }{....} ~
+\section{Warning}{
+  The default setting for bootstrap.times (20) is not realiable in constructing
+  the confidence interval. 
+} 
+
 
 \examples{
 ## load library
-library(preseqR)
+# library(preseqR)
 
 ## import data
-data(ShakespeareWordHist)
+# data(ShakespeareWordHist)
 
-## setting the random seed
-set.seed(123456)
 ## estimate the number of unique words in a random sample
-## minimum required successful estimation times is 10
-preseqR.rfa.species.accum.curve(ShakespeareWordHist, bootstrap.times = 10)
+## minimum required successful estimation times is 100
+# preseqR.rfa.species.accum.curve(ShakespeareWordHist, bootstrap.times = 100)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-\keyword{ Rational Function Approximation }
+\keyword{ Rational Function Approximation, Bootstrap }

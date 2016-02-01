@@ -32,7 +32,7 @@
    numbers generated and return a vector of generated numbers. 
 }
 \value{
-  The data must be a two-column matrix.  
+  A two-column matrix.  
   The first column is the frequency \eqn{j = 1,2,\dots}; and the second column
   is \eqn{n_j}, the number of species with \eqn{j} individuals represented in the 
   sample.
@@ -50,11 +50,8 @@ f <- function(n) {
   rgamma(n, shape=0.5, scale=1)
 }
 
-## setting a random seed
-set.seed(123456)
-
 preseqR.simu.hist(L=1e5, size=2e5, f)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-\keyword{ Simulation, Sampling, Compound Poisson}
+\keyword{ Simulation, Sampling, Mixture of Poisson}
