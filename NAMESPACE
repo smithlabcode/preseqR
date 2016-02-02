@@ -1,5 +1,8 @@
 useDynLib(preseqR)
 import(polynom)
+importFrom("graphics", "hist")
+importFrom("stats", "dnbinom", "median", "optim", "qnorm", "rmultinom",
+           "rpois", "var")
 export(preseqR.rfa.species.accum.curve)
 export(preseqR.rfa.curve)
 export(preseqR.rfa.estimate)
