@@ -76,24 +76,24 @@ sequencing libraries. Nature methods, 10(4), 325-327.
 
 \examples{
 ## load library
-library(preseqR)
+# library(preseqR)
 
 ## import data
-data(ShakespeareWordHist)
+# data(ShakespeareWordHist)
 
 ## construct the estimator and predicting estimates of the number of unique word
 ## represented at least once, twice or twenty times in larger samples
-result = preseqR.pf.mincount(ShakespeareWordHist, r=c(1,2, 20))
+# result = preseqR.pf.mincount(ShakespeareWordHist, r=c(1,2,20))
 
 ## print the elements of the estimator
-result$PF.elements
+# result$PF.elements
 
 ## print the number of word types observed at least once as a function of words
-result$yield.estimates[[1]]
+# result$yield.estimates[[1]]
 ## print the number of word types observed at least twice
-result$yield.estimates[[2]]
+# result$yield.estimates[[2]]
 ## print the number of word types observed at least twenty times
-result$yield.estimates[[3]]
+# result$yield.estimates[[3]]
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
