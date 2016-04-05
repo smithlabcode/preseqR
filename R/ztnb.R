@@ -34,31 +34,31 @@ zerotruncated.dnbinom <- function(x, size, mu, log = FALSE)
 }
 
 
-### zerotruncated negative loglikelyhood 
-zerotruncated.minus.log.likelyhood <- function(hist.table, size, mu)
+### zerotruncated negative loglikelihood
+zerotruncated.minus.log.likelihood <- function(hist.table, size, mu)
 {
   prob <- zerotruncated.dnbinom(hist.table[, 1], size, mu, log = TRUE)
 
-  ## negative loglikelyhood
+  ## negative loglikelihood
   prob <- -prob
   return( prob %*% hist.table[, 2] )
 }
 
 
-### calculate the negative binomial loglikelyhood
+### calculate the negative binomial loglikelihood
 ### zero.items is number of items unobserved
 ### size and mu are parameters in a negative binomial distribution
-nb.loglikelyhood <- function(hist.table, zero.items, size, mu)
+nb.loglikelihood <- function(hist.table, zero.items, size, mu)
 {
-  ## likelyhood of nonzero terms
+  ## likelihood of nonzero terms
   log.prob <- dnbinom(hist.table[, 1], size = size, mu = mu, log = TRUE)
-  loglikelyhood <- log.prob %*% hist.table[, 2]
+  loglikelihood <- log.prob %*% hist.table[, 2]
 
   ## add items with zero count
   log.zero.prob <- dnbinom(0, size = size, mu = mu, log = TRUE)
-  loglikelyhood <- loglikelyhood + zero.items * log.zero.prob
+  loglikelihood <- loglikelihood + zero.items * log.zero.prob
 
-  return(loglikelyhood)
+  return(loglikelihood)
 }
 
 
@@ -88,18 +88,18 @@ preseqR.ztnb.em <- function(n, size=SIZE.INIT, mu=MU.INIT)
 
   ## target function f
   f <- function(x) {
-        return( -nb.loglikelyhood(n, zero.items, size = x, mu = m)/L )
+        return( -nb.loglikelihood(n, zero.items, size = x, mu = m)/L )
   }
 
   ## derivative of f
-  gr <- function(x) 
+  gr <- function(x)
   {
-    first.term <- ( digamma(x) * zero.items + 
+    first.term <- ( digamma(x) * zero.items +
                     digamma(n[, 1] + size) %*% n[, 2] )/L
     second.term <- digamma(x)
     third.term <- log(x) - log(x + m)
     result <- first.term - second.term + third.term
-    # f is negative loglikelyhood
+    # f is negative loglikelihood
     return(-result)
   }
 
@@ -115,18 +115,18 @@ preseqR.ztnb.em <- function(n, size=SIZE.INIT, mu=MU.INIT)
   ## count the times of iteration
   iter <- as.double(1)
 
-  ## initialize the negative loglikelyhood
-  loglikelyhood.pre <- Inf
+  ## initialize the negative loglikelihood
+  loglikelihood.pre <- Inf
 
-  ## zerotruncated loglikelyhood 
-  loglikelyhood <- zerotruncated.minus.log.likelyhood(n, res$par, m)
+  ## zerotruncated loglikelihood
+  loglikelihood <- zerotruncated.minus.log.likelihood(n, res$par, m)
 
   ## EM algorithm
-  while (( loglikelyhood.pre - loglikelyhood )/observed.items > TOLERANCE &&
+  while (( loglikelihood.pre - loglikelihood )/observed.items > TOLERANCE &&
            iter < ITER.TOLERANCE)
   {
-    ## update negative loglikelyhood
-    loglikelyhood.pre <- loglikelyhood
+    ## update negative loglikelihood
+    loglikelihood.pre <- loglikelihood
 
     ## update parameters
     size <- res$par
@@ -159,10 +159,10 @@ preseqR.ztnb.em <- function(n, size=SIZE.INIT, mu=MU.INIT)
              lower = 0.0001, upper = 10000)
     }
     iter <- iter + 1
-    ## zerotruncated loglikelyhood
-    loglikelyhood <- zerotruncated.minus.log.likelyhood(n, res$par, m)
+    ## zerotruncated loglikelihood
+    loglikelihood <- zerotruncated.minus.log.likelihood(n, res$par, m)
   }
-  return(list(size = size, mu = mu, loglik = -loglikelyhood.pre))
+  return(list(size = size, mu = mu, loglik = -loglikelihood.pre))
 }
 
 
