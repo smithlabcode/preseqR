@@ -18,7 +18,7 @@
 #
 
 ## Two roots are the same if the difference is less than the PRECISION
-PRECISION = 1e-3
+PRECISION <- 1e-3
 
 
 ### interpolating for species accumulation curve with minimum count
@@ -47,7 +47,7 @@ preseqR.interpolate.mincount <- function(ss, n, r=1)
   ## if the sample size is the size of the experiment
   ## count the number of species observed r or more times
   else if (l == 1) {
-    index = which(n[, 1] >= r)
+    index <- which(n[, 1] >= r)
     result <- matrix(c(step.size, sum(as.numeric(n[index, 2]))), ncol = 2, byrow = FALSE)
     colnames(result) <- c('sample.size', 'interpolation')
     return(result)
@@ -117,15 +117,15 @@ generating.ps <- function(n, j) {
   hist.count <- hist.count[j: length(hist.count)]
 
   PS.coeffs <- sum(n[ j:dim(n)[1], 2])
-  change.sign = 0
+  change.sign <- 0
 
   for (i in hist.count) {
     PS.coeffs <- c(PS.coeffs, (-1)^change.sign * i - PS.coeffs[length(PS.coeffs)])
-    change.sign = change.sign + 1
+    change.sign <- change.sign + 1
   }
 
   ## truncate at coefficients where it is zero
-  zero.index = which(PS.coeffs == 0)
+  zero.index <- which(PS.coeffs == 0)
   if (length(zero.index) > 0) {
     PS.coeffs[1:(min(zero.index) - 1)]
   } else {
@@ -143,7 +143,7 @@ preseqR.pf.mincount <- function(n, mt = 100, ss = NULL,
   # check the input format of the histogram
   checking.hist(n)
   ## setting the diagonal value
-  di = 0
+  di <- 0
   ## minimum required number of terms of power series in order to construct
   ## a continued fraction approximation
   MIN_REQUIRED_TERMS <- 4
@@ -208,8 +208,8 @@ preseqR.pf.mincount <- function(n, mt = 100, ss = NULL,
 
   ## construct a continued fraction approximation including as many as possible
   ## terms
-  valid = FALSE
-  DE = seq(mt, MIN_REQUIRED_TERMS, by=-2)
+  valid <- FALSE
+  DE <- seq(mt, MIN_REQUIRED_TERMS, by=-2)
   for (de in DE) {
     ## continued fraction approximation to a power series
     out <- .C('c_PS2CF', as.integer(di), 
@@ -296,7 +296,7 @@ preseqR.pf.mincount <- function(n, mt = 100, ss = NULL,
           next
         }
         ## the estimator passes the requirement
-        valid = TRUE
+        valid <- TRUE
         ## calculate the constant C
         C <- coef(RF[[1]])[length(coef(RF[[1]]))] / 
              coef(RF[[2]])[length(coef(RF[[2]]))]
@@ -342,7 +342,7 @@ preseqR.pf.mincount <- function(n, mt = 100, ss = NULL,
   step <- step.size / total.sample
 
   ## extrapolating for the general accumulation curves
-  l = 1:length(r)
+  l <- 1:length(r)
   extrap <- lapply(l, function(x) {
       mincount.accum.curve.f[[x]](seq(start, end, by=step))})
 
@@ -373,7 +373,7 @@ general.preseqR.pf.mincount <- function(n, mt = 100, ss = NULL,
   # check the input format of the histogram
   checking.hist(n)
   ## setting the diagonal value
-  di = 0
+  di <- 0
   ## minimum required number of terms of power series in order to construct
   ## a continued fraction approximation
   MIN_REQUIRED_TERMS <- 4
@@ -437,9 +437,9 @@ general.preseqR.pf.mincount <- function(n, mt = 100, ss = NULL,
   }
 
   ## indicator for existing an estimator satisfying the requirement
-  valid = FALSE
+  valid <- FALSE
   ## using as many terms as possible
-  DE = seq(mt, MIN_REQUIRED_TERMS, by=-2)
+  DE <- seq(mt, MIN_REQUIRED_TERMS, by=-2)
   for (de in DE) {
     ## continued fraction approximation to a power series
     out <- .C('c_PS2CF', as.integer(di), 
@@ -532,7 +532,7 @@ general.preseqR.pf.mincount <- function(n, mt = 100, ss = NULL,
           next
         }
         ## the estimator satisfies the requirement
-        valid = TRUE
+        valid <- TRUE
         ## the multiplier C
         C <- coef(RF[[1]])[length(coef(RF[[1]]))] / 
              coef(RF[[2]])[length(coef(RF[[2]]))]
@@ -597,7 +597,7 @@ preseqR.pf.mincount.bootstrap <- function(n, bootstrap.times = 20, mt = 100,
   # check the input format of the histogram
   checking.hist(n)
   ## setting the diagonal value
-  di = 0
+  di <- 0
   ## minimum required number of terms of power series in order to construct
   ## a continued fraction approximation
   MIN_REQUIRED_TERMS <- 4
@@ -623,7 +623,7 @@ preseqR.pf.mincount.bootstrap <- function(n, bootstrap.times = 20, mt = 100,
   
   ## record second columns of resampled histograms                                  
   re.hist.second.col <- matrix(data = 0, nrow = length(n[, 1]),
-  ncol = MULTINOMIAL.SAMPLE.TIMES) 
+                               ncol = MULTINOMIAL.SAMPLE.TIMES) 
 
   ## the number of resampling times                                                 
   counter <- 0
@@ -642,7 +642,7 @@ preseqR.pf.mincount.bootstrap <- function(n, bootstrap.times = 20, mt = 100,
         max.extrapolation=max.extrapolation, r=r)
   }
   
-  BOOTSTRAP.times = bootstrap.times
+  BOOTSTRAP.times <- bootstrap.times
 
   while (bootstrap.times > 0) {
     ## do sampling with replacement
@@ -697,7 +697,7 @@ preseqR.pf.mincount.bootstrap <- function(n, bootstrap.times = 20, mt = 100,
 
       # confidence interval based on lognormal
       if (conf <= 0 && conf >= 1)
-        conf = 0.95
+        conf <- 0.95
       C <- exp(qnorm((1 + conf) / 2.0) * sqrt(log(1.0 + variance / (median.estimate^2))))
       left.interval <- median.estimate/C
       right.interval <- median.estimate*C
@@ -705,8 +705,8 @@ preseqR.pf.mincount.bootstrap <- function(n, bootstrap.times = 20, mt = 100,
       ## combine results and output a matrix
       result[[i]] <- matrix(c(index, median.estimate, left.interval, 
                             right.interval), ncol = 4, byrow = FALSE)
-      lower.ci = sprintf('lower.%.2fCI', conf)
-      upper.ci = sprintf('uppper.%.2fCI', conf)
+      lower.ci <- sprintf('lower.%.2fCI', conf)
+      upper.ci <- sprintf('uppper.%.2fCI', conf)
       colnames(result[[i]]) <- c('sample.size', paste("yield.estimates(r=", r[i], ")", sep=""), lower.ci, upper.ci)
     }
     return(result)

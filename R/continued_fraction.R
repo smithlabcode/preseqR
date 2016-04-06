@@ -250,7 +250,7 @@ preseqR.rfa.curve <- function(n, mt = 100, ss = NULL,
 {
   checking.hist(n)
   ## setting the diagonal value
-  di = 0
+  di <- 0
   ## minimum required number of terms of power series in order to construct
   ## a continued fraction approximation
   MIN_REQUIRED_TERMS <- 4
@@ -296,7 +296,7 @@ preseqR.rfa.curve <- function(n, mt = 100, ss = NULL,
   hist.count <- vector(length=max(n[, 1]), mode="numeric")
   hist.count[n[, 1]] <- n[, 2]
   ## only use non zeros items in histogram from begining up to the first zero
-  counts.before.first.zero = 1
+  counts.before.first.zero <- 1
   while (as.integer(counts.before.first.zero) <= length(hist.count) &&
          hist.count[counts.before.first.zero] != 0)
     counts.before.first.zero <- counts.before.first.zero + 1
@@ -305,9 +305,9 @@ preseqR.rfa.curve <- function(n, mt = 100, ss = NULL,
   ## conservatively estimates
   mt <- min(mt, counts.before.first.zero - 1)
   if (asym.linear == TRUE && (mt %% 2 == 0)) {
-    mt = mt - 1
+    mt <- mt - 1
   } else {
-    mt = mt - (mt %% 2)
+    mt <- mt - (mt %% 2)
   }
 
   ## pre-check to make sure the sample is good for prediction
@@ -399,7 +399,7 @@ preseqR.rfa.species.accum.curve <- function(
   n[, 2] <- floor(n[, 2])
  
   ## setting the diagonal value
-  di = 0
+  di <- 0
 
   ## calculate the total number of sample
   total.sample <- n[, 1] %*% n[, 2]
@@ -442,7 +442,7 @@ preseqR.rfa.species.accum.curve <- function(
     preseqR.rfa.curve(hist.table, mt, step.size, max.extrapolation, asym.linear=asym.linear)
   }
 
-  BOOTSTRAP.times = bootstrap.times
+  BOOTSTRAP.times <- bootstrap.times
 
   while (bootstrap.times > 0) {
     ## do sampling with replacement
@@ -490,7 +490,7 @@ preseqR.rfa.species.accum.curve <- function(
 
     # confidence interval based on lognormal
     if (conf <= 0 && conf >= 1)
-      conf = 0.95
+      conf <- 0.95
     C <- exp(qnorm((1 + conf) / 2.0) * sqrt(log(1.0 + variance / (median.estimate^2))))
     left.interval <- median.estimate/C
     right.interval <- median.estimate*C
@@ -498,8 +498,8 @@ preseqR.rfa.species.accum.curve <- function(
     ## combine results and output a matrix
     result <- matrix(c(index, median.estimate, left.interval, right.interval),
                     ncol = 4, byrow = FALSE)
-    lower.ci = sprintf('lower.%.2fCI', conf)
-    upper.ci = sprintf('uppper.%.2fCI', conf)
+    lower.ci <- sprintf('lower.%.2fCI', conf)
+    upper.ci <- sprintf('uppper.%.2fCI', conf)
     colnames(result) <- c('sample.size', 'yield.estimate', lower.ci, upper.ci)
     return(result)
   } else {

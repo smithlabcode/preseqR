@@ -19,12 +19,12 @@
 
 ### initial settings of two parameters size and mu in a negative binomial
 ### distribution for a numeric optimal searching function optim in R
-SIZE.INIT = 1
-MU.INIT = 0.5
+SIZE.INIT <- 1
+MU.INIT <- 0.5
 
 ### termination conditions for EM algorithm
-TOLERANCE = 1e-10
-ITER.TOLERANCE = 1e5
+TOLERANCE <- 1e-10
+ITER.TOLERANCE <- 1e5
 
 
 ### density function of a truncated zero negative binomial distribution
@@ -262,14 +262,14 @@ preseqR.ztnb.species.accum.curve <- function(n, ss = NULL, max.extrapolation = N
   L <- distinct/p
 
   ## estimate the item being sampled under new experiments with different size
-  t = sample.size/total.sample
-  dim(t) = length(t)
-  P = apply(t, 1, function(x) {1 - dnbinom(0, size, mu = x * mu)})
-  yield.estimates = L*P
+  t <- sample.size/total.sample
+  dim(t) <- length(t)
+  P <- apply(t, 1, function(x) {1 - dnbinom(0, size, mu = x * mu)})
+  yield.estimates <- L*P
 
   ## combine sample.size and yield.estimates into matrix
-  yield.estimates = matrix(c(sample.size, yield.estimates), ncol = 2, byrow = FALSE)
-  colnames(yield.estimates) = c('sample.size', 'yield.estimate')
+  yield.estimates <- matrix(c(sample.size, yield.estimates), ncol = 2, byrow = FALSE)
+  colnames(yield.estimates) <- c('sample.size', 'yield.estimate')
   return(yield.estimates)
 }
 
@@ -323,15 +323,15 @@ preseqR.ztnb.mincount <- function(n, ss = NULL, max.extrapolation = NULL, r=1,
   L <- distinct/p
 
   ## estimate the item being sampled under new experiments with different size
-  t = sample.size/total.sample
-  dim(t) = length(t)
-  max.r = max(r)
-  yield.estimates = list()
-  P = rep(1, length(t))
+  t <- sample.size/total.sample
+  dim(t) <- length(t)
+  max.r <- max(r)
+  yield.estimates <- list()
+  P <- rep(1, length(t))
   for (i in 1:max.r) {
-    P = P - apply(t, 1, function(x) dnbinom(i-1, size, mu=x*mu))
+    P <- P - apply(t, 1, function(x) dnbinom(i-1, size, mu=x*mu))
     if (i %in% r) {
-      yield.estimates = c(yield.estimates, list(L * P))
+      yield.estimates <- c(yield.estimates, list(L * P))
     }
   }
 
@@ -339,7 +339,7 @@ preseqR.ztnb.mincount <- function(n, ss = NULL, max.extrapolation = NULL, r=1,
   #      apply(t, 1, function(y) dnbinom(x, size, mu = y * mu))
   #      })
   #yield.estimates = lapply(1:length(r), function(x) {L * P[[x]]})
-  yield.estimates = lapply(1:length(r), function(x) {
+  yield.estimates <- lapply(1:length(r), function(x) {
       estimates <- matrix(c(sample.size, yield.estimates[[x]]), ncol = 2, byrow = FALSE)
       colnames(estimates) <- c("sample.size", paste("yield.estimates(r=", r[x], ")", sep=""))
       estimates
