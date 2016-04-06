@@ -1,5 +1,5 @@
 #    Copyright (C) 2016 University of Southern California and
-#                       Chao Deng
+#             Chao Deng and Andrew D. Smith and Timothy Daley
 #
 #    Authors: Chao Deng
 #
