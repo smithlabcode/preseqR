@@ -222,20 +222,25 @@ preseqR.pf.mincount <- function(n, mt = 100, ss = NULL,
               offset.coeffs =as.double(vector(mode='numeric',length=MAXLENGTH)),
               diagonal.idx = as.integer(0),
               degree = as.integer(0), is.valid = as.integer(0));
+    if (out$is.valid) {break}
+  }
+  if (out$is.valid) {
+    length(out$ps.coeffs) <- out$ps.coeffs.l
+    length(out$cf.coeffs) <- out$cf.coeffs.l
+    length(out$offset.coeffs) <- as.integer(abs(out$diagonal.idx))
+    CF.space <- list(out$ps.coeffs, out$cf.coeffs, out$offset.coeffs, 
+                     out$diagonal.idx, out$degree)
+    names(CF.space) <- c('ps.coeffs', 'cf.coeffs', 'offset.coeffs', 'diagonal.idx',
+                         'degree')
+    DE = seq(CF.space$degree, MIN_REQUIRED_TERMS, by=-2)
 
-    if (out$is.valid) {
-      ## pass results into R variables
-      length(out$ps.coeffs) <- out$ps.coeffs.l
-      length(out$cf.coeffs) <- out$cf.coeffs.l
-      length(out$offset.coeffs) <- as.integer(abs(out$diagonal.idx))
-      CF <- list(out$ps.coeffs, out$cf.coeffs, out$offset.coeffs, 
-                 out$diagonal.idx, out$degree)
+    for (de in DE) {
+      CF <- list(CF.space$ps.coeffs[1:de], CF.space$cf.coeffs[1:de],
+                 CF.space$offset.coeffs, CF.space$diagonal.idx, de)
       names(CF) <- c('ps.coeffs', 'cf.coeffs', 'offset.coeffs', 'diagonal.idx',
                      'degree')
       class(CF) <- 'CF'
-
-      ## convert the continued fraction to the RFA and be compatible with 
-      ## the constructed continued fraction in C extension
+      ## convert the continued fraction to the RFA 
       RF <- CF2RFA(CF)
       RF[[1]] <- RF[[1]] / polynomial(c(0, 1))
 
