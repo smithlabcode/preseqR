@@ -8,15 +8,15 @@
     Generating a histogram based on a Poisson mixture model. 
 }
 \usage{
-  preseqR.simu.hist(L=1e8, size, FUN)
+  preseqR.simu.hist(L=1e8, t, FUN)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{L}{
     A positive integer, the number of species in a population.
 }
-  \item{size}{
-    A positive interger, the size of a random sample.
+  \item{t}{
+    A positive interger, the relative sample size to the inital sample.
   }
   \item{FUN}{
     An RNG generating non negative real number.
@@ -50,7 +50,7 @@ f <- function(n) {
   rgamma(n, shape=0.5, scale=1)
 }
 
-preseqR.simu.hist(L=1e5, size=2e5, f)
+preseqR.simu.hist(L=1e5, t=1, f)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

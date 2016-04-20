@@ -602,7 +602,7 @@ general.preseqR.pf.mincount <- function(n, mt = 100, ss = NULL,
 ### CHAO: the main function
 preseqR.pf.mincount.bootstrap <- function(n, bootstrap.times = 20, mt = 100,
                                           ss = NULL, max.extrapolation = NULL, 
-                                          conf = 0.95, r=1)
+                                          conf = c(0.05, 0.95), r=1)
 {
   # check the input format of the histogram
   checking.hist(n)
@@ -703,20 +703,17 @@ preseqR.pf.mincount.bootstrap <- function(n, bootstrap.times = 20, mt = 100,
 
       # median values are used as complexity curve
       median.estimate <- apply(yield.estimates[[i]], 1, median)
-      variance <- apply(yield.estimates[[i]], 1, var)
 
       # confidence interval based on lognormal
-      if (conf <= 0 && conf >= 1)
-        conf <- 0.95
-      C <- exp(qnorm((1 + conf) / 2.0) * sqrt(log(1.0 + variance / (median.estimate^2))))
-      left.interval <- median.estimate/C
-      right.interval <- median.estimate*C
+      if (conf[1] < 0) conf[1] <- 0.05
+      if (conf[2] > 1) conf[2] <- 0.95
+      CI <- apply(yield.estimates[[i]], 1, function(x) {quantile(x, conf)})
 
       ## combine results and output a matrix
-      result[[i]] <- matrix(c(index, median.estimate, left.interval, 
-                            right.interval), ncol = 4, byrow = FALSE)
-      lower.ci <- sprintf('lower.%.2fCI', conf)
-      upper.ci <- sprintf('uppper.%.2fCI', conf)
+      result[[i]] <- matrix(c(index, median.estimate, CI[1, ], 
+                            CI[2, ]), ncol = 4, byrow = FALSE)
+      lower.ci <- sprintf('lower.%.2fCI', conf[1])
+      upper.ci <- sprintf('uppper.%.2fCI', conf[2])
       colnames(result[[i]]) <- c('sample.size', paste("yield.estimates(r=", r[i], ")", sep=""), lower.ci, upper.ci)
     }
     return(result)

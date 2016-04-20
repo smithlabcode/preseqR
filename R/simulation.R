@@ -30,11 +30,11 @@ get.expectation <- function(FUN) {
 
 ### generate the histogram based on the simulation
 ### L is the total number of species in a population
-### sample.size is the size of the sample
+### t is the relative sample size
 ### FUN is an RNG. It must take one argument as the number of random numbers
 ### generated and return the number of positive random numbers
 ### FUN can be defined by users
-preseqR.simu.hist <- function(L=1e8, size, FUN) {
+preseqR.simu.hist <- function(L=1e8, t, FUN) {
   if (L > 1e8) {
     L <- 1e8
   } else if (L <= 0) {
@@ -42,8 +42,6 @@ preseqR.simu.hist <- function(L=1e8, size, FUN) {
     return(NULL)
   }
   L <- as.integer(L)
-  E <- get.expectation(FUN)
-  t <- size / (L * E)
   ## save the poisson parameters for each individual in the population
   lambda <- FUN(L)
   ## S saves samples
