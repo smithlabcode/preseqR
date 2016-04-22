@@ -705,8 +705,8 @@ preseqR.pf.mincount.bootstrap <- function(n, bootstrap.times = 20, mt = 100,
       median.estimate <- apply(yield.estimates[[i]], 1, median)
 
       # confidence interval based on lognormal
-      if (conf[1] < 0) conf[1] <- 0.05
-      if (conf[2] > 1) conf[2] <- 0.95
+      if (conf[1] < 0 || conf[1] > 1) conf[1] <- 0.05
+      if (conf[2] > 1 || conf[2] > 1) conf[2] <- 0.95
       CI <- apply(yield.estimates[[i]], 1, function(x) {quantile(x, conf)})
 
       ## combine results and output a matrix
