@@ -392,8 +392,8 @@ preseqR.rfa.curve <- function(n, mt = 100, ss = NULL,
 
 ### generate complexity curve through bootstrapping the histogram
 preseqR.rfa.species.accum.curve <- function(
-    n, bootstrap.times = 20, mt = 100, ss = NULL,
-    max.extrapolation = NULL, conf = c(0.05, 0.95), asym.linear=FALSE)
+    n, bootstrap.times = 100, mt = 100, ss = NULL,
+    max.extrapolation = NULL, conf = 0.95, asym.linear=FALSE)
 {
   checking.hist(n)
   n[, 2] <- floor(n[, 2])
@@ -489,15 +489,17 @@ preseqR.rfa.species.accum.curve <- function(
     variance <- apply(yield.estimates, 1, var)
 
     # confidence interval based on lognormal
-    if (conf[1] < 0 || conf[1] > 1) conf[1] <- 0.05
-    if (conf[2] > 1 || conf[2] > 1) conf[2] <- 0.95
-    CI <- apply(yield.estimates, 1, function(x) {quantile(x, conf)})
+    if (conf <= 0 && conf >= 1)
+      conf <- 0.95
+    C <- exp(qnorm((1 + conf) / 2.0) * sqrt(log(1.0 + variance / (median.estimate^2))))
+    left.interval <- median.estimate/C
+    right.interval <- median.estimate*C
 
     ## combine results and output a matrix
-    result <- matrix(c(index, median.estimate, CI[1, ], CI[2, ]),
-                    ncol = 4, byrow = FALSE)
-    lower.ci <- sprintf('lower.%.2fCI', conf[1])
-    upper.ci <- sprintf('uppper.%.2fCI', conf[2])
+    result <- matrix(c(index, median.estimate, left.interval, right.interval), 
+                          ncol = 4, byrow = FALSE)
+    lower.ci <- sprintf('lower.%.2fCI', conf)
+    upper.ci <- sprintf('uppper.%.2fCI', conf)
     colnames(result) <- c('sample.size', 'yield.estimate', lower.ci, upper.ci)
     return(result)
   } else {

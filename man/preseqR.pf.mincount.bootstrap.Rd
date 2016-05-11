@@ -11,8 +11,8 @@ Estimating the number of species represented r or more times
     intervals.
 }
 \usage{
-preseqR.pf.mincount.bootstrap(n, bootstrap.times = 20, mt = 100, ss = NULL, 
-                              max.extrapolation = NULL, conf = c(0.05, 0.95), r=1)
+preseqR.pf.mincount.bootstrap(n, bootstrap.times = 100, mt = 100, ss = NULL, 
+                              max.extrapolation = NULL, conf = 0.95, r=1)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -40,7 +40,7 @@ preseqR.pf.mincount.bootstrap(n, bootstrap.times = 20, mt = 100, ss = NULL,
     Default value is 100 times the size of the initial sample.
 }
   \item{conf}{
-    The confidence interval. Default value is [0.05, 0.95].
+    The confidence level. Default value is 0.95.
   }
   \item{r}{
     A vector of positive integers. Default is 1.

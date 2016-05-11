@@ -11,7 +11,7 @@
   curve and construct confidence intervals. 
 }
 \usage{
-preseqR.rfa.species.accum.curve(n, bootstrap.times = 20,
+preseqR.rfa.species.accum.curve(n, bootstrap.times = 100,
 mt = 100, ss = NULL, max.extrapolation = NULL, conf = 0.95, asym.linear=FALSE)
 }
 %- maybe also 'usage' for other objects documented here.
