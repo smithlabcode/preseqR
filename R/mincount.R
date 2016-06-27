@@ -399,18 +399,17 @@ general.preseqR.pf.mincount <- function(n, mt = 100, ss = NULL,
 
   ## no interpolation if step.size is larger than the size of the initial experiment
   if (step.size > total.sample) {
-    yield.estimates <- vector(mode = 'numeric', length = 0)
+    yield.estimates <- NULL
 
     ## starting sample size for extrapolation
     starting.size <- step.size
   } else {
-      ## interpolation when sample size is no more than total sample size
-      ## interpolate and set the size of the sample for an initial extrapolation
-      out <- preseqR.interpolate.mincount(step.size, n, r)
-      yield.estimates <- out[, 2]
-
-      ## starting sample size for extrapolation
-      starting.size <- ( floor(total.sample/step.size) + 1 )*step.size
+    ## interpolating when sample size is no more than total sample size           
+    ## and setting the size of the sample for an initial extrapolation            
+    yield.estimates <- lapply(r, function(x) {preseqR.interpolate.mincount(step.size, n, x)})
+                                                                                                
+    ## starting sample size for extrapolation                                     
+    starting.size <- ( floor(total.sample/step.size) + 1 )*step.size   
   }
 
   if (is.null(max.extrapolation)) {
@@ -493,8 +492,8 @@ general.preseqR.pf.mincount <- function(n, mt = 100, ss = NULL,
       tmp.roots <- c()
 
       ## simplify the rational function approximation
-      ## two roots are considered to be identical if the difference is less than
-      ## the predefined PRECISION
+      ## two roots are same if the difference is less than the 
+      ## predefined PRECISION
       if (length(numer.roots.pos) > 0) {
         for (i in 1:length(numer.roots.pos)) {
           if (length(denom.roots.pos) > 0) {
@@ -514,14 +513,12 @@ general.preseqR.pf.mincount <- function(n, mt = 100, ss = NULL,
       numer.roots <- numer.roots[!numer.roots %in% tmp.roots]
       denom.roots <- c(denom.roots.neg, denom.roots.pos)
 
-      ## convert roots from t - 1 to t for applying pacman rule
+      ## convert roots from t - 1 to t
       roots <- denom.roots + 1
-      ## assume 1 <= t <= max range
       ## max.range = max.extrapolation / total.sample
       ## pacman rule checking
-      if (length(which(roots == 0)) || length(which(Re(roots) > 0 & 
-          Mod(roots) / Re(roots) / 2 <= as.double(max.extrapolation / total.sample)))) {
-        next
+      if (length(which(roots == 0)) || length(which(Re(roots) > 0))) {
+        next                                                                        
       } else {
         poly.numer <- as.function(poly.from.roots(numer.roots))
         l <- length(denom.roots)
@@ -531,36 +528,30 @@ general.preseqR.pf.mincount <- function(n, mt = 100, ss = NULL,
         ## c_i in the estimator
         coef <- sapply(1:l, function(x) {
           poly.numer(denom.roots[x]) / prod(denom.roots[x] - denom.roots[-x])})
-
-        ## modify the coefficients when using count frequencies not starting
-        ## count frequency 1
-        coef <- coef * (-denom.roots)^(start.freq - 1)
-        ## check whether the estimator is non-decreased
-        deriv.f <- function(t) {
-          Re(sapply(t, function(x) {-(coef*roots) %*% ( 1 / ((x-denom.roots)^2))}))} 
-        if (length(which( deriv.f(seq(0.05, as.double(max.extrapolation / total.sample), by=0.05)) < 0 ) != 0)) {
-          next
-        }
-        ## the estimator satisfies the requirement
-        valid <- TRUE
-        ## the multiplier C
+        ## calculate the constant C
         C <- coef(RF[[1]])[length(coef(RF[[1]]))] / 
              coef(RF[[2]])[length(coef(RF[[2]]))]
         ## species accum curves with minimum count r
         ## using parital fraction expansion
-        ## f is actually a function of "t -1" 
-        f <- function(t) { 
-          Re(sapply(t, function(x) {coef %*% ( (x+1)/(x-denom.roots) )^r})) * C}
-        ## a function of "t"
-        mincount.accum.curve.f <- function(x) {f(x - 1)}
+        denom.roots <- denom.roots + 1
+        coef <- coef * C
+        ## modify the coefficients
+        coef <- coef * (1 - denom.roots)^(start.freq - 1)
+        ## check whether the estimator is non-decreased                             
+        deriv.f <- function(t) {
+          Re(sapply(t, function(x) {-(coef*denom.roots) %*% ( 1 / ((x-denom.roots)^2))}))} 
+        if (length(which( deriv.f(seq(0.05, as.double(max.extrapolation / total.sample), by=0.05)) < 0 ) != 0)) {
+          next
+        }
+        ## the estimator passes the requirement
+        valid <- TRUE
+
+        mincount.f.elements <- list(coef, denom.roots)
+        mincount.accum.curve.f <- lapply(r, function(x) {
+            function(t) { Re(sapply(t, function(y) {coef %*% ( y / (y-denom.roots) )^x}))}})
         break
       }
     }
-  }
-
-  ## valid is true if existing a RFA that satisfies pacman rule
-  if (valid == FALSE) {
-    return(NULL)
   }
 
   ## if the sample size is larger than max.extrapolation
@@ -569,10 +560,21 @@ general.preseqR.pf.mincount <- function(n, mt = 100, ss = NULL,
   ## result
   if (starting.size > (max.extrapolation + MINOR.correction))
   {
-    index <- as.double(step.size) * (1:length(yield.estimates))
-    yield.estimates <- list(sample.size = index, yields = yield.estimates)
-    result <- list(continued.fraction = CF, yield.estimates = yield.estimates)
-    return(result)
+    if (length(yield.estimates) == 0) {
+      return(NULL)
+    } else {
+      l <- 1:length(r)
+      result <- lapply(l, function(x) {
+          estimates <- yield.estimates[[x]]
+          colnames(estimates) <- c("sample.size", paste("yield.estimates(r=", r[x], ")", sep=""))
+          })
+      return(result)
+    }
+  }
+
+  ## valid is true if existing a RFA that satisfies pacman rule
+  if (valid == FALSE) {
+    return(NULL)
   }
 
   ## extrapolation for experiment with large sample size
@@ -581,20 +583,22 @@ general.preseqR.pf.mincount <- function(n, mt = 100, ss = NULL,
   step <- step.size / total.sample
 
   ## extrapolating for the general accumulation curves
-  extrap <- mincount.accum.curve.f(seq(start, end, by=step))
+  l <- 1:length(r)
+  extrap <- lapply(l, function(x) {
+      mincount.accum.curve.f[[x]](seq(start, end, by=step))})
 
-  ## combine results from interpolation/extrapolation
-  yield.estimates <- c(yield.estimates, extrap)
-  index <- as.double(step.size) * (1: length(yield.estimates))
+  result <- lapply(l, function(x) {
+      ## combine results from interpolation and extrapolation
+      estimates <- c(yield.estimates[[x]][, 2], extrap[[x]])
+      index <- as.double(step.size) * (1: length(estimates))
+      ## put index and estimated yields together into a two-colunm matrix
+      estimates <- matrix(c(index, estimates), ncol = 2, byrow = FALSE)
+      colnames(estimates) <- c("sample.size", paste("yield.estimates(r=", r[x], ")", sep=""))
+      estimates
+      })
 
-  ## put index and estimated yields together into a two-colunm matrix
-  yield.estimates <- matrix(c(index, yield.estimates), ncol = 2, byrow = FALSE)
-  colnames(yield.estimates) <- c('sample.size', 'yield.estimate')
-
-  result <- list(estimator=mincount.accum.curve.f, estimates=yield.estimates)
-  return(result)
+  list(PF.elements=mincount.f.elements, yield.estimates=result)
 }
-
 
 
 ### species accum curves based on parital fraction expansion of
