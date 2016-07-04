@@ -29,12 +29,13 @@ preseqR.interpolate.mincount <- function(ss, n, r=1)
 {
   checking.hist(n)
 
+  n[, 2] <- as.numeric(n[, 2])
   ## total individuals captured
-  total.sample <- as.double(n[, 1] %*% n[, 2])
+  total.sample <- n[, 1] %*% n[, 2]
   N <- total.sample
 
   ## total species
-  initial.distinct <- sum(as.numeric(n[, 2]))
+  initial.distinct <- sum(n[, 2])
   step.size <- as.double(ss)
 
   ## l is the number of sampled points for interpolation
@@ -48,7 +49,7 @@ preseqR.interpolate.mincount <- function(ss, n, r=1)
   ## count the number of species observed r or more times
   else if (l == 1) {
     index <- which(n[, 1] >= r)
-    result <- matrix(c(step.size, sum(as.numeric(n[index, 2]))), ncol = 2, byrow = FALSE)
+    result <- matrix(c(step.size, sum(n[index, 2])), ncol = 2, byrow = FALSE)
     colnames(result) <- c('sample.size', 'interpolation')
     return(result)
   }
@@ -148,8 +149,9 @@ preseqR.pf.mincount <- function(n, mt = 100, ss = NULL,
   ## a continued fraction approximation
   MIN_REQUIRED_TERMS <- 4
 
+  n[, 2] <- as.numeric(n[, 2])
   ## total individuals
-  total.sample <- as.double(n[, 1] %*% n[, 2])
+  total.sample <- n[, 1] %*% n[, 2]
 
   ## set step.size as the size of the initial experiment if it is undefined
   if (is.null(ss)) {
@@ -295,6 +297,7 @@ preseqR.pf.mincount <- function(n, mt = 100, ss = NULL,
         coef <- sapply(1:l, function(x) {
           poly.numer(denom.roots[x]) / prod(denom.roots[x] - denom.roots[-x])})
         ## check whether the estimator is non-decreased
+        ## NOTE: it only checks for t >= 1 !!!
         deriv.f <- function(t) {
           Re(sapply(t, function(x) {-(coef*roots) %*% ( 1 / ((x-denom.roots)^2))}))} 
         if (length(which( deriv.f(seq(0.05, as.double(max.extrapolation / total.sample), by=0.05)) < 0 ) != 0)) {
@@ -383,8 +386,9 @@ general.preseqR.pf.mincount <- function(n, mt = 100, ss = NULL,
   ## a continued fraction approximation
   MIN_REQUIRED_TERMS <- 4
 
+  n[, 2] <- as.numeric(n[, 2])
   ## total individuals
-  total.sample <- as.double(n[, 1] %*% n[, 2])
+  total.sample <- n[, 1] %*% n[, 2]
 
   ## set step.size as the size of the initial experiment if it is undefined
   if (is.null(ss)) {
@@ -616,6 +620,7 @@ preseqR.pf.mincount.bootstrap <- function(n, bootstrap.times = 100, mt = 100,
   ## a continued fraction approximation
   MIN_REQUIRED_TERMS <- 4
 
+  n[, 2] <- as.numeric(n[, 2])
   ## total individuals
   total.sample <- as.double(n[, 1] %*% n[, 2])
 

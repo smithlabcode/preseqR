@@ -88,6 +88,7 @@ preseqR.ztnb.em <- function(n, size=SIZE.INIT, mu=MU.INIT)
 {
   checking.hist(n)
 
+  n[, 2] <- as.numeric(n[, 2])
   ## setting the number of unobserved items as 0
   zero.prob <- exp(dnbinom(0, size = size, mu = mu, log = TRUE))
 
@@ -97,9 +98,6 @@ preseqR.ztnb.em <- function(n, size=SIZE.INIT, mu=MU.INIT)
 
   ## expected the number of unobservations
   zero.items <- L*zero.prob
-
-  ## convert zero.items into an integer
-  zero.items <- floor(zero.items)
 
   ## estimated mean and variance
   m <- (n[, 1] %*% n[, 2]) / L
@@ -162,9 +160,6 @@ preseqR.ztnb.em <- function(n, size=SIZE.INIT, mu=MU.INIT)
     ## update expected number of unobserved items
     zero.items <- L*zero.prob
 
-    ## convert zero.items into an integer
-    zero.items <- floor(zero.items)
-
     ## estimated mean and variance
     m <- (n[, 1] %*% n[, 2])/L
     v <- ( (n[, 1] - m)^2 %*% n[, 2] + m^2 * zero.items )/(L - 1)
@@ -191,6 +186,7 @@ preseqR.ztnb.estimate <- function(n, t, size=SIZE.INIT, mu=MU.INIT)
 {
   checking.hist(n)
 
+  n[, 2] <- as.numeric(n[, 2])
   distinct <- sum(n[, 2])
 
   ## estimate the parameters
@@ -222,7 +218,9 @@ preseqR.ztnb.species.accum.curve <- function(n, ss = NULL, max.extrapolation = N
 {
   checking.hist(n)
 
-  total.sample <- floor(n[, 1] %*% n[, 2])
+  n[, 2] <- as.numeric(n[, 2])
+
+  total.sample <- n[, 1] %*% n[, 2]
   distinct <- sum(n[, 2])
 
   ## set step.size = total.sample if it is undefined
@@ -238,14 +236,14 @@ preseqR.ztnb.species.accum.curve <- function(n, ss = NULL, max.extrapolation = N
 
     ## T is the number of experiments; 100 is a magic number
     max.extrapolation <- 100*total.sample
-    T <- as.integer( max.extrapolation/ss )
+    T <- floor( max.extrapolation/ss )
 
   } else if (max.extrapolation < ss) {
     write("max.extrapolation should be no less then ss", stderr())
     return(NULL)
   } else {
     # T is the number of experiments
-    T <- as.integer( max.extrapolation/ss )
+    T <- floor( max.extrapolation/ss )
   }
 
   sample.size <- as.double(ss) * (1: T)
@@ -283,7 +281,8 @@ preseqR.ztnb.mincount <- function(n, ss = NULL, max.extrapolation = NULL, r=1,
 {
   checking.hist(n)
 
-  total.sample <- floor(n[, 1] %*% n[, 2])
+  n[, 2] <- as.numeric(n[, 2])
+  total.sample <- n[, 1] %*% n[, 2]
   distinct <- sum(n[, 2])
 
   ## set step.size = total.sample if it is undefined
@@ -299,14 +298,14 @@ preseqR.ztnb.mincount <- function(n, ss = NULL, max.extrapolation = NULL, r=1,
 
     ## T is the number of experiments; 100 is a magic number
     max.extrapolation <- 100*total.sample
-    T <- as.integer( max.extrapolation/ss )
+    T <- floor( max.extrapolation/ss )
 
   } else if (max.extrapolation < ss) {
     write("max.extrapolation should be no less then ss", stderr())
     return(NULL)
   } else {
     # T is the number of experiments
-    T <- as.integer( max.extrapolation/ss )
+    T <- floor( max.extrapolation/ss )
   }
 
   sample.size <- as.double(ss) * (1: T)
