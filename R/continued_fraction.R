@@ -149,7 +149,7 @@ preseqR.extrapolate.distinct <- function(n, CF, start.size = NULL,
 
 
 lchoose <- function(N, k) {
-  lgamma(N + 1) - lgamma(k + 1) - lgamma(N - k + 1)
+  sapply(k, function(x) lgamma(N + 1) - lgamma(x + 1) - lgamma(N - x + 1))
 }
 
 ### interpolate when the sample size is no more than the size of
