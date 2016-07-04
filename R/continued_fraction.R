@@ -102,7 +102,7 @@ preseqR.extrapolate.distinct <- function(n, CF, start.size = NULL,
   di <- as.integer(0)
   de <- as.integer(CF$degree)
 
-  total.sample <- floor(n[, 1] %*% n[, 2])
+  total.sample <- n[, 1] %*% n[, 2]
 
   ## set start.size, step.size, max.size if they are not defined by user
   if (is.null(start.size))
@@ -132,14 +132,14 @@ preseqR.extrapolate.distinct <- function(n, CF, start.size = NULL,
             estimate = as.double(vector(mode = 'numeric', extrap.size)),
             estimate.l = as.integer(0));
 
-  initial_sum <- floor(sum(n[, 2]))
+  initial_sum <- sum(n[, 2])
   extrapolation <- out$estimate[ 1:out$estimate.l ] + initial_sum
 
   ## sample size vector for extrapolation
   sample.size <- total.sample * (start.size + step.size*((1:length(extrapolation)) - 1)) + 
                  total.sample
   ## estimation should be conservative
-  sample.size <- ceiling(sample.size)
+  sample.size <- sample.size
 
   ## put sample.size and extrapolation results together into a matrix
   result <- matrix(c(sample.size, extrapolation), ncol = 2, byrow = FALSE)
@@ -148,45 +148,9 @@ preseqR.extrapolate.distinct <- function(n, CF, start.size = NULL,
 }
 
 
-## sampling without replacement
-## n frequencies counts
-nonreplace.sampling <- function(size, n)
-{
-  ## make sure frequencies are integers
-  n[, 2] <- floor(n[, 2])
-  ## the number of distinct items
-  distinct <- sum(n[, 2])
-
-  ## identifier for each distinct item
-  ind <- 1:distinct
-
-  ## the size of each read in the library
-  N <- rep(n[, 1], n[, 2])
-
-  ## construct a sample space X 
-  ## the whole library represents by its indexes. If a read presents t
-  ## times in the library, its indexes presents t times in X
-  X <- rep(ind, N)
-
-  return(sample(X, size, replace = FALSE))
+lchoose <- function(N, k) {
+  lgamma(N + 1) - lgamma(k + 1) - lgamma(N - k + 1)
 }
-
-
-## sampling without replacement
-## input frequencies counts; output subsample as a frequencies counts
-preseqR.nonreplace.sampling <- function(size, n)
-{
-  ## check the input histogram file
-  checking.hist(n)
-  ## sub sampling
-  X <- nonreplace.sampling(size, n)
-  ## record the freq of each sampled species
-  freq.counts <- hist(X, breaks=0:max(X), plot=FALSE)$count
-  ## frequencies counts; frequency 0 excluded
-  T <- hist(freq.counts, breaks=-1:max(freq.counts), plot=FALSE)$counts[-1]
-  matrix(c(which(T != 0), T[which(T != 0)]), byrow = FALSE, ncol=2)
-}
-
 
 ### interpolate when the sample size is no more than the size of
 ### the initial experiment
@@ -195,10 +159,10 @@ preseqR.interpolate.distinct <- function(ss, n)
   checking.hist(n)
 
   ## calculate total number of sample
-  total.sample <- n[, 1] %*% n[, 2]
-  N <- floor(total.sample)
+  n[, 2] <- as.numeric(n[, 2])
+  N <- n[, 1] %*% n[, 2]
 
-  initial.distinct <- sum(as.numeric(n[, 2]))
+  initial.distinct <- sum(n[, 2])
   ## the total individuals captured
   step.size <- as.double(ss)
 
@@ -257,17 +221,16 @@ preseqR.rfa.curve <- function(n, mt = 100, ss = NULL,
 
   ## calculate total number of sample
   total.sample <- n[, 1] %*% n[, 2]
-  total.sample <- floor(total.sample)
 
   ## set step.size as the size of the initial experiment if it is undefined
   if (is.null(ss)) {
-    ss <- floor(total.sample)
+    ss <- total.sample
     step.size <- ss
   } else if (ss < 1) {
     write("step size is should be at least one", stderr())
     return(NULL)
   } else {
-    step.size <- floor(ss)
+    step.size <- ss
   }
 
   ## no interpolation if step.size is larger than the size of experiment
@@ -284,7 +247,7 @@ preseqR.rfa.curve <- function(n, mt = 100, ss = NULL,
       yield.estimates <- out[, 2]
 
       ## starting sample size for extrapolation
-      starting.size <- ( as.integer(total.sample/step.size) + 1 )*step.size
+      starting.size <- ( floor(total.sample/step.size) + 1 )*step.size
   }
 
   if (is.null(max.extrapolation)) {
@@ -396,7 +359,7 @@ preseqR.rfa.species.accum.curve <- function(
     max.extrapolation = NULL, conf = 0.95, asym.linear=FALSE)
 {
   checking.hist(n)
-  n[, 2] <- floor(n[, 2])
+  n[, 2] <- as.numeric(n[, 2])
  
   ## setting the diagonal value
   di <- 0
@@ -412,7 +375,7 @@ preseqR.rfa.species.accum.curve <- function(
     write("step size should be at least one", stderr())
     return(NULL)
   } else {
-    step.size <- floor(ss)
+    step.size <- ss
   }
 
   ## set the maximum extrapolation size if it is undefined
@@ -497,7 +460,7 @@ preseqR.rfa.species.accum.curve <- function(
 
     ## combine results and output a matrix
     result <- matrix(c(index, median.estimate, left.interval, right.interval), 
-                          ncol = 4, byrow = FALSE)
+                       ncol = 4, byrow = FALSE)
     lower.ci <- sprintf('lower.%.2fCI', conf)
     upper.ci <- sprintf('uppper.%.2fCI', conf)
     colnames(result) <- c('sample.size', 'yield.estimate', lower.ci, upper.ci)
