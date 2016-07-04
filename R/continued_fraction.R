@@ -149,7 +149,7 @@ preseqR.extrapolate.distinct <- function(n, CF, start.size = NULL,
 
 
 lchoose <- function(N, k) {
-  sapply(k, function(x) lgamma(N + 1) - lgamma(x + 1) - lgamma(N - x + 1))
+  lgamma(N + 1) - lgamma(k + 1) - ifelse(N - k + 1 > 0, lgamma(N - k + 1), Inf)
 }
 
 ### interpolate when the sample size is no more than the size of
@@ -167,7 +167,7 @@ preseqR.interpolate.distinct <- function(ss, n)
   step.size <- as.double(ss)
 
   ## l is the number of interpolation points
-  l <- as.integer(N / step.size)
+  l <- floor(N / step.size)
 
   ## if the sample size is larger than the size of experiment or 
   ## the step size is too small, return NULL
