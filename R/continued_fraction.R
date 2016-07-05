@@ -147,9 +147,56 @@ preseqR.extrapolate.distinct <- function(n, CF, start.size = NULL,
   return(result)
 }
 
+## sampling without replacement
+## n frequencies counts
+nonreplace.sampling <- function(size, n)
+{
+  ## make sure frequencies are integers
+  n[, 2] <- floor(n[, 2])
+  ## the number of distinct items
+  distinct <- sum(n[, 2])
+
+  ## identifier for each distinct item
+  ind <- 1:distinct
+
+  ## the size of each read in the library
+  N <- rep(n[, 1], n[, 2])
+
+  ## construct a sample space X 
+  ## the whole library represents by its indexes. If a read presents t
+  ## times in the library, its indexes presents t times in X
+  X <- rep(ind, N)
+
+  return(sample(X, size, replace = FALSE))
+}
+
+
+## sampling without replacement
+## input frequencies counts; output subsample as a frequencies counts
+preseqR.nonreplace.sampling <- function(size, n)
+{
+  ## check the input histogram file
+  checking.hist(n)
+  ## sub sampling
+  X <- nonreplace.sampling(size, n)
+  ## record the freq of each sampled species
+  freq.counts <- hist(X, breaks=0:max(X), plot=FALSE)$count
+  ## frequencies counts; frequency 0 excluded
+  T <- hist(freq.counts, breaks=-1:max(freq.counts), plot=FALSE)$counts[-1]
+  matrix(c(which(T != 0), T[which(T != 0)]), byrow = FALSE, ncol=2)
+}
+
 
 lchoose <- function(N, k) {
-  lgamma(N + 1) - lgamma(k + 1) - ifelse(N - k + 1 > 0, lgamma(N - k + 1), Inf)
+  result <- vector(length=max(length(N), length(k)), mode="numeric")
+  index <- which(N - k + 1 > 0)
+  if (length(index) == 0) {
+    result[] <- -Inf }
+  else {
+    result[index] <- (lgamma(N + 1) - lgamma(k + 1))[index] - lgamma((N - k + 1)[index])
+    result[-index] <- -Inf
+  }
+  result
 }
 
 ### interpolate when the sample size is no more than the size of
