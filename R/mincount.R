@@ -105,23 +105,22 @@ CF2RFA <- function(CF)
 
 ### power series based on count frequencies starting from frequency j
 ### when j = 1, it is the power series expansion of E(S_1(t)) / t at t = 1
-generating.ps <- function(n, j) {
+### the maximum number of terms
+generating.ps <- function(n, j, mt) {
+  if (j >= max(n[, 1])) return(NULL)
   ## transform a histogram into a vector of frequencies
   hist.count <- vector(length=max(n[, 1]), mode="numeric")
   hist.count[n[, 1]] <- n[, 2]
-  
-  if (j >= length(hist.count)) {
-    return(NULL)
-  }
 
   ## shift to required count frequencies
   hist.count <- hist.count[j: length(hist.count)]
 
-  PS.coeffs <- sum(n[ j:dim(n)[1], 2])
+  PS.coeffs <- sum(hist.count)
   change.sign <- 0
 
-  for (i in hist.count) {
-    PS.coeffs <- c(PS.coeffs, (-1)^change.sign * i - PS.coeffs[length(PS.coeffs)])
+  ## preserve extra precision mt+1
+  for (i in 1:(min(mt+1, length(hist.count)))) {
+    PS.coeffs <- c(PS.coeffs, (-1)^change.sign * hist.count[i] - PS.coeffs[length(PS.coeffs)])
     change.sign <- change.sign + 1
   }
 
@@ -186,7 +185,7 @@ preseqR.pf.mincount <- function(n, mt = 100, ss = NULL,
   }
 
   ## constructing the power series
-  PS.coeffs <- generating.ps(n, 1)
+  PS.coeffs <- generating.ps(n, 1, mt=mt)
 
   if (is.null(PS.coeffs)) {
     write("the size of the initial experiment is insufficient", stderr())
@@ -422,7 +421,7 @@ general.preseqR.pf.mincount <- function(n, mt = 100, ss = NULL,
   }
 
   ## power series for approximation 
-  PS.coeffs <- generating.ps(n, start.freq)
+  PS.coeffs <- generating.ps(n, start.freq, mt=mt)
 
   if (is.null(PS.coeffs)) {
     write("the size of the initial experiment is insufficient", stderr())
