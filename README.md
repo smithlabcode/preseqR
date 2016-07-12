@@ -17,4 +17,4 @@ work:
   5.  Extra functions are provided to estimate the number of species represented
       at least r times in a random sample.
 
-See <http://cran.r-project.org/web/packages/preseqR/index.html> for details.
+See <https://cran.r-project.org/package=preseqR> for details.

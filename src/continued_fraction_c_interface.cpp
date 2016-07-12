@@ -23,7 +23,8 @@
 #include "continued_fraction.h"
 
 using std::vector;
-using std::isfinite;
+
+#include <R_ext/Arith.h>
 
 
 /* 
@@ -197,7 +198,7 @@ extern "C" {
     CF.extrapolate_distinct(100, 0.05, estimates);
     // checking the function is well-defined
     for (size_t i = 1; i < estimates.size(); ++i) 
-      if (!std::isfinite(estimates[i])) {
+      if (!R_FINITE(estimates[i])) {
         ContinuedFraction empty;
         *is_valid = empty.is_valid();
         return;
