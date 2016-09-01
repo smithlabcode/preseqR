@@ -112,7 +112,7 @@ preseqR.ztnb.em <- function(n, size=SIZE.INIT, mu=MU.INIT)
   gr <- function(x)
   {
     first.term <- ( digamma(x) * zero.items +
-                    digamma(n[, 1] + size) %*% n[, 2] )/L
+                    digamma(n[, 1] + x) %*% n[, 2] )/L
     second.term <- digamma(x)
     third.term <- log(x) - log(x + m)
     result <- first.term - second.term + third.term
