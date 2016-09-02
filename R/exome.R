@@ -18,8 +18,8 @@
 
 
 pois.mincount <- function(n, L, r=1) {
-    lambda = n[, 1] %*% n[, 2] / L
-    function(t) <- {
+    lambda <- n[, 1] %*% n[, 2] / L
+    function(t) {
       L * ppois(q=r - 1, lambda=lambda * t, lower.tail=FALSE)
     }
 }
@@ -102,7 +102,7 @@ nb.mincount <- function(n, L, r=1)
   mu <- opt$mu
 
   function(t) {
-    L * pnbinom(r-1, size=size, mu=mu, lower.tail=FALSE)
+    L * pnbinom(r-1, size=size, mu=mu*t, lower.tail=FALSE)
   }
 }
 
