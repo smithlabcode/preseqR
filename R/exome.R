@@ -107,7 +107,7 @@ nb.mincount <- function(n, L, r=1)
 }
 
 
-ds.mincount <- function(n, L, r=1, mt=100)
+ds.mincount <- function(n, r=1, mt=100)
 {
   ## setting the diagonal value
   di <- 0
@@ -255,7 +255,9 @@ ds.mincount <- function(n, L, r=1, mt=100)
   f.mincount
 }
 
-ds.bootstrap.mincount <- function(n, L, r=1, mt=100, times=100)
+
+## nonparametric approach Deng & Smith 2016
+ds.mincount.bootstrap <- function(n, r=1, mt=100, times=100)
 {
   n[, 2] <- as.numeric(n[, 2])
   ## total individuals
@@ -264,22 +266,29 @@ ds.bootstrap.mincount <- function(n, L, r=1, mt=100, times=100)
   ## the number of resampling times                                                 
   counter <- 0
   ## returned function
-  f.mincount <- list()
+  f.mincount <- vector(length=times, mode="list")
 
   ## upperbound of times of iterations for bootstrapping
-  upper.limit <- times/BOOTSTRAP.factor
+  upper.limit <- times / BOOTSTRAP.factor
+
+  ds.estimator <- function(n, r, mt, t.scale) {
+    f <- ds.mincount(n, r=r, mt=mt)
+    if (is.null(f)) {
+      return(NULL)
+    } else {
+      function(t) {f(t * t.scale)}
+    }
+  }
 
   while (times > 0) {
     n.bootstrap <- matrix(c(n[, 1], rmultinom(1, sum(n[, 2]), n[, 2])), ncol=2)
     total.bootstrap <- n.bootstrap[, 1] %*% n.bootstrap[, 2]
-    f <-  ds.mincount(n.bootstrap, L, r=r, mt=mt) 
+    t.scale <- total / total.bootstrap
+    f <-  ds.estimator(n.bootstrap, r=r, mt=mt, t.scale=t.scale) 
     counter <- counter + 1
     if (!is.null(f)) {
-      ## construct one more estimator
+      f.mincount[[times]] <- f
       times <- times - 1
-      ## correct t
-      t.factor <- total / total.bootstrap
-      f.mincount <- c(f.mincount, function(t) f(t * t.factor))
     }
     if (counter > upper.limit)
       break
@@ -288,6 +297,46 @@ ds.bootstrap.mincount <- function(n, L, r=1, mt=100, times=100)
     write("fail to bootstrap!", stderr())
     return(NULL)
   } else {
-    function(t) median(sapply(f.mincount, function(x) x(t)))
+    if (length(r) == 1)
+      return(function(t) {median( sapply(f.mincount, function(x) x(t)) )})
+    return( function(t) {apply(sapply(f.mincount, function(x) x(t)), FUN=median, MARGIN=1)} )
   }
+}
+
+# write out the information about the experiment and the number of reads needs
+# to be sequenced
+preseqR.depthseq <- function(n.reads, L, FUN=NULL, rho=0.85, r=c(8), mt=100, times=100, uniq=TRUE)
+{
+  checking.hist(n.reads)
+
+  if (is.null(FUN)) {
+    cat(paste("No estimator for the number of nucleotides with at least ", r, 
+        " aligned reads as a function of sequencing effort\n", sep=""))
+    return(NULL)
+  }
+  N <- n.reads[, 1] %*% n.reads[, 2]
+  cat(paste("The number of reads is ", N, " in the initial experiment\n", sep=""))
+  t0 <- uniroot(function(x) {FUN(x) - L * rho}, interval=c(0, 10000), tol=0.00001)$root
+  ## whether remove the duplicates when counting coverage depth
+  ## Counting with duplicates
+  if (uniq==FALSE) {
+    reads.total <- ceiling(N * t0 / 1000000.0)
+    cat(paste("In order to attain ", rho*100, "% of the targeted regions of length ", 
+        L, " with ", r, "X or greater coverage depth\n", sep=""))
+    cat(paste("A total of ", reads.total, " million reads are needed in the full experiment\n", sep=""))
+    return(N * t0)
+  }
+  ## duplicates are removed
+  uniq.reads <- sum(n.reads[, 2])
+  lib.complexity.curve <- ds.mincount.bootstrap(n.reads, r=1, mt=mt, times=times)
+  if (is.null(lib.complexity.curve)) {
+    cat(paste("No estimator for the library complexity curve\n", sep=""))
+    return(NULL)
+  }
+  t1 <- uniroot(function(x) {lib.complexity.curve(x) - uniq.reads * t0}, interval=c(0, 10000), tol=0.00001)$root
+  reads.total <- ceiling(N * t1 / 1000000.0)
+  cat(paste("In order to attain ", rho*100, "% of the targeted regions of length ", 
+      L, " with ", r, "X or greater coverage depth\n", sep=""))
+  cat(paste("A total of ", reads.total, " million reads are needed in the full experiment\n", sep=""))
+  return(N * t1)
 }
