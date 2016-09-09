@@ -135,21 +135,39 @@ preseqR.kmer.frac <- function(n, r=2, mt=100)
         ## using parital fraction expansion
         denom.roots <- denom.roots + 1
         coef <- coef * C
-        f.mincount <- function(t) {
+
+        frac.bias <- -Re(sum(coef / denom.roots / N))
+
+        f.frac <- function(t) {
           sapply(r, function(x) {
               Re((x * coef) %*% ((t / (t - denom.roots))^(x-1) / (t - denom.roots)) / N - 
                  (coef / denom.roots) %*% (t / (t - denom.roots))^x / N)})}
+
+#        f.frac <- function(t) {
+#          sapply(r, function(x) {
+#              Re(((x * coef) %*% ((t / (t - denom.roots))^(x-1) / (t - denom.roots)) / N - 
+#                 (coef / denom.roots) %*% (t / (t - denom.roots))^x / N) / frac.factor)})}
+
         break
       }
     }
   }
   if (valid==FALSE)
     return(NULL)
-  f.mincount
+
+  ## add a correction
+# f.frac
+  d <- 1 - frac.bias
+  if (d >= 0) {
+    f.frac.adjust <- function(t) {
+      f.frac(t) + ifelse(t <= 1, d * t, d)
+    }
+  } else {
+    return(NULL)
+  }
 }
 
 
-## nonparametric approach Deng & Smith 2016
 preseqR.kmer.frac.bootstrap <- function(n, r=1, mt=100, times=100)
 {
   n[, 2] <- as.numeric(n[, 2])
@@ -165,7 +183,7 @@ preseqR.kmer.frac.bootstrap <- function(n, r=1, mt=100, times=100)
   upper.limit <- times / BOOTSTRAP.factor
 
   ds.estimator <- function(n, r, mt, t.scale) {
-    f <- ds.mincount(n, r=r, mt=mt)
+    f <- preseqR.kmer.frac(n, r=r, mt=mt)
     if (is.null(f)) {
       return(NULL)
     } else {
