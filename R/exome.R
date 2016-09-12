@@ -305,7 +305,7 @@ ds.mincount.bootstrap <- function(n, r=1, mt=100, times=100)
 
 # write out the information about the experiment and the number of reads needs
 # to be sequenced
-preseqR.depthseq <- function(n.reads, L, FUN=NULL, rho=0.85, r=c(8), mt=100, times=100, uniq=TRUE)
+preseqR.depthseq <- function(n.reads, FUN=NULL, LIB.FUN=NULL, L=NULL, rho=0.85, r=8, uniq=TRUE)
 {
   checking.hist(n.reads)
 
@@ -314,8 +314,21 @@ preseqR.depthseq <- function(n.reads, L, FUN=NULL, rho=0.85, r=c(8), mt=100, tim
         " aligned reads as a function of sequencing effort\n", sep=""))
     return(NULL)
   }
+  if (is.null(LIB.FUN)) {
+    cat("No estimator for the library complexity curve\n") 
+    return(NULL)
+  }
+  if (is.null(L)) {
+    cat("The length of the targeted regions is not specified\n")
+    return(NULL)
+  }
   N <- n.reads[, 1] %*% n.reads[, 2]
   cat(paste("The number of reads is ", N, " in the initial experiment\n", sep=""))
+  if (FUN(10000) <= L * rho) {
+    cat(paste("More than 10000 times the size of the initial experiment is",
+              " needed to achieve the required standard\n", sep=""))
+    return(NULL)
+  }
   t0 <- uniroot(function(x) {FUN(x) - L * rho}, interval=c(0, 10000), tol=0.00001)$root
   ## whether remove the duplicates when counting coverage depth
   ## Counting with duplicates
@@ -324,19 +337,19 @@ preseqR.depthseq <- function(n.reads, L, FUN=NULL, rho=0.85, r=c(8), mt=100, tim
     cat(paste("In order to attain ", rho*100, "% of the targeted regions of length ", 
         L, " with ", r, "X or greater coverage depth\n", sep=""))
     cat(paste("A total of ", reads.total, " million reads are needed in the full experiment\n", sep=""))
-    return(N * t0)
+    return(reads.total)
   }
   ## duplicates are removed
-  uniq.reads <- sum(n.reads[, 2])
-  lib.complexity.curve <- ds.mincount.bootstrap(n.reads, r=1, mt=mt, times=times)
-  if (is.null(lib.complexity.curve)) {
-    cat(paste("No estimator for the library complexity curve\n", sep=""))
+  N.uniq <- sum(n.reads[, 2])
+  if (LIB.FUN(10000) <= N.uniq * t0) {
+    cat(paste("More than 10000 times the size of the initial experiment is",
+              " needed to achieve the required standard\n", sep=""))
     return(NULL)
   }
-  t1 <- uniroot(function(x) {lib.complexity.curve(x) - uniq.reads * t0}, interval=c(0, 10000), tol=0.00001)$root
+  t1 <- uniroot(function(x) {LIB.FUN(x) - N.uniq * t0}, interval=c(0, 10000), tol=0.00001)$root
   reads.total <- ceiling(N * t1 / 1000000.0)
   cat(paste("In order to attain ", rho*100, "% of the targeted regions of length ", 
       L, " with ", r, "X or greater coverage depth\n", sep=""))
   cat(paste("A total of ", reads.total, " million reads are needed in the full experiment\n", sep=""))
-  return(N * t1)
+  return(reads.total)
 }
