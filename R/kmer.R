@@ -168,6 +168,18 @@ preseqR.kmer.frac <- function(n, r=2, mt=100)
 }
 
 
+preseqR.kmer.frac.curve <- function(n, N, seq.size.GB, r=2, mt=100)
+{
+  f <- preseqR.kmer.frac(n, r=r, mt=mt)
+  if (is.null(f)) return(NULL)
+  seq.effort <- seq.size.GB * 1e9 / N
+  kmer.frac <- t(sapply(seq.effort, function(x) f(x)))
+  curves <- cbind(seq.size.GB, kmer.frac)
+  colnames(curves) <- c("bases(GB)", paste("frac(X>=", r, ")", sep=""))
+  return(curves)
+}
+
+
 preseqR.kmer.frac.bootstrap <- function(n, r=1, mt=100, times=100)
 {
   n[, 2] <- as.numeric(n[, 2])
