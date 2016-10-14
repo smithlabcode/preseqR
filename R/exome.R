@@ -288,6 +288,8 @@ ds.mincount.bootstrap <- function(n, r=1, mt=100, times=100)
     counter <- counter + 1
     if (!is.null(f)) {
       f.mincount[[times]] <- f
+      ## prevent later binding!!!
+      f.mincount[[times]](1)
       times <- times - 1
     }
     if (counter > upper.limit)
@@ -297,9 +299,15 @@ ds.mincount.bootstrap <- function(n, r=1, mt=100, times=100)
     write("fail to bootstrap!", stderr())
     return(NULL)
   } else {
-    if (length(r) == 1)
-      return(function(t) {median( sapply(f.mincount, function(x) x(t)) )})
-    return( function(t) {apply(sapply(f.mincount, function(x) x(t)), FUN=median, MARGIN=1)} )
+    f.estimator <- ds.mincount(n=n, r=r, mt=mt)
+    if (length(r) == 1) {
+      median.estimators <- function(t) {median( sapply(f.mincount, function(x) x(t)) )}
+      var.estimator <- function(t) {var( sapply(f.mincount, function(x) x(t)) )}
+    } else {
+      median.estimators <- function(t) {apply(sapply(f.mincount, function(x) x(t)), FUN=median, MARGIN=1)}
+      var.estimator <- function(t) {apply(sapply(f.mincount, function(x) x(t)), FUN=var, MARGIN=1)}
+    }
+    return(list(f=f.estimator, median=median.estimators, var=var.estimator))
   }
 }
 

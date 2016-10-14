@@ -346,3 +346,30 @@ preseqR.ztnb.mincount <- function(n, ss = NULL, max.extrapolation = NULL, r=1,
 
   return(yield.estimates)
 }
+
+## fitting the negative binoimal distribution to the data by EM algorithm
+## r is a vector of frequencies
+## return an estimator by ZTNB
+ztnb.mincount <- function(n, r=1, size=SIZE.INIT, mu=MU.INIT)
+{
+  checking.hist(n)
+
+  n[, 2] <- as.numeric(n[, 2])
+  total.sample <- n[, 1] %*% n[, 2]
+  distinct <- sum(n[, 2])
+
+  ## estimate parameters
+  opt <- preseqR.ztnb.em(n, size, mu)
+  size <- opt$size
+  mu <- opt$mu
+
+  ## the probability of being sampled in the initial experiment
+  p <- 1 - dnbinom(0, size = size, mu = mu)
+
+  ## L is the estimated total number of distinct items
+  L <- distinct/p
+
+  function(t) {
+    L * pnbinom(r - 1, size=size, mu=mu*t, lower.tail=FALSE)
+  }
+}
