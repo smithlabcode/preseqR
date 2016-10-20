@@ -310,7 +310,7 @@ ds.mincount.bootstrap <- function(n, r=1, mt=100, times=100)
       median.estimators <- function(t) {apply(sapply(f.mincount, function(x) x(t)), FUN=median, MARGIN=1)}
       var.estimator <- function(t) {apply(sapply(f.mincount, function(x) x(t)), FUN=var, MARGIN=1)}
     }
-    if (!is.null(f.estimator)) f.estimator$FUN(1); median.estimator(1); var.estimator(1)
+    if (!is.null(f.estimator)) f.estimator$FUN(1); median.estimators(1); var.estimator(1)
     return(list(f=f.estimator, median=median.estimators, var=var.estimator))
   }
 }
