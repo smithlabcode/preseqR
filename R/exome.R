@@ -19,9 +19,10 @@
 
 pois.mincount <- function(n, L, r=1) {
     lambda <- n[, 1] %*% n[, 2] / L
-    function(t) {
+    f.mincount <- function(t) {
       L * ppois(q=r - 1, lambda=lambda * t, lower.tail=FALSE)
     }
+    f.mincount(1); f.mincount
 }
 
 
@@ -101,9 +102,10 @@ nb.mincount <- function(n, L, r=1)
   size <- opt$size
   mu <- opt$mu
 
-  function(t) {
+  f.mincount <- function(t) {
     L * pnbinom(r-1, size=size, mu=mu*t, lower.tail=FALSE)
   }
+  f.mincount(1); f.mincount
 }
 
 
@@ -252,7 +254,8 @@ ds.mincount <- function(n, r=1, mt=100)
   }
   if (valid==FALSE)
     return(NULL)
-  f.mincount
+  f.mincount(1)
+  list(FUN=f.mincount, m=de)
 }
 
 
@@ -276,7 +279,7 @@ ds.mincount.bootstrap <- function(n, r=1, mt=100, times=100)
     if (is.null(f)) {
       return(NULL)
     } else {
-      function(t) {f(t * t.scale)}
+      function(t) {f$FUN(t * t.scale)}
     }
   }
 
@@ -307,6 +310,7 @@ ds.mincount.bootstrap <- function(n, r=1, mt=100, times=100)
       median.estimators <- function(t) {apply(sapply(f.mincount, function(x) x(t)), FUN=median, MARGIN=1)}
       var.estimator <- function(t) {apply(sapply(f.mincount, function(x) x(t)), FUN=var, MARGIN=1)}
     }
+    if (!is.null(f.estimator)) f.estimator(1); median.estimator(1); var.estimator(1)
     return(list(f=f.estimator, median=median.estimators, var=var.estimator))
   }
 }

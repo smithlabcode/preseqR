@@ -369,7 +369,8 @@ ztnb.mincount <- function(n, r=1, size=SIZE.INIT, mu=MU.INIT)
   ## L is the estimated total number of distinct items
   L <- distinct/p
 
-  function(t) {
+  f.mincount <- function(t) {
     L * pnbinom(r - 1, size=size, mu=mu*t, lower.tail=FALSE)
   }
+  f.mincount(1); f.mincount
 }

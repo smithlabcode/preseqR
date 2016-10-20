@@ -24,5 +24,8 @@ export(preseqR.depthseq)
 export(preseqR.kmer.frac)
 export(preseqR.kmer.frac.curve)
 export(ztnb.mincount)
+export(ztpois.mincount)
+export(boneh.mincount)
+export(chao.mincount)
 
 S3method(print, CF)

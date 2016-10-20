@@ -1,3 +1,22 @@
+#    Copyright (C) 2016 University of Southern California and
+#             Chao Deng and Andrew D. Smith and Timothy Daley
+#
+#    Authors: Chao Deng
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+
 preseqR.kmer.frac <- function(n, r=2, mt=100)
 {
   ## setting the diagonal value
@@ -143,11 +162,6 @@ preseqR.kmer.frac <- function(n, r=2, mt=100)
               Re((x * coef) %*% ((t / (t - denom.roots))^(x-1) / (t - denom.roots)) / N - 
                  (coef / denom.roots) %*% (t / (t - denom.roots))^x / N)})}
 
-#        f.frac <- function(t) {
-#          sapply(r, function(x) {
-#              Re(((x * coef) %*% ((t / (t - denom.roots))^(x-1) / (t - denom.roots)) / N - 
-#                 (coef / denom.roots) %*% (t / (t - denom.roots))^x / N) / frac.factor)})}
-
         break
       }
     }
@@ -156,7 +170,6 @@ preseqR.kmer.frac <- function(n, r=2, mt=100)
     return(NULL)
 
   ## add a correction
-# f.frac
   d <- 1 - frac.bias
   if (d >= 0) {
     f.frac.adjust <- function(t) {
@@ -211,6 +224,8 @@ preseqR.kmer.frac.bootstrap <- function(n, r=1, mt=100, times=100)
     counter <- counter + 1
     if (!is.null(f)) {
       f.mincount[[times]] <- f
+      ## avoid late binding
+      f.mincount[[times]](1)
       times <- times - 1
     }
     if (counter > upper.limit)
