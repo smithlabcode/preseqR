@@ -42,7 +42,7 @@ nb.loglikelihood <- function(n, zero.items, size, mu)
   return(loglikelihood)
 }
 
-nb.fitting <- function(n, L)
+nb.fitting <- function(n, L, size=SIZE.INIT)
 {
   n[, 2] <- as.numeric(n[, 2])
 
@@ -93,12 +93,12 @@ nb.fitting <- function(n, L)
 ## max.extrapoltion is the maximum value for extrapolation
 ## r is a vector of frequencies
 ## L is the total number of species
-nb.mincount <- function(n, L, r=1)
+nb.mincount <- function(n, L, r=1, size=SIZE.INIT)
 {
   n[, 2] <- as.numeric(n[, 2])
 
   ## estimate parameters
-  opt <- nb.fitting(n, L)
+  opt <- nb.fitting(n, L, size=size)
   size <- opt$size
   mu <- opt$mu
 
@@ -255,7 +255,7 @@ ds.mincount <- function(n, r=1, mt=100)
   if (valid==FALSE)
     return(NULL)
   f.mincount(1)
-  list(FUN=f.mincount, m=de)
+  list(FUN=f.mincount, m=de / 2, m.adjust=length(denom.roots))
 }
 
 
