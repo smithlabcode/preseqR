@@ -134,9 +134,9 @@ ds.mincount <- function(n, r=1, mt=100)
   PS.coeffs <- PS.coeffs[ 1:mt ]
 
   ## check whether sample size is sufficient
-  if (mt < MIN_REQUIRED_TERMS)
+  if (mt < 2)
   {
-    m <- paste("max count before zero is les than min required count (4)",
+    m <- paste("max count before zero is les than min required count (2)",
                " sample not sufficiently deep or duplicates removed", sep = ',')
     write(m, stderr())
     return(NULL)
@@ -252,10 +252,19 @@ ds.mincount <- function(n, r=1, mt=100)
       }
     }
   }
-  if (valid==FALSE)
-    return(NULL)
+  if (valid==FALSE) {
+    s1 <- sum(n[, 2])
+    s2 <- sum(n[n[, 1] > 1, 2])
+    coef <- s1^2 / s2
+    denom.roots <- (s1 - s2) / s2
+    f.mincount <- function(t) {
+      sapply(r, function(x) {
+        coef * (t / (t + denom.roots))^x})}
+    f.mincount(1)
+    return(list(FUN=f.mincount, m=1, m.adjust=1, FUN.elements=list(coef=coef, roots=denom.roots)))
+  }
   f.mincount(1)
-  list(FUN=f.mincount, m=de / 2, m.adjust=length(denom.roots))
+  list(FUN=f.mincount, m=de / 2, m.adjust=length(denom.roots), FUN.elements=list(coef=coef, roots=denom.roots))
 }
 
 
@@ -271,16 +280,9 @@ ds.mincount.bootstrap <- function(n, r=1, mt=100, times=100)
   ## returned function
   f.mincount <- vector(length=times, mode="list")
 
-  ## upperbound of times of iterations for bootstrapping
-  upper.limit <- times / BOOTSTRAP.factor
-
   ds.estimator <- function(n, r, mt, t.scale) {
     f <- ds.mincount(n, r=r, mt=mt)
-    if (is.null(f)) {
-      return(NULL)
-    } else {
-      function(t) {f$FUN(t * t.scale)}
-    }
+    function(t) {f$FUN(t * t.scale)}
   }
 
   while (times > 0) {
@@ -289,30 +291,23 @@ ds.mincount.bootstrap <- function(n, r=1, mt=100, times=100)
     t.scale <- total / total.bootstrap
     f <-  ds.estimator(n.bootstrap, r=r, mt=mt, t.scale=t.scale) 
     counter <- counter + 1
-    if (!is.null(f)) {
-      f.mincount[[times]] <- f
-      ## prevent later binding!!!
-      f.mincount[[times]](1)
-      times <- times - 1
-    }
-    if (counter > upper.limit)
-      break
+
+    f.mincount[[times]] <- f
+    ## prevent later binding!!!
+    f.mincount[[times]](1)
+    times <- times - 1
   }
-  if (times > 0) {
-    write("fail to bootstrap!", stderr())
-    return(NULL)
+  f.estimator <- ds.mincount(n=n, r=r, mt=mt)
+  if (length(r) == 1) {
+    median.estimators <- function(t) {median( sapply(f.mincount, function(x) x(t)) )}
+    var.estimator <- function(t) {var( sapply(f.mincount, function(x) x(t)) )}
   } else {
-    f.estimator <- ds.mincount(n=n, r=r, mt=mt)
-    if (length(r) == 1) {
-      median.estimators <- function(t) {median( sapply(f.mincount, function(x) x(t)) )}
-      var.estimator <- function(t) {var( sapply(f.mincount, function(x) x(t)) )}
-    } else {
-      median.estimators <- function(t) {apply(sapply(f.mincount, function(x) x(t)), FUN=median, MARGIN=1)}
-      var.estimator <- function(t) {apply(sapply(f.mincount, function(x) x(t)), FUN=var, MARGIN=1)}
-    }
-    if (!is.null(f.estimator)) f.estimator$FUN(1); median.estimators(1); var.estimator(1)
-    return(list(f=f.estimator, median=median.estimators, var=var.estimator))
+    median.estimators <- function(t) {apply(sapply(f.mincount, function(x) x(t)), FUN=median, MARGIN=1)}
+    var.estimator <- function(t) {apply(sapply(f.mincount, function(x) x(t)), FUN=var, MARGIN=1)}
   }
+  ## prevent later binding!!!
+  f.estimator$FUN(1); median.estimators(1); var.estimator(1)
+  return(list(FUN.nobootstrap=f.estimator, FUN.bootstrap=median.estimators, var=var.estimator))
 }
 
 # write out the information about the experiment and the number of reads needs
