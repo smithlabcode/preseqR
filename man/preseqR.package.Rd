@@ -3,44 +3,44 @@
 \alias{preseqR}
 \docType{package}
 \title{
-    An R package for estimating the number of species represented r or more times
+    An R package for estimating the number of species represented at least 
+    r times
 }
 \description{
     preseqR provides functions to estimate the number of species represented at
     least r times in a random sample based on an initial sample. Functions work
-    through either rational function approximations to a modified Good and
-    Toulmin's (1956) non-parametric empirical Bayes power series estimator or 
-    fitting a zero-truncated negative binomial distibution to the observed 
-    species counts.
+    through rational function approximations to a modified Good and
+    Toulmin's (1956) non-parametric empirical Bayes power series estimator. A
+    relation bewteen the number of species represented at least r times and 
+    the number of species represented at least once is used to boost the estimator
+    from r = 1 to any r > 1.
 }
 \details{
 functions: 
 
-preseqR.pf.mincount.bootstrap
+ds.mincount.bootstrap
 
-preseqR.pf.mincount
+ds.mincount
 
-preseqR.ztnb.mincount
+ztpois.mincount
 
-preseqR.rfa.species.accum.curve, 
+ztnb.mincount
 
-preseqR.ztnb.species.accum.curve,
+boneh.mincount
 
-preseqR.rfa.curve,
+chao.mincount
 
-preseqR.rfa.estimate,
+pois.mincount
 
-preseqR.ztnb.estimate,
+nb.mincount
 
-preseqR.ztnb.em,
+preseqR.ztnb.em
+
+preseqR.simu.hist
+
+preseqR.nonreplace.sampling
 
 preseqR.interpolate.mincount
-
-preseqR.interpolate.distinct,
-
-preseqR.nonreplace.sampling,
-
-preseqR.simu.hist,
 
 data: FisherButterflyHist, ShakespeareWordHist
 }
