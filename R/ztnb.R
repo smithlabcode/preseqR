@@ -54,24 +54,24 @@ zerotruncated.dnbinom <- function(x, size, mu, log = FALSE)
 
 
 ### zerotruncated negative loglikelihood
-zerotruncated.minus.log.likelihood <- function(hist.table, size, mu)
+zerotruncated.minus.log.likelihood <- function(n, size, mu)
 {
-  prob <- zerotruncated.dnbinom(hist.table[, 1], size, mu, log = TRUE)
+  prob <- zerotruncated.dnbinom(n[, 1], size, mu, log = TRUE)
 
   ## negative loglikelihood
   prob <- -prob
-  return( prob %*% hist.table[, 2] )
+  return( prob %*% n[, 2] )
 }
 
 
 ### calculate the negative binomial loglikelihood
 ### zero.items is number of items unobserved
 ### size and mu are parameters in a negative binomial distribution
-nb.loglikelihood <- function(hist.table, zero.items, size, mu)
+nb.loglikelihood <- function(n, zero.items, size, mu)
 {
   ## likelihood of nonzero terms
-  log.prob <- dnbinom(hist.table[, 1], size = size, mu = mu, log = TRUE)
-  loglikelihood <- log.prob %*% hist.table[, 2]
+  log.prob <- dnbinom(n[, 1], size = size, mu = mu, log = TRUE)
+  loglikelihood <- log.prob %*% n[, 2]
 
   ## add items with zero count
   log.zero.prob <- dnbinom(0, size = size, mu = mu, log = TRUE)
@@ -179,173 +179,6 @@ preseqR.ztnb.em <- function(n, size=SIZE.INIT, mu=MU.INIT)
   return(list(size = size, mu = mu, loglik = -loglikelihood.pre))
 }
 
-
-### predict the number of distinct items using EM algorithm
-### t is the relative size to inital sample
-preseqR.ztnb.estimate <- function(n, t, size=SIZE.INIT, mu=MU.INIT)
-{
-  checking.hist(n)
-
-  n[, 2] <- as.numeric(n[, 2])
-  distinct <- sum(n[, 2])
-
-  ## estimate the parameters
-  opt <- preseqR.ztnb.em(n, size, mu)
-  size <- opt$size
-  mu <- opt$mu
-
-  ## the probability of being sampled in the initial experiment
-  p <- 1 - dnbinom(0, size = size, mu = mu)
-
-  ## L is the estimated total number of distinct items
-  L <- distinct/p
-
-  ## update parameters of negative binomial in the experiment with size n
-  mu <- mu*t
-
-  ## the probability of being sampled under the new experiment
-  P <- 1 - dnbinom(0, size = size, mu = mu)
-
-  ## return the expected number of new distinct species under the new experiment
-  return(L * P - distinct)
-}
-
-## predict a complexity curve using EM algorithm
-## ss is the step.size
-## max.extrapoltion is the maximum value for extrapolation
-preseqR.ztnb.species.accum.curve <- function(n, ss = NULL, max.extrapolation = NULL,
-                                             size=SIZE.INIT, mu=MU.INIT)
-{
-  checking.hist(n)
-
-  n[, 2] <- as.numeric(n[, 2])
-
-  total.sample <- n[, 1] %*% n[, 2]
-  distinct <- sum(n[, 2])
-
-  ## set step.size = total.sample if it is undefined
-  if (is.null(ss)) {
-    ss <- total.sample
-  } else if (ss < 1) {
-    write("the step size should be at least one", stderr())
-    return(NULL)
-  }
-
-  ## set max.extrapolation = 100 * ss if it is undefined
-  if (is.null(max.extrapolation)) {
-
-    ## T is the number of experiments; 100 is a magic number
-    max.extrapolation <- 100*total.sample
-    T <- floor( max.extrapolation/ss )
-
-  } else if (max.extrapolation < ss) {
-    write("max.extrapolation should be no less then ss", stderr())
-    return(NULL)
-  } else {
-    # T is the number of experiments
-    T <- floor( max.extrapolation/ss )
-  }
-
-  sample.size <- as.double(ss) * (1: T)
-
-  ## estimate parameters
-  opt <- preseqR.ztnb.em(n, size, mu)
-  size <- opt$size
-  mu <- opt$mu
-
-  ## the probability of being sampled in the initial experiment
-  p <- 1 - dnbinom(0, size = size, mu = mu)
-
-  ## L is the estimated total number of distinct items
-  L <- distinct/p
-
-  ## estimate the item being sampled under new experiments with different size
-  t <- sample.size/total.sample
-  dim(t) <- length(t)
-  P <- apply(t, 1, function(x) {1 - dnbinom(0, size, mu = x * mu)})
-  yield.estimates <- L*P
-
-  ## combine sample.size and yield.estimates into matrix
-  yield.estimates <- matrix(c(sample.size, yield.estimates), ncol = 2, byrow = FALSE)
-  colnames(yield.estimates) <- c('sample.size', 'yield.estimate')
-  return(yield.estimates)
-}
-
-
-## fitting the negative binoimal distribution to the data by EM algorithm
-## ss is the step.size
-## max.extrapoltion is the maximum value for extrapolation
-## r is a vector of frequencies
-preseqR.ztnb.mincount <- function(n, ss = NULL, max.extrapolation = NULL, r=1,
-                                  size=SIZE.INIT, mu=MU.INIT)
-{
-  checking.hist(n)
-
-  n[, 2] <- as.numeric(n[, 2])
-  total.sample <- n[, 1] %*% n[, 2]
-  distinct <- sum(n[, 2])
-
-  ## set step.size = total.sample if it is undefined
-  if (is.null(ss)) {
-    ss <- total.sample
-  } else if (ss < 1) {
-    write("the step size should be at least one", stderr())
-    return(NULL)
-  }
-
-  ## set max.extrapolation = 100 * ss if it is undefined
-  if (is.null(max.extrapolation)) {
-
-    ## T is the number of experiments; 100 is a magic number
-    max.extrapolation <- 100*total.sample
-    T <- floor( max.extrapolation/ss )
-
-  } else if (max.extrapolation < ss) {
-    write("max.extrapolation should be no less then ss", stderr())
-    return(NULL)
-  } else {
-    # T is the number of experiments
-    T <- floor( max.extrapolation/ss )
-  }
-
-  sample.size <- as.double(ss) * (1: T)
-
-  ## estimate parameters
-  opt <- preseqR.ztnb.em(n, size, mu)
-  size <- opt$size
-  mu <- opt$mu
-
-  ## the probability of being sampled in the initial experiment
-  p <- 1 - dnbinom(0, size = size, mu = mu)
-
-  ## L is the estimated total number of distinct items
-  L <- distinct/p
-
-  ## estimate the item being sampled under new experiments with different size
-  t <- sample.size/total.sample
-  dim(t) <- length(t)
-  max.r <- max(r)
-  yield.estimates <- list()
-  P <- rep(1, length(t))
-  for (i in 1:max.r) {
-    P <- P - apply(t, 1, function(x) dnbinom(i-1, size, mu=x*mu))
-    if (i %in% r) {
-      yield.estimates <- c(yield.estimates, list(L * P))
-    }
-  }
-
-  #P = lapply(1:max.r, function(x) {
-  #      apply(t, 1, function(y) dnbinom(x, size, mu = y * mu))
-  #      })
-  #yield.estimates = lapply(1:length(r), function(x) {L * P[[x]]})
-  yield.estimates <- lapply(1:length(r), function(x) {
-      estimates <- matrix(c(sample.size, yield.estimates[[x]]), ncol = 2, byrow = FALSE)
-      colnames(estimates) <- c("sample.size", paste("yield.estimates(r=", r[x], ")", sep=""))
-      estimates
-      })
-
-  return(yield.estimates)
-}
 
 ## fitting the negative binoimal distribution to the data by EM algorithm
 ## r is a vector of frequencies
