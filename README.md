@@ -1,3 +1,10 @@
+UPDATES TO VERSION 2.1.1
+========================
+
+We have changed the interfaces for most of our exported functions. We add new
+estimators for the number of species represented by at least r individuals in
+a random sample.
+
 preseqR
 =======
 
