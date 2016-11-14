@@ -20,6 +20,8 @@
 ## Two roots are the same if the difference is less than the PRECISION
 PRECISION <- 1e-3
 
+## Maximum frequencies of a histogram
+MAXLENGTH <- 10000000
 
 ### interpolating for species accumulation curve with minimum count
 ### ss step size
