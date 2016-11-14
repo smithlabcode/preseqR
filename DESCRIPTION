@@ -1,11 +1,11 @@
 Package: preseqR
 Type: Package
-Title: Predicting Species Accumulation Curves
-Version: 2.0.1
-Date: 2016-6-24
+Title: Predicting the number of species in a random sample
+Version: 2.1.1
+Date: 2016-11-14
 Author: Chao Deng, Timothy Daley and Andrew D. Smith
 Maintainer: Chao Deng <chaodeng@usc.edu>
-Description: Estimating the number of species represented r or more times in a random sample.
+Description: Estimating the number of species represented at least r times in a random sample.
 License: GPL-3
 Imports:
   polynom
