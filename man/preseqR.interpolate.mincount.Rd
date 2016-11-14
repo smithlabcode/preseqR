@@ -5,8 +5,8 @@
     Interpolating the number of species represented at least r times
 }
 \description{
-    Interpolating the expected number of species represented at least r times in a random sample
-    based on an initial sample. 
+    Interpolating the expected number of species represented at least r times
+    in a random sample based on an initial sample. 
 }
 \usage{
   preseqR.interpolate.mincount(ss, n, r=1)
@@ -19,8 +19,8 @@
   \item{n}{
     A two-column matrix.  
     The first column is the frequency \eqn{j = 1,2,\dots}; and the second column
-    is \eqn{n_j}, the number of species with each species represented by \eqn{j}
-    individuals in the initial sample. The first column must be sorted in an
+    is \eqn{n_j}, the number of species with each species represented \eqn{j}
+    times in the initial sample. The first column must be sorted in an
     ascending order.
 }
   \item{r}{
@@ -66,4 +66,4 @@ preseqR.interpolate.mincount(1e5, ShakespeareWordHist, r=2)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-\keyword{ Interpolation, Sufficient representation}
+\keyword{ Interpolation, At least r times}
