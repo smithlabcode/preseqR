@@ -17,6 +17,7 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+## need to change
 preseqR.kmer.frac <- function(n, r=2, mt=100)
 {
   ## setting the diagonal value
