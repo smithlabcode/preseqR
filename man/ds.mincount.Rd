@@ -1,5 +1,5 @@
-\name{preseqR.pf.mincount}
-\alias{preseqR.pf.mincount}
+\name{ds.mincount}
+\alias{ds.mincount}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
 Estimating the expected number of species represented r or more times
@@ -31,8 +31,8 @@ ds.mincount(n, r=1, mt=100)
 \details{
 The difference between this function and 
 \code{\link{ds.mincount.bootstrap}} is that no bootstrapping for the 
-initial sample. Therefore the function could be less stable than the function
-\code{\link{ds.mincount.bootstrap}}.
+initial sample. Therefore the function could be less stable than estimates by
+bootstrap.
 However, this function is much faster. In general, we recommand
 \code{\link{ds.mincount.bootstrap}} for estimating the expected number
 of species represented at least r times in a sample. 
