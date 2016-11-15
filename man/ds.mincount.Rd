@@ -40,7 +40,7 @@ of species represented at least r times in a sample.
 See \code{\link{ds.mincount.bootstrap}} for more information.
 }
 \value{
-  \item{FUN} {
+  \item{FUN}{
     The constructed estimator for the number of species represneted at least r
     times in a sample. The input of the estimator is a vector of sampling efforts
     t, i.e. the relative sample sizes comparing with the initial sample. For example,
@@ -51,11 +51,11 @@ See \code{\link{ds.mincount.bootstrap}} for more information.
     expressed as \deqn{\hat{E}(S_r(t)) = \sum_{i=1}^l c_i \left(\frac{t}{t - x_i}\right)^r.}
     PF.elements contains both coefficients \eqn{c_i} and roots \eqn{x_i}.
   }
-  \item{m} {
+  \item{m}{
     The number of terms used when applying rational function approximation to 
     the power series of the average discovery rate.
   }
-  \item{m.adjust} {
+  \item{m.adjust}{
     The number of terms in the estiamtor, equal to l
   }
 }
