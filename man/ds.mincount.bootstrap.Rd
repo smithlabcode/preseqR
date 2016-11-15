@@ -83,13 +83,15 @@ data(FisherButterflyHist)
 ## estimate the number of species captured at least once, twice or 20 times 
 ## as a function of the number of individuals
 result = ds.mincount.bootstrap(ShakespeareWordHist, r=c(1,2, 20), times=10)
-## estimates of the number of unique words appeared at least once
-# result[[1]]
-## estimates of the number of unique words appeared at least twice
-# result[[2]]
-## estimates of the number of unique words appeared at least twenty times
-# result[[3]]
+## estimates of the number of unique words appeared at least once, twice or three
+## times when the sample size 10 times the size of the initial sample
+
+## estimates by the function ds.mincount
+result$FUN.nobootstrap$FUN(10)
+
+## estimates by the bootstrapped estimator
+result$FUN.nobootstrap$FUN.bootstrap(10)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-\keyword{ Estimator, At least r times, Bootstrap }
+\keyword{ Estimator, At least r times, Bootstrap, RFA}
