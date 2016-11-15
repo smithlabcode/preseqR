@@ -571,4 +571,5 @@ ds.mincount.bootstrap <- function(n, r=1, mt=100, times=100)
   }
   ## prevent later binding!!!
   f.estimator$FUN(1); median.estimators(1); var.estimator(1)
+  return(list(FUN.nobootstrap=f.estimator, FUN.bootstrap=median.estimators, var=var.estimator))
 }
