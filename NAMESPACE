@@ -2,7 +2,7 @@ useDynLib(preseqR)
 import(polynom)
 importFrom("graphics", "hist")
 importFrom("stats", "dnbinom", "median", "optim", "qnorm", "rmultinom",
-           "rpois", "var")
+           "rpois", "var", "uniroot", "ppois", "pnbinom")
 export(preseqR.ztnb.em)
 export(preseqR.simu.hist)
 export(preseqR.nonreplace.sampling)
