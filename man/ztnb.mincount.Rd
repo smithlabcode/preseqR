@@ -64,11 +64,11 @@ data(FisherButterflyHist)
 
 ## construct the estimator for the number of species
 ## represented at least once, twice or three times in a sample
-ztnb.mincount(FisherButterflyHist, r=1:3)
+ztnb.estimator <- ztnb.mincount(FisherButterflyHist, r=1:3)
 
 ## The number of species represented at least once, twice or three times
 ## when the sample size is 10 or 20 times of the initial sample
-ztnb.mincount(c(10, 20))
+ztnb.estimator(c(10, 20))
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

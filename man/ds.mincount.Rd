@@ -80,7 +80,7 @@ data(ShakespeareWordHist)
 
 ## construct the estimator for the number of unique word
 ## represented at least once, twice or twenty times in a sample
-estimator = preseqR.pf.mincount(ShakespeareWordHist, r=c(1,2,20))
+estimator = ds.mincount(ShakespeareWordHist, r=c(1,2,20))
 
 ## print the elements of the estimator
 estimator$FUN.elements
