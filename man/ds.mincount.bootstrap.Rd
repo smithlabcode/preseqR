@@ -61,6 +61,8 @@ ds.mincount.bootstrap(n, r=1, mt=100, times=100)
 }
 
 \references{
+Efron, B., & Tibshirani, R. J. (1994). An introduction to the bootstrap. CRC press.
+
 Kalinin V (1965). Functionals related to the poisson distribution and 
 statistical structure of a text. Articles on Mathematical Statistics and 
 the Theory of Probability pp. 202-220.
