@@ -32,10 +32,11 @@
    numbers generated and return a vector of generated numbers. 
 }
 \value{
-  A two-column matrix.  
-  The first column is the frequency \eqn{j = 1,2,\dots}; and the second column
-  is \eqn{n_j}, the number of species with \eqn{j} individuals represented in the 
-  sample.
+    A two-column matrix.  
+    The first column is the frequency \eqn{j = 1,2,\dots}; and the second column
+    is \eqn{n_j}, the number of species with each species represented \eqn{j}
+    times in the initial sample. The first column must be sorted in an
+    ascending order.
 }
 \author{
   Chao Deng
