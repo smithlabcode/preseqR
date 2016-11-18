@@ -53,15 +53,25 @@ Maintainer: Chao Deng <chaodeng@usc.edu>
 Baker, G. A., & Graves-Morris, P. (1996). Pade approximants
 (Encyclopedia of Mathematics and its Applications vol 59).
 
+Boneh, S., Boneh, A., & Caron, R. J. (1998). Estimating the prediction function
+and the number of unseen species in sampling with replacement.
+Journal of the American Statistical Association, 93(441), 372-379.
+
 Chao, A. (1987). Estimating the population size for capture-recapture data with
 unequal catchability. Biometrics, 783-791.
+
+Chao, A., & Shen, T. J. (2004). Nonparametric prediction in species sampling.
+Journal of agricultural, biological, and environmental statistics, 9(3), 253-269.
+
+Cohen Jr, A. C. (1960). Estimating the parameters of a modified Poisson distribution.
+Journal of the American Statistical Association, 55(289), 139-143.
+
+Daley, T., & Smith, A. D. (2013). Predicting the molecular complexity of
+sequencing libraries. Nature methods, 10(4), 325-327.
 
 Deng C, Daley T and Smith AD (2015). Applications of species accumulation curves
 in large-scale biological data analysis. Quantitative Biology, 3(3), 135-144. 
 URL http://dx.doi.org/10.1007/s40484-015-0049-7.
-
-Daley, T., & Smith, A. D. (2013). Predicting the molecular complexity of
-sequencing libraries. Nature methods, 10(4), 325-327.
 
 Efron, B., & Thisted, R. (1976). Estimating the number of unseen species:
 How many words did Shakespeare know?. Biometrika, 63(3), 435-447.
