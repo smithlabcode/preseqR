@@ -1,16 +1,16 @@
-\name{ztnb.mincount}
-\alias{ztnb.mincount}
+\name{chao.mincount}
+\alias{chao.mincount}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
 Estimating the expected number of species represented r or more times
 }
 \description{
 The function estimates the expected number of species represented at least 
-r times in a random sample based on the initial sample using zero truncated
-negative binomial model.
+r times in a random sample based on the initial sample using a nonparametric
+approach by Chao and Shen (2004).
 }
 \usage{
-ztnb.mincount(n, r=1, size=SIZE.INIT, mu=MU.INIT)
+chao.mincount(n, r=1, k=10)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -24,24 +24,9 @@ ztnb.mincount(n, r=1, size=SIZE.INIT, mu=MU.INIT)
   \item{r}{
     A vector of positive integers. Default is 1.
   }
-  \item{size}{
-    A positive double setting the initial value of the parameter \code{size} in
-    a negative binomial distribution for the EM algorithm. Default value is 1.
-}
-  \item{mu}{
-    A positive double setting the initial value of the parameter \code{mu} in a
-    negative binomial distribution for the EM algorithm. Default value is 0.5.
-}
-}
-\details{
-    The statistical assumption is that for each species the number of individuals
-    in a sample follows a Poisson distribution. The Poisson rate \code{lambda}
-    obeys a latent gamma distribution. So the random variable \code{X}, which is 
-    the number of species represented x (x > 0) times, follows a zero-truncated 
-    negative binomial distribution. The unknown parameters are estimated by
-    the function \code{preseqR.ztnb.em}. Based on the estimated distribution,
-    we calculate the expected number of species in a random sample. Details of
-    the estimation procedure see supplement of Daley T. and Smith AD. (2013).
+  \item{k}{
+    A cutoff for common species. Default is 10.
+  }
 }
 \value{
     The constructed estimator for the number of species represneted at least r
@@ -54,13 +39,9 @@ ztnb.mincount(n, r=1, size=SIZE.INIT, mu=MU.INIT)
 }
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 
-\seealso{
-  \code{\link{preseqR.ztnb.em}}
-}
-
 \references{
-Daley, T., & Smith, A. D. (2013). Predicting the molecular complexity of
-sequencing libraries. Nature methods, 10(4), 325-327.
+Chao, A., & Shen, T. J. (2004). Nonparametric prediction in species sampling.       
+Journal of agricultural, biological, and environmental statistics, 9(3), 253-269.
 }
 
 \examples{
@@ -72,12 +53,12 @@ data(FisherButterflyHist)
 
 ## construct the estimator for the number of species
 ## represented at least once, twice or three times in a sample
-ztnb.estimator <- ztnb.mincount(FisherButterflyHist, r=1:3)
+chao.estimator <- chao.mincount(FisherButterflyHist, r=1:3)
 
 ## The number of species represented at least once, twice or three times
 ## when the sample size is 10 or 20 times of the initial sample
-ztnb.estimator(c(10, 20))
+chao.estimator(c(10, 20))
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-\keyword{ Estimator, At least r times, Zero truncated negative binomial }
+\keyword{ Estimator, At least r times, Nonparametric }
