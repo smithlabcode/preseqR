@@ -1,7 +1,7 @@
-\name{Dickens}
-\alias{Dickens}
+\name{Twitter}
+\alias{Twitter}
 \docType{data}
-\title{Dickens' vocabulary}
+\title{Social network}
 \description{Following relationships of Twitter's social network}
 
 \details{
