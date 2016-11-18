@@ -31,7 +31,7 @@ ztpois.mincount(n, r=1)
     is the same among all species. So the random variable \code{X}, which is 
     the number of species represented x (x > 0) times, follows a zero-truncated 
     Poisson distribution. The unknown parameters are estimated by 
-    Cohen Jr, AC. (1960). Based on the estimated distribution,
+    Cohen (1960). Based on the estimated distribution,
     we calculate the expected number of species in a random sample. 
 }
 \value{

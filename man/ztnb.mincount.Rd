@@ -36,7 +36,7 @@ ztnb.mincount(n, r=1, size=SIZE.INIT, mu=MU.INIT)
 \details{
     The statistical assumption is that for each species the number of individuals
     in a sample follows a Poisson distribution. The Poisson rate \code{lambda}
-    obeys a latent gamma distribution. So the random variable \code{X}, which is 
+    obeys a latent gamma distribution. So the random variable \code{X}, which is
     the number of species represented x (x > 0) times, follows a zero-truncated 
     negative binomial distribution. The unknown parameters are estimated by
     the function \code{preseqR.ztnb.em}. Based on the estimated distribution,

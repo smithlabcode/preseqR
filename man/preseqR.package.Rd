@@ -10,10 +10,11 @@
     preseqR provides functions to estimate the number of species represented at
     least r times in a random sample based on an initial sample. Functions work
     through rational function approximations to a modified Good and
-    Toulmin's (1956) non-parametric empirical Bayes power series estimator. A
+    Toulmin's (1956) non-parametric empirical Bayes power series estimator. The
+    rational function approximation is then boosted to an estiamtor for 
+    the number species represented at least r times, based on a
     relation bewteen the number of species represented at least r times and 
-    the number of species represented at least once is used to boost the estimator
-    from r = 1 to any r > 1.
+    the number of species represented at least once.
 }
 \details{
 functions: 
@@ -78,6 +79,8 @@ How many words did Shakespeare know?. Biometrika, 63(3), 435-447.
 
 Efron, B. (1979). Bootstrap methods: another look at the jackknife.
 The annals of Statistics, 1-26.
+
+Efron, B., & Tibshirani, R. J. (1994). An introduction to the bootstrap. CRC press.
 
 Fisher, R. A., Corbet, A. S., and Williams, C. B. ,1943, The Relation Between 
 the Number of Species and the Number of Individuals in a Random Sample of an  
