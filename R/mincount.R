@@ -377,6 +377,8 @@ general.preseqR.pf.mincount <- function(n, mt = 100, ss = NULL,
 
 ds.mincount <- function(n, r=1, mt=100)
 {
+  checking.hist(n)
+
   ## setting the diagonal value
   di <- 0
   ## minimum required number of terms of power series in order to construct
@@ -550,7 +552,12 @@ ds.mincount.bootstrap <- function(n, r=1, mt=100, times=100)
 
   ds.estimator <- function(n, r, mt, t.scale) {
     f <- ds.mincount(n, r=r, mt=mt)
-    function(t) {f$FUN(t * t.scale)}
+    if (f$m == 1) {
+      f <- ztnb.mincount(n, r=r)
+      function(t) {f(t * t.scale)}
+    } else {
+      function(t) {f$FUN(t * t.scale)}
+    }
   }
 
   while (times > 0) {

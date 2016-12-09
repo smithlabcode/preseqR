@@ -46,6 +46,27 @@ checking.hist <- function(n)
   return(n)
 }
 
+### check determinants of matrix M_{m-1,m-1},M_{m-1,m},M_{m,m-1},M_{m,m}
+checking.matrix.det <- function(n, m) {
+  ps <- generating.ps(n, j=1, mt=2*m + 1)
+  ps <- c(0, ps)
+  matrix.dets <- vector(length=4, mod="numeric")
+  count <- 1
+  for (i in (m-1):m)
+    for (j in (m-1):m) {
+      pade.matrix <- sapply(1:(i+1), function(x) {
+      start <- j + 1 + x
+      end <- j - i + 1 + x
+      indexes <- seq(start, end, -1)
+      ps[indexes]})
+
+      matrix.dets[count] <- det(pade.matrix / max(abs(pade.matrix)))
+      count <- count + 1
+    }
+  matrix.dets
+}
+
+
 
 ## sampling without replacement
 ## n frequencies counts
