@@ -73,6 +73,7 @@ chao.mincount <- function(n, r=1, k=10) {
               ((n[index.rare, 1] * (n[index.rare, 1] - 1)) %*% n[index.rare, 2]) /
               (n[index.rare, 1] %*% n[index.rare, 2])^2 - 1, 0)
   f0 = S.rare / C.rare + f1 / C.rare * gamma.rare - S.rare
-  f.mincount <- function(t) { sapply(r-1, function(x) { f0 + distinct  - f0 * ppois(x, f1 * (t-1) / f0) })}
+  ## not ppois(x, f1 * t / f0)
+  f.mincount <- function(t) { sapply(r-1, function(x) { f0 + distinct  - f0 * ppois(x, f1 * t / f0) * exp(f1/f0) })}
   f.mincount(1); f.mincount
 }
