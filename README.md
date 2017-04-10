@@ -1,3 +1,9 @@
+UPDATES TO VERSION 3.0.1
+========================
+
+1. Fix a bug in Chao's estimator
+2. Fix issues for a Solaris C++ compiler.
+
 UPDATES TO VERSION 3.0.0
 ========================
 
