@@ -20,17 +20,15 @@
 #include "continued_fraction.h"
 #include <vector>
 #include <cmath>
-
+#include <R_ext/Arith.h>
 
 using std::vector;
-using std::min;
-using std::isfinite;
 
 const double TOLERANCE = 1e-20;
 
 static double
 get_rescale_value(const double numerator, const double denominator) {
-  const double rescale_val = fabs(numerator) + fabs(denominator);
+  const double rescale_val = std::fabs(numerator) + std::fabs(denominator);
   if (rescale_val > 1.0/TOLERANCE)
     return 1.0/rescale_val;
   else if (rescale_val < TOLERANCE)
@@ -225,7 +223,7 @@ evaluate_above_diagonal(const vector<double> &cf_coeffs,
   double prev_denom1 = 1.0;
   double prev_denom2 = 1.0; 
   
-  for (size_t i = 1; i < min(cf_coeffs.size(),
+  for (size_t i = 1; i < std::min(cf_coeffs.size(),
                              depth - offset_coeffs.size()); i++) {
     // initialize
     current_num = prev_num1 + cf_coeffs[i]*val*prev_num2;
@@ -254,7 +252,7 @@ evaluate_above_diagonal(const vector<double> &cf_coeffs,
   for (size_t i = 0; i < offset_coeffs.size(); i++)
     offset_part += offset_coeffs[i]*std::pow(val, (int)i);
   
-  return offset_part + std::pow(val, (int)min(depth, offset_coeffs.size()))*
+  return offset_part + std::pow(val, (int)std::min(depth, offset_coeffs.size()))*
     current_num/current_denom;
 } 
 
@@ -274,7 +272,7 @@ evaluate_below_diagonal(const vector<double> &cf_coeffs,
   double prev_denom1 = 1.0;
   double prev_denom2 = 1.0; 
 
-  for (size_t i = 1; i < min(cf_coeffs.size(),
+  for (size_t i = 1; i < std::min(cf_coeffs.size(),
                              depth - offset_coeffs.size()); i++) {
 
     // recursion
@@ -300,11 +298,11 @@ evaluate_below_diagonal(const vector<double> &cf_coeffs,
   }
   
   double offset_terms = 0.0;
-  for (size_t i = 0; i < min(offset_coeffs.size(), depth); i++)
+  for (size_t i = 0; i < std::min(offset_coeffs.size(), depth); i++)
     offset_terms += offset_coeffs[i]*std::pow(val, (int)i);
   
   // recall that if lower_offset > 0, we are working with 1/f, invert approx
-  return 1.0/(offset_terms + std::pow(val, (int)min(offset_coeffs.size(),depth))*
+  return 1.0/(offset_terms + std::pow(val, (int)std::min(offset_coeffs.size(),depth))*
               current_num/current_denom);
 }
 
@@ -326,7 +324,7 @@ evaluate_on_diagonal(const vector<double> &cf_coeffs,
   double prev_denom1 = 1.0;
   double prev_denom2 = 1.0; 
 
-  for (size_t i = 1; i < min(cf_coeffs.size(), depth); i++) {
+  for (size_t i = 1; i < std::min(cf_coeffs.size(), depth); i++) {
     // recursion
     current_num = prev_num1 + cf_coeffs[i]*val*prev_num2;
     current_denom = prev_denom1 + cf_coeffs[i]*val*prev_denom2;
@@ -434,7 +432,7 @@ check_yield_estimates_stability(const vector<double> &estimates) {
   // make sure that the estimate is increasing in the time_step and
   // is below the initial distinct per step_size
   for (size_t i = 0; i < estimates.size(); ++i)
-	  if (!std::isfinite(estimates[i]) || estimates[i] < 0)
+	  if (!R_FINITE(estimates[i]) || estimates[i] < 0)
 		  return false;
   for (size_t i = 1; i < estimates.size(); ++i){
     if (estimates[i] < estimates[i - 1] ){
