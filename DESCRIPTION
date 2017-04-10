@@ -1,7 +1,7 @@
 Package: preseqR
 Type: Package
 Title: Predicting the Number of Species in a Random Sample
-Version: 3.1.0
+Version: 3.0.1
 Date: 2017-04-10
 Author: Chao Deng, Timothy Daley and Andrew D. Smith
 Maintainer: Chao Deng <chaodeng@usc.edu>
