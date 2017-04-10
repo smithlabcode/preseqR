@@ -19,6 +19,8 @@
 
 preseqR.kmer.frac <- function(n, r=2, mt=100)
 {
+  checking.hist(n)
+
   ## setting the diagonal value
   di <- 0
   ## minimum required number of terms of power series in order to construct
@@ -179,7 +181,7 @@ preseqR.kmer.frac <- function(n, r=2, mt=100)
           (coef / denom.roots) %*% (t / (t - denom.roots))^x / N)})}
   }
 
-  ## add a correction
+  ## add a correction or multiple a correction???
   d <- 1 - frac.bias
   if (d >= 0) {
     f.frac.adjust <- function(t) {
