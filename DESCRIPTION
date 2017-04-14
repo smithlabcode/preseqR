@@ -5,7 +5,13 @@ Version: 3.0.1
 Date: 2017-04-10
 Author: Chao Deng, Timothy Daley and Andrew D. Smith
 Maintainer: Chao Deng <chaodeng@usc.edu>
-Description: Estimating the number of species represented at least r times in a random sample.
+Description: preseqR provides functions to estimate the number of species 
+represented at least r times in a random sample based on an initial sample. It
+generalizes the classic problem where r is equal to 1. We use a mixture of 
+Poisson processes to model sampling procedures and apply a nonparametric
+empirical Bayes approach to derive an estimator. For more information on
+preseqR, see Deng C, Daley T and Smith AD (2015) <10.1007/s40484-015-0049-7>
+and Deng C and Smith AD (2016) <https://arxiv.org/abs/1607.02804v2>.
 License: GPL-3
 Imports:
   polynom, graphics, stats
