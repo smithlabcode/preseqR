@@ -584,3 +584,110 @@ ds.mincount.bootstrap <- function(n, r=1, mt=100, times=100)
   f.estimator$FUN(1); median.estimators(1); var.estimator(1)
   return(list(FUN.nobootstrap=f.estimator, FUN.bootstrap=median.estimators, var=var.estimator))
 }
+
+
+## obtain coefficients
+.ds.mincount <- function(n, r=1, mt=100)
+{
+  checking.hist(n)
+
+  ## setting the diagonal value
+  di <- 0
+  ## minimum required number of terms of power series in order to construct
+  ## a continued fraction approximation
+  MIN_REQUIRED_TERMS <- 4
+
+  n[, 2] <- as.numeric(n[, 2])
+
+  ## constructing the power series
+  PS.coeffs <- generating.ps(n, 1, mt=mt)
+
+  if (is.null(PS.coeffs)) {
+    write("the size of the initial experiment is insufficient", stderr())
+    return(NULL)
+  }
+
+  ## constrain the continued fraction approximation with even terms
+  ## asymptotically ~ C / t
+  mt <- min(mt, length(PS.coeffs))
+  mt <- mt - (mt %% 2)
+  PS.coeffs <- PS.coeffs[ 1:mt ]
+
+  ## check whether sample size is sufficient
+  if (mt < 2)
+  {
+    m <- paste("max count before zero is les than min required count (2)",
+               " sample not sufficiently deep or duplicates removed", sep = ',')
+    write(m, stderr())
+    return(NULL)
+  }
+
+  ## construct a continued fraction approximation including as many as possible
+  ## terms
+  valid <- FALSE
+  if (mt >=  MIN_REQUIRED_TERMS ) {
+    DE <- seq(mt, MIN_REQUIRED_TERMS, by=-2)
+    for (de in DE) {
+      ## continued fraction approximation to a power series
+      out <- .C('c_PS2CF', as.integer(di), 
+              as.integer(de), as.double(PS.coeffs[1:de]), 
+              as.integer(length(PS.coeffs[1:de])),
+              ps.coeffs = as.double(vector(mode = 'numeric', length=MAXLENGTH)),
+              ps.coeffs.l = as.integer(0),
+              cf.coeffs = as.double(vector(mode = 'numeric', length=MAXLENGTH)),
+              cf.coeffs.l = as.integer(0),
+              offset.coeffs =as.double(vector(mode='numeric',length=MAXLENGTH)),
+              diagonal.idx = as.integer(0),
+              degree = as.integer(0), is.valid = as.integer(0));
+      if (out$is.valid) {break}
+    }
+    if (out$is.valid) {
+      length(out$ps.coeffs) <- out$ps.coeffs.l
+      length(out$cf.coeffs) <- out$cf.coeffs.l
+      length(out$offset.coeffs) <- as.integer(abs(out$diagonal.idx))
+      CF.space <- list(out$ps.coeffs, out$cf.coeffs, out$offset.coeffs, 
+                     out$diagonal.idx, out$degree)
+      names(CF.space) <- c('ps.coeffs', 'cf.coeffs', 'offset.coeffs', 'diagonal.idx',
+                         'degree')
+      de = CF.space$degree
+
+      CF <- list(CF.space$ps.coeffs[1:de], CF.space$cf.coeffs[1:de],
+                 CF.space$offset.coeffs, CF.space$diagonal.idx, de)
+      names(CF) <- c('ps.coeffs', 'cf.coeffs', 'offset.coeffs', 'diagonal.idx',
+                   'degree')
+      class(CF) <- 'CF'
+      ## convert the continued fraction to the RFA 
+      RF <- CF2RFA(CF)
+      RF[[1]] <- RF[[1]] / polynomial(c(0, 1))
+
+      RF[[1]] <- RF[[1]] / coef(RF[[2]])[length(coef(RF[[2]]))]
+
+      ## solving roots
+      denom.roots <- solve(RF[[2]])
+
+      ## convert roots from t - 1 to t
+      roots <- denom.roots + 1
+
+      poly.numer <- as.function(RF[[1]])
+      l <- length(denom.roots)
+      ## treat polynomials in the rational function to be monic
+      ## the difference to the original RFA is a multiplier C
+
+      ## c_i in the estimator
+      coef <- sapply(1:l, function(x) {
+        poly.numer(denom.roots[x]) / prod(denom.roots[x] - denom.roots[-x])})
+      ## the estimator passes the requirement
+      valid <- TRUE
+      ## species accum curves with minimum count r
+      ## using parital fraction expansion
+      denom.roots <- denom.roots + 1
+    }
+  }
+  if (valid==FALSE) {
+    s1 <- sum(n[, 2])
+    s2 <- sum(n[n[, 1] > 1, 2])
+    coef <- s1^2 / s2
+    denom.roots <- (s1 - s2) / s2
+  }
+  list(coef=coef, roots=denom.roots)
+}
