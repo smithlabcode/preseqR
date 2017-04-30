@@ -77,22 +77,24 @@ sequencing libraries. Nature methods, 10(4), 325-327.
 
 \examples{
 ## load library
-library(preseqR)
+#library(preseqR)
 
 ## import data
-data(FisherButterflyHist)
+#data(FisherButterflyHist)
 
 ## estimate the number of species captured at least once, twice or 20 times 
 ## as a function of the number of individuals
-result = ds.mincount.bootstrap(FisherButterflyHist, r=c(1,2, 20), times=10)
+
+# result = ds.mincount.bootstrap(FisherButterflyHist, r=c(1,2, 20), times=10)
+
 ## estimates of the number of unique words appeared at least once, twice or three
 ## times when the sample size 10 times the size of the initial sample
 
 ## estimates by the function ds.mincount
-result$FUN.nobootstrap$FUN(10)
+# result$FUN.nobootstrap$FUN(10)
 
 ## estimates by the bootstrapped estimator
-result$FUN.bootstrap(10)
+# result$FUN.bootstrap(10)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
