@@ -30,14 +30,13 @@ get.expectation <- function(FUN) {
 
 ### generate the histogram based on the simulation
 ### L is the total number of species in a population
-### t is the relative sample size
+### N is the sample size
 ### FUN is an RNG. It must take one argument as the number of random numbers
 ### generated and return the number of positive random numbers
-### FUN can be defined by users
-preseqR.simu.hist <- function(L=1e8, t, FUN) {
-  if (L > 1e8) {
-    L <- 1e8
-  } else if (L <= 0) {
+### FUN is defined by users
+### Simulation is based on a mixture of Poisson distributions
+preseqR.simu.hist <- function(L=1e8, N, FUN) {
+  if (L <= 0) {
     write("L has to be a positive number", stderr())
     return(NULL)
   }
@@ -45,16 +44,15 @@ preseqR.simu.hist <- function(L=1e8, t, FUN) {
   ## save the poisson parameters for each individual in the population
   lambda <- FUN(L)
   ## S saves samples
-  S <- rpois(L, lambda * t)
-  hist.count <- vector(length = max(S), mode = "numeric")
-  for (freq in S) {
-    if (freq > 0) {
-      hist.count[freq] <- hist.count[freq] + 1
-    }
+  S <- rmultinom(n=1, size=N, prob=lambda)
+  t <- table(S)
+  ## histogram
+  h <- matrix(c(as.integer(names(t)), as.numeric(t)), ncol=2)
+  ## exclude 0 counts
+  if (h[1, 1] == 0) {
+    h = h[2:dim(h)[1], ]
   }
-  nonzero.index <- which(hist.count != 0)
-  nonzero <- hist.count[nonzero.index]
-  matrix(c(nonzero.index, nonzero), ncol = 2)
+  return(h)
 }
 
 ### simulating an interpolation curve
