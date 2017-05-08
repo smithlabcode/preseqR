@@ -51,11 +51,11 @@ See \code{\link{ds.mincount.bootstrap}} for more information.
     expressed as \deqn{\hat{E}(S_r(t)) = \sum_{i=1}^l c_i \left(\frac{t}{t - x_i}\right)^r.}
     PF.elements contains both coefficients \eqn{c_i} and roots \eqn{x_i}.
   }
-  \item{m}{
+  \item{M}{
     The number of terms used when applying rational function approximation to 
     the power series of the average discovery rate.
   }
-  \item{m.adjust}{
+  \item{M.adjust}{
     The number of terms in the estiamtor, equal to l
   }
 }
