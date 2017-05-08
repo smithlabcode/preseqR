@@ -2,7 +2,7 @@
 ## QD algorithm
 ## input: coefficients of the power series; begin with the constant
 ## mt: the maximum number of terms used in the power series
-cont.frac <- function(coef, mt) {
+ps2cfa <- function(coef, mt) {
   index <- which(coef == 0)
   if (length(index) == 0) {
     mt <- min(mt, length(coef))
@@ -37,7 +37,7 @@ cont.frac <- function(coef, mt) {
 
 ## convert truncated continued fraction to a series of rational functions
 ## output two sets: A for numerators and B for denumerators
-CF2RF <- function(CF) {
+cfa2rf <- function(CF) {
   ## A, B are sets of polynomials based on recursive formula
   A <- list()
   B <- list()
@@ -62,6 +62,6 @@ CF2RF <- function(CF) {
 ## input: two sets of polynomials for numerators and denominators
 ##        the degree m
 ## output: rational function approximant or Pad\'{e} approximant
-.RFA <- function(RF, m) {
+rf2rfa <- function(RF, m) {
   return(polylist(RF$A[[m]], RF$B[[m]]))
 }
