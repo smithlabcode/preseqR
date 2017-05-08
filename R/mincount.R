@@ -84,27 +84,6 @@ preseqR.interpolate.mincount <- function(ss, n, r=1)
 }
 
 
-### convert a continued fraction to a rational function
-### the form of continued fractions e.g. a_0(t - 1) / (1 + a_1(t - 1))
-### see the Supplementary of Daley, T., & Smith, A. D.(2013)
-CF2RFA <- function(CF)
-{
-  poly.numer <- polynomial(1)
-  poly.denom <- polynomial(1)
-  cf <- CF$cf.coeffs
-  for (i in rev(cf)) {
-    tmp <- poly.numer
-    poly.numer <- poly.numer + polynomial(c(0, i)) * poly.denom
-    poly.denom <- tmp
-  }
-  ## according to the representation of the continued fraction
-  ## the first item is a_0x/... not 1 + a_0x/...
-  ## substract one from the result
-  poly.numer <- poly.numer - poly.denom
-  polylist(poly.numer, poly.denom)
-}
-
-
 ### power series based on count frequencies starting from frequency j
 ### when j = 1, it is the power series expansion of E(S_1(t)) / t at t = 1
 ### the maximum number of terms
@@ -374,170 +353,6 @@ general.preseqR.pf.mincount <- function(n, mt = 100, ss = NULL,
   list(PF.elements=mincount.f.elements, yield.estimates=result)
 }
 
-
-ds.mincount <- function(n, r=1, mt=100)
-{
-  checking.hist(n)
-
-  ## setting the diagonal value
-  di <- 0
-  ## minimum required number of terms of power series in order to construct
-  ## a continued fraction approximation
-  MIN_REQUIRED_TERMS <- 4
-
-  n[, 2] <- as.numeric(n[, 2])
-
-  ## constructing the power series
-  PS.coeffs <- generating.ps(n, 1, mt=mt)
-
-  if (is.null(PS.coeffs)) {
-    write("the size of the initial experiment is insufficient", stderr())
-    return(NULL)
-  }
-
-  ## constrain the continued fraction approximation with even terms
-  ## asymptotically ~ C / t
-  mt <- min(mt, length(PS.coeffs))
-  mt <- mt - (mt %% 2)
-  PS.coeffs <- PS.coeffs[ 1:mt ]
-
-  ## check whether sample size is sufficient
-  if (mt < 2)
-  {
-    m <- paste("max count before zero is les than min required count (2)",
-               " sample not sufficiently deep or duplicates removed", sep = ',')
-    write(m, stderr())
-    return(NULL)
-  }
-
-  ## construct a continued fraction approximation including as many as possible
-  ## terms
-  valid <- FALSE
-  if (mt >=  MIN_REQUIRED_TERMS ) {
-    DE <- seq(mt, MIN_REQUIRED_TERMS, by=-2)
-    for (de in DE) {
-      ## continued fraction approximation to a power series
-      out <- .C('c_PS2CF', as.integer(di), 
-              as.integer(de), as.double(PS.coeffs[1:de]), 
-              as.integer(length(PS.coeffs[1:de])),
-              ps.coeffs = as.double(vector(mode = 'numeric', length=MAXLENGTH)),
-              ps.coeffs.l = as.integer(0),
-              cf.coeffs = as.double(vector(mode = 'numeric', length=MAXLENGTH)),
-              cf.coeffs.l = as.integer(0),
-              offset.coeffs =as.double(vector(mode='numeric',length=MAXLENGTH)),
-              diagonal.idx = as.integer(0),
-              degree = as.integer(0), is.valid = as.integer(0));
-      if (out$is.valid) {break}
-    }
-    if (out$is.valid) {
-      length(out$ps.coeffs) <- out$ps.coeffs.l
-      length(out$cf.coeffs) <- out$cf.coeffs.l
-      length(out$offset.coeffs) <- as.integer(abs(out$diagonal.idx))
-      CF.space <- list(out$ps.coeffs, out$cf.coeffs, out$offset.coeffs, 
-                     out$diagonal.idx, out$degree)
-      names(CF.space) <- c('ps.coeffs', 'cf.coeffs', 'offset.coeffs', 'diagonal.idx',
-                         'degree')
-      DE = seq(CF.space$degree, MIN_REQUIRED_TERMS, by=-2)
-
-      for (de in DE) {
-        CF <- list(CF.space$ps.coeffs[1:de], CF.space$cf.coeffs[1:de],
-                   CF.space$offset.coeffs, CF.space$diagonal.idx, de)
-        names(CF) <- c('ps.coeffs', 'cf.coeffs', 'offset.coeffs', 'diagonal.idx',
-                     'degree')
-        class(CF) <- 'CF'
-        ## convert the continued fraction to the RFA 
-        RF <- CF2RFA(CF)
-        RF[[1]] <- RF[[1]] / polynomial(c(0, 1))
-
-        ## solving roots
-        numer.roots <- solve(RF[[1]])
-        denom.roots <- solve(RF[[2]])
-        ## seperating roots by their real parts
-        numer.roots.neg <- numer.roots[which(Re(numer.roots) < 0)]
-        numer.roots.pos <- numer.roots[which(Re(numer.roots) >= 0)]
-        denom.roots.neg <- denom.roots[which(Re(denom.roots) < 0)]
-        denom.roots.pos <- denom.roots[which(Re(denom.roots) >= 0)]
-
-        ## record roots in the numerator that are significantly similar to
-        ## roots in the denominator
-        tmp.roots <- c()
-
-        ## simplify the rational function approximation
-        ## two roots are same if the difference is less than the 
-        ## predefined PRECISION
-        if (length(numer.roots.pos) > 0) {
-          for (i in 1:length(numer.roots.pos)) {
-            if (length(denom.roots.pos) > 0) {
-              d <- Mod(denom.roots.pos - numer.roots.pos[i])
-              for (j in 1:length(d)) {
-                if (d[j] < PRECISION) {
-                  denom.roots.pos <- denom.roots.pos[-j]
-                  tmp.roots <- c(tmp.roots, numer.roots.pos[i])
-                  break
-                }
-              }
-            }
-          }
-        }
-
-        ## roots in simplified RFA
-        numer.roots <- numer.roots[!numer.roots %in% tmp.roots]
-        denom.roots <- c(denom.roots.neg, denom.roots.pos)
-
-        ## convert roots from t - 1 to t
-        roots <- denom.roots + 1
-        ## pacman rule checking
-        if (length(which(roots == 0)) || length(which(Re(roots) > 0))) {
-          next
-        } else {
-          poly.numer <- as.function(poly.from.roots(numer.roots))
-          l <- length(denom.roots)
-          ## treat polynomials in the rational function to be monic
-          ## the difference to the original RFA is a multiplier C
-
-          ## c_i in the estimator
-          coef <- sapply(1:l, function(x) {
-            poly.numer(denom.roots[x]) / prod(denom.roots[x] - denom.roots[-x])})
-          ## check whether the estimator is non-decreased
-          ## NOTE: it only checks for t >= 1 !!!
-          deriv.f <- function(t) {
-            Re(sapply(t, function(x) {-(coef*roots) %*% ( 1 / ((x-denom.roots)^2))}))} 
-          if (length(which( deriv.f(seq(0.05, 100, by=0.05)) < 0 ) != 0)) {
-            next
-          }
-          ## the estimator passes the requirement
-          valid <- TRUE
-          ## calculate the constant C
-          C <- coef(RF[[1]])[length(coef(RF[[1]]))] / 
-               coef(RF[[2]])[length(coef(RF[[2]]))]
-          ## species accum curves with minimum count r
-          ## using parital fraction expansion
-          denom.roots <- denom.roots + 1
-          coef <- coef * C
-          f.mincount <- function(t) {
-            sapply(r, function(x) {
-              Re(coef %*% (t / (t - denom.roots))^x)})}
-          break
-        }
-      }
-    }
-  }
-  if (valid==FALSE) {
-    s1 <- sum(n[, 2])
-    s2 <- sum(n[n[, 1] > 1, 2])
-    coef <- s1^2 / s2
-    denom.roots <- (s1 - s2) / s2
-    f.mincount <- function(t) {
-      sapply(r, function(x) {
-        coef * (t / (t + denom.roots))^x})}
-    f.mincount(1)
-    return(list(FUN=f.mincount, m=1, m.adjust=length(denom.roots), FUN.elements=list(coef=coef, roots=denom.roots)))
-  }
-  f.mincount(1)
-  list(FUN=f.mincount, m=de / 2, m.adjust=length(denom.roots), FUN.elements=list(coef=coef, roots=denom.roots))
-}
-
-
 ## nonparametric approach Deng & Smith 2016
 ds.mincount.bootstrap <- function(n, r=1, mt=100, times=100)
 {
@@ -545,14 +360,12 @@ ds.mincount.bootstrap <- function(n, r=1, mt=100, times=100)
   ## total individuals
   total <- n[, 1] %*% n[, 2]
 
-  ## the number of resampling times
-  counter <- 0
   ## returned function
   f.mincount <- vector(length=times, mode="list")
 
   ds.estimator <- function(n, r, mt, t.scale) {
     f <- ds.mincount(n, r=r, mt=mt)
-    if (f$m == 1) {
+    if (f$M == 1) {
       f <- ztnb.mincount(n, r=r)
       function(t) {f(t * t.scale)}
     } else {
@@ -565,7 +378,6 @@ ds.mincount.bootstrap <- function(n, r=1, mt=100, times=100)
     total.bootstrap <- n.bootstrap[, 1] %*% n.bootstrap[, 2]
     t.scale <- total / total.bootstrap
     f <-  ds.estimator(n.bootstrap, r=r, mt=mt, t.scale=t.scale) 
-    counter <- counter + 1
 
     f.mincount[[times]] <- f
     ## prevent later binding!!!
@@ -585,7 +397,7 @@ ds.mincount.bootstrap <- function(n, r=1, mt=100, times=100)
   return(list(FUN.nobootstrap=f.estimator, FUN.bootstrap=median.estimators, var=var.estimator))
 }
 
-ds.mincount.R <- function(n, r=1, mt=100)
+ds.mincount <- function(n, r=1, mt=100)
 {
   checking.hist(n)
 
@@ -615,6 +427,9 @@ ds.mincount.R <- function(n, r=1, mt=100)
   ## construct the continued fraction approximation to the power seies
   cf <- ps2cfa(coef=PS.coeffs, mt=mt)
   rf <- cfa2rf(CF=cf)
+  ## the length of cf could be less than mt
+  ## even if ps do not have zero terms, coefficients of cf may have
+  mt <- length(cf)
   ## select rational function approximants [M-1/M] m=2M
   ## asymptotically ~ C / t
   mt <- mt - (mt %% 2)
