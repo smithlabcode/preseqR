@@ -7,7 +7,7 @@ ps2cfa <- function(coef, mt) {
   if (length(index) == 0) {
     mt <- min(mt, length(coef))
   } else {
-    mt <- min(mt, index[1])
+    mt <- min(mt, index[1] - 1)
   }
   if (mt == 1) {
     return(coef[1])
@@ -25,10 +25,12 @@ ps2cfa <- function(coef, mt) {
     if (i %% 2 == 1) {
       ## number of entries in the column
       qd.table[1:n, i] <- qd.table[2:(n+1), i-1] - qd.table[1:n, i-1] + qd.table[2:(n+1), i-2]
-      if (qd.table[1, i] == 0) return(c(coef[1], -qd.table[1, 2:(i-1)]))
+      if (!is.finite(qd.table[1, i]) || qd.table[1, i] == 0) 
+        return(c(coef[1], -qd.table[1, 2:(i-1)]))
     } else {
       qd.table[1:n, i] <- qd.table[2:(n+1), i-1] / qd.table[1:n, i-1] * qd.table[2:(n+1), i-2]
-      if (qd.table[1, i] == 0) return(c(coef[1], -qd.table[1, 2:(i-1)]))
+      if (!is.finite(qd.table[1, i]) || qd.table[1, i] == 0)
+        return(c(coef[1], -qd.table[1, 2:(i-1)]))
     }
   }
   return(c(coef[1], -qd.table[1, 2:mt]))
