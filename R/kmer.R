@@ -149,8 +149,8 @@ kmer.frac.curve <- function(n, N, seq.size.GB, r=2, mt=100)
   f <- kmer.frac(n, r=r, mt=mt)
   if (is.null(f)) return(NULL)
   seq.effort <- seq.size.GB * 1e9 / N
-  kmer.frac <- t(sapply(seq.effort, function(x) f(x)))
-  curves <- cbind(seq.size.GB, kmer.frac)
+  frac <- t(sapply(seq.effort, function(x) f(x)))
+  curves <- cbind(seq.size.GB, frac)
   colnames(curves) <- c("bases(GB)", paste("frac(X>=", r, ")", sep=""))
   return(curves)
 }
