@@ -157,9 +157,8 @@ general.ds.mincount <- function(n, r=1, mt=100, start.freq=1)
   ## asymptotically ~ C / t
   mt <- mt - (mt %% 2)
   valid.estimator <- FALSE
-  for (m in seq(mt, 2, by=-2)) {
-    if (valid.estimator == TRUE)
-      break
+  m <- mt
+  while (valid.estimator == FALSE) {
 
     rfa <- rf2rfa(RF=rf, m=m)
     ## solving roots
@@ -201,6 +200,7 @@ general.ds.mincount <- function(n, r=1, mt=100, start.freq=1)
     roots <- denom.roots + 1
     ## pacman rule checking
     if (length(which(roots == 0)) || length(which(Re(roots) > 0))) {
+      m <- m - 2
       next
     } else {
       poly.numer <- as.function(poly.from.roots(numer.roots))
@@ -224,6 +224,7 @@ general.ds.mincount <- function(n, r=1, mt=100, start.freq=1)
       deriv.f <- function(t) {
         Re(sapply(t, function(x) {-(coef*denom.roots) %*% ( 1 / ((x-denom.roots)^2))}))} 
       if (length(which( deriv.f(seq(0.05, 100, by=0.05)) < 0 ) != 0)) {
+        m <- m - 2
         next
       }
       f.mincount <- function(t) {
@@ -318,9 +319,8 @@ ds.mincount <- function(n, r=1, mt=100)
   ## asymptotically ~ C / t
   mt <- mt - (mt %% 2)
   valid.estimator <- FALSE
-  for (m in seq(mt, 2, by=-2)) {
-    if (valid.estimator == TRUE)
-      break
+  m <- mt
+  while (valid.estimator == FALSE) {
 
     rfa <- rf2rfa(RF=rf, m=m)
     ## solving roots
@@ -362,6 +362,7 @@ ds.mincount <- function(n, r=1, mt=100)
     roots <- denom.roots + 1
     ## pacman rule checking
     if (length(which(roots == 0)) || length(which(Re(roots) > 0))) {
+      m <- m - 2
       next
     } else {
       poly.numer <- as.function(poly.from.roots(numer.roots))
@@ -377,6 +378,7 @@ ds.mincount <- function(n, r=1, mt=100)
       deriv.f <- function(t) {
         Re(sapply(t, function(x) {-(coef*roots) %*% ( 1 / ((x-denom.roots)^2))}))} 
       if (length(which( deriv.f(seq(0.05, 100, by=0.05)) < 0 ) != 0)) {
+        m <- m - 2
         next
       }
       ## calculate the constant C
