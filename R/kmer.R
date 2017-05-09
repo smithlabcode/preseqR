@@ -57,9 +57,12 @@ kmer.frac <- function(n, r=2, mt=100)
   ## select rational function approximants [M-1/M] m=2M
   ## asymptotically ~ C / t
   mt <- mt - (mt %% 2)
+  valid.estimator <- FALSE
   for (m in seq(mt, 2, by=-2)) {
-    rfa <- rf2rfa(RF=rf, m=m)
+    if (valid.estimator == TRUE)
+      break
 
+    rfa <- rf2rfa(RF=rf, m=m)
     ## solving roots
     numer.roots <- solve(rfa[[1]])
     denom.roots <- solve(rfa[[2]])
@@ -134,7 +137,7 @@ kmer.frac <- function(n, r=2, mt=100)
       f.frac.adjust <- function(t) {
         f.frac(t) / frac.bias
       }
-      break
+      valid.estimator <- TRUE
     }
   }
   f.frac.adjust(1)
