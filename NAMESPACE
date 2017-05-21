@@ -1,4 +1,3 @@
-useDynLib(preseqR, .registration = TRUE)
 import(polynom)
 importFrom("graphics", "hist")
 importFrom("stats", "dnbinom", "median", "optim", "qnorm", "rmultinom",
