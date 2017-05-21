@@ -8,11 +8,25 @@ citEntry(entry = "article",
   volume       = "3",
   number       = "3",
   pages        = "135--144",
-  url          = "http://dx.doi.org/10.1007/s40484-015-0049-7",
+  url          = "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4885658",
 
   textVersion  =
-  paste("Deng C, Daley T and Smith A (2015).",
+  paste("Deng C, Daley T and Smith AD (2015).",
         "Applications of species accumulation curves in large-scale biological data analysis.",
         "Quantitative Biology, 3(3), 135-144.",
-        "URL http://dx.doi.org/10.1007/s40484-015-0049-7.")
+        "URL https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4885658.")
+)
+
+citEntry(entry = "article",
+  title        = "Estimating the number of species to attain sufficient representation in a random sample",
+  author       = personList(as.person("Chao Deng"), as.person("Andrew D. Smith")),
+  journal      = "arXiv",
+  year         = "2016",
+  url          = "https://arxiv.org/abs/1607.02804v2",
+
+  textVersion  =
+  paste("Deng C and Smith AD (2016).",
+        "Estimating the number of species to attain sufficient representation in a random sample.",
+        "arXiv preprint.",
+        "URL https://arxiv.org/abs/1607.02804v2.")
 )
