@@ -1,6 +1,6 @@
 UPDATES TO VERSION 3.1.1
 ========================
-1. Substitute enbedded c++ code with R code
+1. Substitute embedded c++ code with R code
 2. Remove the dependencies on the software preseq 
 
 UPDATES TO VERSION 3.0.1
