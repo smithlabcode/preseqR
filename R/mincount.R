@@ -395,7 +395,7 @@ ds.mincount <- function(n, r=1, mt=100)
       deriv.f <- function(t) {
         Re(sapply(t, function(x) {-(coefs*roots) %*% ( 1 / ((x-roots)^2))}))}
       if (any( deriv.f(seq(1, 100, by=0.05)) < 0 )) {
-        m = m - 2
+        m <- m - 2
         next
       } else {
         f.mincount <- function(t) {
