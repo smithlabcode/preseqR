@@ -326,6 +326,13 @@ ds.mincount <- function(n, r=1, mt=100)
     ## solving roots
     numer.roots <- solve(rfa[[1]])
     denom.roots <- solve(rfa[[2]])
+
+    ## finite
+    if (any(!is.finite(c(numer.roots, denom.roots)))) {
+      m = m - 2
+      next;
+    }
+
     ## seperating roots by their real parts
     numer.roots.neg <- numer.roots[which(Re(numer.roots) < 0)]
     numer.roots.pos <- numer.roots[which(Re(numer.roots) >= 0)]
@@ -365,36 +372,47 @@ ds.mincount <- function(n, r=1, mt=100)
       m <- m - 2
       next
     } else {
-      poly.numer <- as.function(poly.from.roots(numer.roots))
+      if (length(numer.roots) == 0) {
+        poly.numer <- as.function(polynomial(1))
+      } else {
+        poly.numer <- as.function(poly.from.roots(numer.roots))
+      }
       l <- length(denom.roots)
       ## treat polynomials in the rational function to be monic
       ## the difference to the original RFA is a multiplier C
 
       ## c_i in the estimator
-      coef <- sapply(1:l, function(x) {
+      coefs <- sapply(1:l, function(x) {
         poly.numer(denom.roots[x]) / prod(denom.roots[x] - denom.roots[-x])})
-      ## check whether the estimator is non-decreased
-      ## NOTE: it only checks for t >= 1 !!!
-      deriv.f <- function(t) {
-        Re(sapply(t, function(x) {-(coef*roots) %*% ( 1 / ((x-denom.roots)^2))}))} 
-      if (length(which( deriv.f(seq(0.05, 100, by=0.05)) < 0 ) != 0)) {
-        m <- m - 2
-        next
-      }
       ## calculate the constant C
       C <- coef(rfa[[1]])[length(coef(rfa[[1]]))] / 
            coef(rfa[[2]])[length(coef(rfa[[2]]))]
-      ## species accum curves with minimum count r
-      ## using parital fraction expansion
-      denom.roots <- denom.roots + 1
-      coef <- coef * C
-      f.mincount <- function(t) {
-        sapply(r, function(x) {
-          Re(coef %*% (t / (t - denom.roots))^x)})}
-      f.mincount(1)
-      valid.estimator <- TRUE
+      coefs <- coefs * C
+
+      ## check whether the estimator is non-decreased
+      ## NOTE: it only checks for t >= 1 !!!
+
+      deriv.f <- function(t) {
+        Re(sapply(t, function(x) {-(coefs*roots) %*% ( 1 / ((x-roots)^2))}))}
+      if (any( deriv.f(seq(1, 100, by=0.05)) < 0 )) {
+        m = m - 2
+        next
+      } else {
+        f.mincount <- function(t) {
+          sapply(r, function(x) {
+            Re(coefs %*% (t / (t - roots))^x)})}
+        f.mincount(1)
+        valid.estimator <- TRUE
+      }
     }
   }
-  ## remove M, M.adjust in the future
-  list(FUN=f.mincount, M=m / 2, M.adjust=length(denom.roots), FUN.elements=list(coef=coef, roots=denom.roots))
+  ## remove M, M.adjust in the future)
+  if (valid.estimator == TRUE) {
+    return(list(FUN=f.mincount, M=m / 2, M.adjust=length(roots), FUN.elements=list(coefs=coefs, roots=roots)))
+  } else {
+    ## the case m = 0
+    f.mincount <- function(t) {
+      sapply(r, function(x) sum(n[, 2]))}
+    return(list(FUN=f.mincount, M=1, M.adjust=1, FUN.elements=list(coefs=sum(n[, 2]), roots=0)))
+  }
 }
