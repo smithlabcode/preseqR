@@ -320,7 +320,7 @@ ds.mincount <- function(n, r=1, mt=100)
   mt <- mt - (mt %% 2)
   valid.estimator <- FALSE
   m <- mt
-  while (valid.estimator == FALSE) {
+  while (valid.estimator == FALSE && m >= 2) {
 
     rfa <- rf2rfa(RF=rf, m=m)
     ## solving roots
@@ -368,7 +368,7 @@ ds.mincount <- function(n, r=1, mt=100)
     ## convert roots from t - 1 to t
     roots <- denom.roots + 1
     ## pacman rule checking
-    if (length(which(roots == 0)) || length(which(Re(roots) > 0))) {
+    if (any(Re(roots) >= 0)) {
       m <- m - 2
       next
     } else {
