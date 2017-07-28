@@ -119,7 +119,7 @@ generating.ps <- function(n, mt, j=1) {
 ## using count frequencies starting from a given count frequency instead of 1
 ## when start.freq = 1, it is identical to the function preseqR.pf.mincount
 ## CHAO: save for a rainy day
-general.ds.mincount <- function(n, r=1, mt=100, start.freq=1)
+general.ds.mincount <- function(n, r=1, mt=20, start.freq=1)
 {
   # check the input format of the histogram
   checking.hist(n)
@@ -239,7 +239,7 @@ general.ds.mincount <- function(n, r=1, mt=100, start.freq=1)
 }
 
 ## nonparametric approach Deng & Smith 2016
-ds.mincount.bootstrap <- function(n, r=1, mt=100, times=100)
+ds.mincount.bootstrap <- function(n, r=1, mt=20, times=100)
 {
   n[, 2] <- as.numeric(n[, 2])
   ## total individuals
@@ -282,7 +282,7 @@ ds.mincount.bootstrap <- function(n, r=1, mt=100, times=100)
   return(list(FUN.nobootstrap=f.estimator, FUN.bootstrap=median.estimators, var=var.estimator))
 }
 
-ds.mincount <- function(n, r=1, mt=100)
+ds.mincount <- function(n, r=1, mt=20)
 {
   checking.hist(n)
 

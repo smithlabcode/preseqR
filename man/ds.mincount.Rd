@@ -9,7 +9,7 @@ The function estimates the expected number of species represented at least
 r times in a random sample based on the initial sample.
 }
 \usage{
-ds.mincount(n, r=1, mt=100)
+ds.mincount(n, r=1, mt=20)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -22,7 +22,7 @@ ds.mincount(n, r=1, mt=100)
 }
   \item{mt}{
     An positive integer constraining possible rational function
-    approximations. Default is 100.
+    approximations. Default is 20.
 }
   \item{r}{
     A vector of positive integers. Default is 1.

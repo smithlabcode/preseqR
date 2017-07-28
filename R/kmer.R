@@ -17,7 +17,7 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-kmer.frac <- function(n, r=2, mt=100)
+kmer.frac <- function(n, r=2, mt=20)
 {
   checking.hist(n)
 
@@ -148,7 +148,7 @@ kmer.frac <- function(n, r=2, mt=100)
 ## N, number of nucleotides sequenced in the initial experiment
 ## seq.size.GB, the number of nucleotides plan to sequence
 ## the parameter can take an array of numbers
-kmer.frac.curve <- function(n, N, seq.size.GB, r=2, mt=100)
+kmer.frac.curve <- function(n, N, seq.size.GB, r=2, mt=20)
 {
   f <- kmer.frac(n, r=r, mt=mt)
   if (is.null(f)) return(NULL)
@@ -159,7 +159,7 @@ kmer.frac.curve <- function(n, N, seq.size.GB, r=2, mt=100)
   return(curves)
 }
 
-kmer.frac.bootstrap <- function(n, r=2, mt=100, times=100)
+kmer.frac.bootstrap <- function(n, r=2, mt=20, times=100)
 {
   n[, 2] <- as.numeric(n[, 2])
   ## total individuals

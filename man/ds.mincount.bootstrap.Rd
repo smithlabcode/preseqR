@@ -10,7 +10,7 @@ Estimating the number of species represented r or more times
     bootstrapped to improve the stability of estimates.
 }
 \usage{
-ds.mincount.bootstrap(n, r=1, mt=100, times=100)
+ds.mincount.bootstrap(n, r=1, mt=20, times=100)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -23,7 +23,7 @@ ds.mincount.bootstrap(n, r=1, mt=100, times=100)
 }
   \item{mt}{
     An positive integer constraining possible rational function
-    approximations. Default is 100.
+    approximations. Default is 20.
 }
   \item{r}{
     A vector of positive integers. Default is 1.
