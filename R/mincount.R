@@ -333,12 +333,6 @@ ds.mincount <- function(n, r=1, mt=20)
       next;
     }
 
-    ## seperating roots by their real parts
-    numer.roots.neg <- numer.roots[which(Re(numer.roots) < 0)]
-    numer.roots.pos <- numer.roots[which(Re(numer.roots) >= 0)]
-    denom.roots.neg <- denom.roots[which(Re(denom.roots) < 0)]
-    denom.roots.pos <- denom.roots[which(Re(denom.roots) >= 0)]
-
     ## record roots in the numerator that are significantly similar to
     ## roots in the denominator
     tmp.roots <- c()
@@ -346,27 +340,25 @@ ds.mincount <- function(n, r=1, mt=20)
     ## simplify the rational function approximation
     ## two roots are same if the difference is less than the 
     ## predefined PRECISION
-    if (length(numer.roots.pos) > 0) {
-      for (i in 1:length(numer.roots.pos)) {
-        if (length(denom.roots.pos) > 0) {
-          d <- Mod(denom.roots.pos - numer.roots.pos[i])
-          for (j in 1:length(d)) {
-            if (d[j] < PRECISION) {
-              denom.roots.pos <- denom.roots.pos[-j]
-              tmp.roots <- c(tmp.roots, numer.roots.pos[i])
-              break
-            }
+    if (length(denom.roots) > 0) {
+      for (i in 1:length(denom.roots)) {
+        if (length(numer.roots) > 0) {
+          d <- Mod(denom.roots[i] - numer.roots)
+          ind <- which.min(d)
+          if (d[ind] < PRECISION) {
+            numer.roots <- numer.roots[-ind]
+            tmp.roots <- c(tmp.roots, denom.roots[i])
           }
         }
       }
     }
 
     ## roots in simplified RFA
-    numer.roots <- numer.roots[!numer.roots %in% tmp.roots]
-    denom.roots <- c(denom.roots.neg, denom.roots.pos)
+    denom.roots <- denom.roots[!denom.roots %in% tmp.roots]
 
     ## convert roots from t - 1 to t
     roots <- denom.roots + 1
+
     ## pacman rule checking
     if (any(Re(roots) >= 0)) {
       m <- m - 2
