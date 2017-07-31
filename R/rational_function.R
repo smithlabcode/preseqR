@@ -86,3 +86,32 @@ cfa2rf <- function(CF) {
 rf2rfa <- function(RF, m) {
   return(polylist(RF$A[[m]], RF$B[[m]]))
 }
+
+## discriminant of the quadratic polynomial, which is
+## the denominator of the discovery rate at m = 2
+discriminant <- function(n) {
+  if (max(n[, 1]) < 3) {
+    return(NULL)
+  }
+  n[, 2] <- as.numeric(n[, 2])
+  S1 <- sum(n[, 2])
+  if (length(which(n[, 1] == 1))) {
+    S2 <- S1 - n[which(n[, 1] == 1), 2]
+  } else {
+  	S2 <- S1
+  }
+  if (length(which(n[, 1] == 2))) {
+    S3 <- S2 - n[which(n[, 1] == 2), 2]
+  } else {
+  	S3 <- S2
+  }
+  if (length(which(n[, 1] == 3))) {
+    S4 <- S3 - n[which(n[, 1] == 3), 2]
+  } else {
+  	S4 <- S3
+  }
+  a <- S2*S4 - S3^2
+  b <- S1*S4 - S2*S3
+  c <- S1*S3 - S2^2
+  return((b / a)^2 - 4 * (c / a))
+}
