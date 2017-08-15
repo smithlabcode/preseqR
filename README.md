@@ -1,3 +1,7 @@
+UPDATES TO VERSION 3.1.2
+========================
+1. Fix a bug for removing defects
+
 UPDATES TO VERSION 3.1.1
 ========================
 1. Substitute embedded c++ code with R code
