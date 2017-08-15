@@ -2,7 +2,7 @@ Package: preseqR
 Type: Package
 Title: Predicting the Number of Species in a Random Sample
 Version: 3.1.2
-Date: 2017-07-28
+Date: 2017-08-14
 Author: Chao Deng, Timothy Daley and Andrew D. Smith
 Maintainer: Chao Deng <chaodeng@usc.edu>
 Description: The relation between the number of species and the number of individuals in a random sample is a classic problem back to Fisher (1943) <doi:10.2307/1411>. We generalize this problem to estimate the number of species represented at least r times in a random sample. In particular when r=1, it becomes the classic problem. We use a mixture of Poisson processes to model sampling procedures and apply a nonparametric empirical Bayes approach to obtain an estimator. For more information on 'preseqR', see Deng C, Daley T and Smith AD (2015) <doi:10.1007/s40484-015-0049-7> and Deng C and Smith AD (2016) <arXiv:1607.02804v2>.
