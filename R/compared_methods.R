@@ -26,8 +26,9 @@ ztpois.mincount <- function(n, r=1) {
     
     C <- n[, 1] %*% n[, 2] / sum(n[, 2])
     f <- function(x) {x / (1 - exp(-x))}
-    result = uniroot(function(x) f(x) - C, c(0.001, 1e9), tol = 0.0001, extendInt="upX")
-    lambda = result$root
+    result <- uniroot(function(x) f(x) - C, c(0.001, 1e9), tol = 0.0001,
+                      extendInt="upX")
+    lambda <- result$root
     L <- sum(n[, 2]) / (1 - ppois(0, lambda))
     f.mincount <- function(t) {
       L * ppois(q=r - 1, lambda=lambda * t, lower.tail=FALSE)
@@ -35,21 +36,24 @@ ztpois.mincount <- function(n, r=1) {
     f.mincount(1); f.mincount
 }
 
-## Boneh (1998)
+## Boneh (1998) BBC estimator
 
 boneh.mincount <- function(n, r=1) {
   total.sample <- floor(n[, 1] %*% n[, 2])
   distinct <- sum(n[, 2])
 
-  tmp <- function(t) { sapply(r-1, function(x) {n[, 2] %*% (exp(-n[, 1]) - ppois(x, n[, 1] * t)) + distinct}) }
+  tmp <- function(t) { sapply(r-1, function(x) {
+            n[, 2] %*% (exp(-n[, 1]) - ppois(x, n[, 1] * t)) + distinct}) }
   
   index.f1 <- which(n[, 1] == 1)
   f1 <- n[index.f1, 2]
   U0 <- n[, 2] %*% exp(-(n[, 1]))
   if (length(index.f1) == 1 && f1 > U0) {
-    result <- uniroot(function(x) x*(1 - exp(-f1 / x)) - U0, c(0.001, 1e9), tol=0.0001, extendInt="upX")
+    result <- uniroot(function(x) x*(1 - exp(-f1 / x)) - U0, c(0.001, 1e9),
+                      tol=0.0001, extendInt="upX")
     U <- result$root
-    f.mincount <- function(t) {tmp(t) + sapply(r-1, function(x) {U * (exp(-(f1 / U)) - ppois(x, f1 * t / U))})}
+    f.mincount <- function(t) {tmp(t) + sapply(r-1, function(x) {
+                                U * (exp(-(f1 / U)) - ppois(x, f1 * t / U))})}
   } else {
     f.mincount <- tmp
   }
@@ -70,10 +74,11 @@ chao.mincount <- function(n, r=1, k=10) {
   S.rare <- sum(n[index.rare, 2])
   C.rare <- 1 - f1 / (n[index.rare, 1] %*% n[index.rare, 2])
   gamma.rare <- max(S.rare / C.rare * 
-              ((n[index.rare, 1] * (n[index.rare, 1] - 1)) %*% n[index.rare, 2]) /
-              (n[index.rare, 1] %*% n[index.rare, 2])^2 - 1, 0)
+    ((n[index.rare, 1] * (n[index.rare, 1] - 1)) %*% n[index.rare, 2]) /
+    (n[index.rare, 1] %*% n[index.rare, 2])^2 - 1, 0)
   f0 = S.rare / C.rare + f1 / C.rare * gamma.rare - S.rare
   ## not ppois(x, f1 * t / f0)
-  f.mincount <- function(t) { sapply(r-1, function(x) { f0 + distinct  - f0 * ppois(x, f1 * t / f0) * exp(f1/f0) })}
+  f.mincount <- function(t) { sapply(r-1, function(x) {
+                  f0 + distinct  - f0 * ppois(x, f1 * t / f0) * exp(f1/f0) })}
   f.mincount(1); f.mincount
 }

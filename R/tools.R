@@ -47,6 +47,7 @@ checking.hist <- function(n)
 }
 
 ### check determinants of matrix M_{m-1,m-1},M_{m-1,m},M_{m,m-1},M_{m,m}
+## OBSOLATE
 checking.matrix.det <- function(n, m) {
   ps <- generating.ps(n, j=1, mt=2*m + 1)
   ps <- c(0, ps)

@@ -189,10 +189,13 @@ kmer.frac.bootstrap <- function(n, r=2, mt=20, times=100)
     median.estimators <- function(t) {median( sapply(frac, function(x) x(t)) )}
     var.estimator <- function(t) {var( sapply(frac, function(x) x(t)) )}
   } else {
-    median.estimators <- function(t) {apply(sapply(frac, function(x) x(t)), FUN=median, MARGIN=1)}
-    var.estimator <- function(t) {apply(sapply(frac, function(x) x(t)), FUN=var, MARGIN=1)}
+    median.estimators <- function(t) {
+      apply(sapply(frac, function(x) x(t)), FUN=median, MARGIN=1)}
+    var.estimator <- function(t) {
+      apply(sapply(frac, function(x) x(t)), FUN=var, MARGIN=1)}
   }
   ## prevent later binding!!!
   f.estimator(1); median.estimators(1); var.estimator(1)
-  return(list(FUN.nobootstrap=f.estimator, FUN.bootstrap=median.estimators, var=var.estimator))
+  return(list(FUN.nobootstrap=f.estimator, FUN.bootstrap=median.estimators,
+              var=var.estimator))
 }

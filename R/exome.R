@@ -95,7 +95,8 @@ nb.mincount <- function(n, L, r=1, size=SIZE.INIT)
 
 # write out the information about the experiment and the number of reads needs
 # to be sequenced
-preseqR.depthseq <- function(n.reads, FUN=NULL, LIB.FUN=NULL, L=NULL, rho=0.85, r=8, uniq=TRUE)
+preseqR.depthseq <- function(n.reads, FUN=NULL, LIB.FUN=NULL, L=NULL, 
+                             rho=0.85, r=8, uniq=TRUE)
 {
   checking.hist(n.reads)
 
@@ -113,7 +114,8 @@ preseqR.depthseq <- function(n.reads, FUN=NULL, LIB.FUN=NULL, L=NULL, rho=0.85, 
     return(NULL)
   }
   N <- n.reads[, 1] %*% n.reads[, 2]
-  cat(paste("The number of reads is ", N, " in the initial experiment\n", sep=""))
+  cat(paste("The number of reads is ", N, 
+            " in the initial experiment\n", sep=""))
   if (FUN(10000) <= L * rho) {
     cat(paste("More than 10000 times the size of the initial experiment is",
               " needed to achieve the required standard\n", sep=""))
@@ -124,9 +126,11 @@ preseqR.depthseq <- function(n.reads, FUN=NULL, LIB.FUN=NULL, L=NULL, rho=0.85, 
   ## Counting with duplicates
   if (uniq==FALSE) {
     reads.total <- ceiling(N * t0 / 1000000.0)
-    cat(paste("In order to attain ", rho*100, "% of the targeted regions of length ", 
-        L, " with ", r, "X or greater coverage depth\n", sep=""))
-    cat(paste("A total of ", reads.total, " million reads are needed in the full experiment\n", sep=""))
+    cat(paste("In order to attain ", rho*100, "% of the targeted regions of",
+              " length ", L, " with ", r, "X or greater coverage depth\n",
+              sep=""))
+    cat(paste("A total of ", reads.total, " million reads are needed in the ",
+              "full experiment\n", sep=""))
     return(reads.total)
   }
   ## duplicates are removed
@@ -136,10 +140,12 @@ preseqR.depthseq <- function(n.reads, FUN=NULL, LIB.FUN=NULL, L=NULL, rho=0.85, 
               " needed to achieve the required standard\n", sep=""))
     return(NULL)
   }
-  t1 <- uniroot(function(x) {LIB.FUN(x) - N.uniq * t0}, interval=c(0, 10000), tol=0.00001)$root
+  t1 <- uniroot(function(x) {LIB.FUN(x) - N.uniq * t0}, interval=c(0, 10000),
+                tol=0.00001)$root
   reads.total <- ceiling(N * t1 / 1000000.0)
-  cat(paste("In order to attain ", rho*100, "% of the targeted regions of length ", 
-      L, " with ", r, "X or greater coverage depth\n", sep=""))
-  cat(paste("A total of ", reads.total, " million reads are needed in the full experiment\n", sep=""))
+  cat(paste("In order to attain ", rho*100, "% of the targeted regions of ",
+            "length ", L, " with ", r, "X or greater coverage depth\n", sep=""))
+  cat(paste("A total of ", reads.total, " million reads are needed in the full",
+            " experiment\n", sep=""))
   return(reads.total)
 }

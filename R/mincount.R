@@ -235,7 +235,8 @@ general.ds.mincount <- function(n, r=1, mt=20, start.freq=1)
     }
   }
   ## remove M, M.adjust in the future
-  list(FUN=f.mincount, M=m / 2, M.adjust=length(denom.roots), FUN.elements=list(coef=coef, roots=denom.roots))
+  list(FUN=f.mincount, M=m / 2, M.adjust=length(denom.roots), 
+       FUN.elements=list(coef=coef, roots=denom.roots))
 }
 
 ## nonparametric approach Deng & Smith 2016
@@ -271,15 +272,19 @@ ds.mincount.bootstrap <- function(n, r=1, mt=20, times=100)
   }
   f.estimator <- ds.mincount(n=n, r=r, mt=mt)
   if (length(r) == 1) {
-    median.estimators <- function(t) {median( sapply(f.mincount, function(x) x(t)) )}
+    median.estimators <- function(t) {
+      median( sapply(f.mincount, function(x) x(t)) )}
     var.estimator <- function(t) {var( sapply(f.mincount, function(x) x(t)) )}
   } else {
-    median.estimators <- function(t) {apply(sapply(f.mincount, function(x) x(t)), FUN=median, MARGIN=1)}
-    var.estimator <- function(t) {apply(sapply(f.mincount, function(x) x(t)), FUN=var, MARGIN=1)}
+    median.estimators <- function(t) {
+      apply(sapply(f.mincount, function(x) x(t)), FUN=median, MARGIN=1)}
+    var.estimator <- function(t) {
+      apply(sapply(f.mincount, function(x) x(t)), FUN=var, MARGIN=1)}
   }
   ## prevent later binding!!!
   f.estimator$FUN(1); median.estimators(1); var.estimator(1)
-  return(list(FUN.nobootstrap=f.estimator, FUN.bootstrap=median.estimators, var=var.estimator))
+  return(list(FUN.nobootstrap=f.estimator, FUN.bootstrap=median.estimators,
+              var=var.estimator))
 }
 
 ds.mincount <- function(n, r=1, mt=20)
@@ -400,11 +405,13 @@ ds.mincount <- function(n, r=1, mt=20)
   }
   ## remove M, M.adjust in the future
   if (valid.estimator == TRUE) {
-    return(list(FUN=f.mincount, M=m / 2, M.adjust=length(roots), FUN.elements=list(coefs=coefs, roots=roots)))
+    return(list(FUN=f.mincount, M=m / 2, M.adjust=length(roots), 
+                FUN.elements=list(coefs=coefs, roots=roots)))
   } else {
     ## the case m = 0
     f.mincount <- function(t) {
       sapply(r, function(x) sum(n[, 2]))}
-    return(list(FUN=f.mincount, M=1, M.adjust=1, FUN.elements=list(coefs=sum(n[, 2]), roots=0)))
+    return(list(FUN=f.mincount, M=1, M.adjust=1, 
+                FUN.elements=list(coefs=sum(n[, 2]), roots=0)))
   }
 }
