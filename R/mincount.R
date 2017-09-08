@@ -153,7 +153,7 @@ general.ds.mincount <- function(n, r=1, mt=20, start.freq=1)
   ## the length of cf could be less than mt
   ## even if ps do not have zero terms, coefficients of cf may have
   mt <- length(cf)
-  ## select rational function approximants [M-1/M] m=2M
+  ## select rational function approximants [m-1/m] m=mt, mt-2, ..., 2
   ## asymptotically ~ C / t
   mt <- mt - (mt %% 2)
   valid.estimator <- FALSE
@@ -315,7 +315,7 @@ ds.mincount <- function(n, r=1, mt=20)
   ## the length of cf could be less than mt
   ## even if ps do not have zero terms, coefficients of cf may have
   mt <- length(cf)
-  ## select rational function approximants [M-1/M] m=2M
+  ## select rational function approximants [m-1/m] m=mt, mt-2, ..., 2
   ## asymptotically ~ C / t
   mt <- mt - (mt %% 2)
   valid.estimator <- FALSE
@@ -398,7 +398,7 @@ ds.mincount <- function(n, r=1, mt=20)
       }
     }
   }
-  ## remove M, M.adjust in the future)
+  ## remove M, M.adjust in the future
   if (valid.estimator == TRUE) {
     return(list(FUN=f.mincount, M=m / 2, M.adjust=length(roots), FUN.elements=list(coefs=coefs, roots=roots)))
   } else {
