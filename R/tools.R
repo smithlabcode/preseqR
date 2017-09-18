@@ -18,24 +18,24 @@
 #
 
 
-### checking the input histogram in an appropariat format
-checking.hist <- function(n)
+### check the input histogram in an appropriate format
+checking.hist <- function(n) 
 {
   if (ncol(n)!=2 || is.numeric(n[,1])==FALSE || is.numeric(n[,2])==FALSE) {
     stop("Input must be a two-column matrix")
   }
-  ## the first column is the frequencies of observed items
+  ## the first column is the frequency i
+  ## the second column is the number of species represented i times 
+  ## in the sample
   freq <- n[, 1]
-
-  ## the second column is the number of observed distinct items for each
-  ## frequency
-  number.items <- n[, 2]
+  num <- n[, 2]
 
   ## check whether frequencies are at least one and the histogram is sorted
+  ## based on frequencies
   for (i in 1:length(freq))
     if (freq[i] <= 0 || freq[i] != floor(freq[i])) {
       stop("The first column must be positive integers!")
-    } else if (number.items[i] < 0) {
+    } else if (num[i] < 0) {
       stop("The second column must be non negative")
     }
     else {
@@ -46,9 +46,11 @@ checking.hist <- function(n)
   return(n)
 }
 
+
 ### check determinants of matrix M_{m-1,m-1},M_{m-1,m},M_{m,m-1},M_{m,m}
 ## OBSOLATE
-checking.matrix.det <- function(n, m) {
+checking.matrix.det <- function(n, m) 
+{
   ps <- generating.ps(n, j=1, mt=2*m + 1)
   ps <- c(0, ps)
   matrix.dets <- vector(length=4, mode="numeric")
@@ -68,48 +70,44 @@ checking.matrix.det <- function(n, m) {
 }
 
 
-
-## sampling without replacement
-## n frequencies counts
-nonreplace.sampling <- function(size, n)
+## sampling from a histogram without replacement
+nonreplace.sampling <- function(n, size)
 {
-  ## make sure frequencies are integers
+  ## make sure the number of species are integers
   n[, 2] <- floor(n[, 2])
-  ## the number of distinct items
-  distinct <- sum(n[, 2])
+  ## the number of species in total
+  S <- sum(n[, 2])
 
-  ## identifier for each distinct item
-  ind <- 1:distinct
+  ## identifier for each species
+  ind <- 1:S
 
-  ## the size of each read in the library
+  ## construct a sample space X composed by all individuals
   N <- rep(n[, 1], n[, 2])
-
-  ## construct a sample space X 
-  ## the whole library represents by its indexes. If a read presents t
-  ## times in the library, its indexes presents t times in X
   X <- rep(ind, N)
 
   return(sample(X, size, replace = FALSE))
 }
 
 
-## sampling without replacement
-## input frequencies counts; output subsample as a frequencies counts
-preseqR.nonreplace.sampling <- function(size, n)
+## sampling from a histogram without replacement
+## both input and output are histograms
+preseqR.nonreplace.sampling <- function(n, size)
 {
   ## check the input histogram file
   checking.hist(n)
-  ## sub sampling
-  X <- nonreplace.sampling(size, n)
+  ## subsampling
+  X <- nonreplace.sampling(n, size)
   ## record the freq of each sampled species
-  freq.counts <- hist(X, breaks=0:max(X), plot=FALSE)$count
-  ## frequencies counts; frequency 0 excluded
-  T <- hist(freq.counts, breaks=-1:max(freq.counts), plot=FALSE)$counts[-1]
+  freq <- hist(X, breaks=0:max(X), plot=FALSE)$count
+  ## the frequency of each frequency
+  T <- hist(freq, breaks=-1:max(freq), plot=FALSE)$counts[-1]
+  ## histogram
   matrix(c(which(T != 0), T[which(T != 0)]), byrow = FALSE, ncol=2)
 }
 
-
-lchoose <- function(N, k) {
+## log of N choose k
+lchoose <- function(N, k) 
+{
   result <- vector(length=max(length(N), length(k)), mode="numeric")
   index <- which(N - k + 1 > 0)
   if (length(index) == 0) {
