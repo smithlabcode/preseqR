@@ -17,68 +17,72 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-## zero truncated Poisson
-## method ref Cohen, A. Clifford. (1960): 203-211.
+## Zero Truncated Poisson (ZTP) estimator
+## Cohen, A. Clifford. "Estimating the parameter in a conditional Poisson 
+## distribution." Biometrics 16, no. 2 (1960): 203-211.
+ztp.rSAC <- function(n, r=1) 
+{
+  ## mle based on zero-truncated Poisson
+  C <- n[, 1] %*% n[, 2] / sum(n[, 2])
+  f <- function(x) {x / (1 - exp(-x))}
+  result <- uniroot(function(x) f(x) - C, c(0.001, 1e9), tol = 0.0001,
+                    extendInt="upX")
+  lambda <- result$root
+  L <- sum(n[, 2]) / (1 - ppois(0, lambda))
 
-ztpois.mincount <- function(n, r=1) {
-    total.sample <- floor(n[, 1] %*% n[, 2])
-    distinct <- sum(n[, 2])
-    
-    C <- n[, 1] %*% n[, 2] / sum(n[, 2])
-    f <- function(x) {x / (1 - exp(-x))}
-    result <- uniroot(function(x) f(x) - C, c(0.001, 1e9), tol = 0.0001,
-                      extendInt="upX")
-    lambda <- result$root
-    L <- sum(n[, 2]) / (1 - ppois(0, lambda))
-    f.mincount <- function(t) {
-      L * ppois(q=r - 1, lambda=lambda * t, lower.tail=FALSE)
-    }
-    f.mincount(1); f.mincount
+  ## estimator 
+  function(x) {
+    L * ppois(q=r - 1, lambda=lambda * x, lower.tail=FALSE)}
 }
 
-## Boneh (1998) BBC estimator
 
-boneh.mincount <- function(n, r=1) {
-  total.sample <- floor(n[, 1] %*% n[, 2])
-  distinct <- sum(n[, 2])
-
-  tmp <- function(t) { sapply(r-1, function(x) {
-            n[, 2] %*% (exp(-n[, 1]) - ppois(x, n[, 1] * t)) + distinct}) }
-  
+## BBC estimator
+## Boneh, Shahar, Arnon Boneh, and Richard J. Caron. "Estimating the prediction
+## function and the number of unseen species in sampling with replacement." 
+## Journal of the American Statistical Association 93, no. 441 (1998): 372-379.
+bbc.rSAC <- function(n, r=1) {
+  S <- sum(n[, 2])
+  ## BBC estimator without bias correction
+  tmp <- function(t) {
+            n[, 2] %*% (exp(-n[, 1]) - ppois(r-1, n[, 1] * t)) + S}
+  ## bias correction
   index.f1 <- which(n[, 1] == 1)
   f1 <- n[index.f1, 2]
   U0 <- n[, 2] %*% exp(-(n[, 1]))
+  ## if satisfy the condition, adjust the bias
+  ## otherwise return the estimator without correction
   if (length(index.f1) == 1 && f1 > U0) {
     result <- uniroot(function(x) x*(1 - exp(-f1 / x)) - U0, c(0.001, 1e9),
                       tol=0.0001, extendInt="upX")
     U <- result$root
-    f.mincount <- function(t) {tmp(t) + sapply(r-1, function(x) {
-                                U * (exp(-(f1 / U)) - ppois(x, f1 * t / U))})}
+    f.rSAC <- function(t) {tmp(t) + U*(exp(-(f1 / U)) - ppois(r-1, f1 * t / U))}
   } else {
-    f.mincount <- tmp
+    f.rSAC <- tmp
   }
-  f.mincount(1); f.mincount
+  f.rSAC
 }
 
-## Chao and Shen (2004)
 
-chao.mincount <- function(n, r=1, k=10) {
-  total.sample <- floor(n[, 1] %*% n[, 2])
-  distinct <- sum(n[, 2])
+## CS estimator
+## Chao, Anne, and Tsung-Jen Shen. "Nonparametric prediction in species 
+## sampling." Journal of agricultural, biological, and environmental 
+## statistics 9, no. 3 (2004): 253-269.
+cs.rSAC <- function(n, r=1, k=10) {
+  S <- sum(n[, 2])
   index.f1 <- which(n[, 1] == 1)
-  ## something wrong with the histogram
+  ## no species observed once
   if (length(index.f1) != 1)
     return(NULL)
   f1 <- n[index.f1, 2]
+  ## rare species if frequency no more than k
   index.rare <- which(n[, 1] <= k)
   S.rare <- sum(n[index.rare, 2])
   C.rare <- 1 - f1 / (n[index.rare, 1] %*% n[index.rare, 2])
+  ## estimate parameters
   gamma.rare <- max(S.rare / C.rare * 
     ((n[index.rare, 1] * (n[index.rare, 1] - 1)) %*% n[index.rare, 2]) /
     (n[index.rare, 1] %*% n[index.rare, 2])^2 - 1, 0)
   f0 = S.rare / C.rare + f1 / C.rare * gamma.rare - S.rare
-  ## not ppois(x, f1 * t / f0)
-  f.mincount <- function(t) { sapply(r-1, function(x) {
-                  f0 + distinct  - f0 * ppois(x, f1 * t / f0) * exp(f1/f0) })}
-  f.mincount(1); f.mincount
+  ## estimator
+  function(t) {f0 + S  - f0 * ppois(r-1, f1 * t / f0) * exp(f1/f0) }
 }
