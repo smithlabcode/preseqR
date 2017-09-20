@@ -17,26 +17,30 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-## continued fraction approximant to a power series
+## continued fraction approximant to a power series based on
 ## QD algorithm
-## input: coefficients of the power series; begin with the constant
-## mt: the maximum number of terms used in the power series
-ps2cfa <- function(coef, mt) {
-  index <- which(coef == 0)
+## coefs, coefficients of the power series; 
+## mt, the number of terms in the power series used for constructing
+## the continued fraction approximation
+## ref pp. 131, 147 and 148 in the book Pad\'{e} Approximants 2ed
+ps2cfa <- function(coefs, mt) {
+  ## use nonzero terms which are required by QD algorithm
+  index <- which(coefs == 0)
   if (length(index) == 0) {
-    mt <- min(mt, length(coef))
+    mt <- min(mt, length(coefs))
   } else {
     mt <- min(mt, index[1] - 1)
   }
   if (mt == 1) {
-    return(coef[1])
+    return(coefs[1])
   }
+  ## QD algorithm
   qd.table <- matrix(data=0, nrow=mt, ncol=mt)
   ## initialize the table
   ## the first column is 0
-  qd.table[1:(mt-1), 2] <- coef[2:mt] / coef[1:(mt-1)]
+  qd.table[1:(mt-1), 2] <- coefs[2:mt] / coefs[1:(mt-1)]
   if (mt == 2) {
-    return(c(coef[1], -qd.table[1, 2]))
+    return(c(coefs[1], -qd.table[1, 2]))
   }
   ## two types of columns e or q
   for (i in 3:mt) {
@@ -46,20 +50,21 @@ ps2cfa <- function(coef, mt) {
       qd.table[1:n, i] <- qd.table[2:(n+1), i-1] - qd.table[1:n, i-1] + 
                           qd.table[2:(n+1), i-2]
       if (!is.finite(qd.table[1, i]) || qd.table[1, i] == 0) 
-        return(c(coef[1], -qd.table[1, 2:(i-1)]))
+        return(c(coefs[1], -qd.table[1, 2:(i-1)]))
     } else {
       qd.table[1:n, i] <- qd.table[2:(n+1), i-1] / qd.table[1:n, i-1] * 
                           qd.table[2:(n+1), i-2]
       if (!is.finite(qd.table[1, i]) || qd.table[1, i] == 0)
-        return(c(coef[1], -qd.table[1, 2:(i-1)]))
+        return(c(coefs[1], -qd.table[1, 2:(i-1)]))
     }
   }
-  return(c(coef[1], -qd.table[1, 2:mt]))
+  return(c(coefs[1], -qd.table[1, 2:mt]))
 }
 
 
 ## convert truncated continued fraction to a series of rational functions
-## output two sets: A for numerators and B for denumerators
+## numerators are stored in set A and denumerators are stored in set B
+## equation (2.14a), (2.14b), (2.15) in the book Pad\'{e} Approximants 2ed
 cfa2rf <- function(CF) {
   ## A, B are sets of polynomials based on recursive formula
   A <- list()
@@ -84,13 +89,14 @@ cfa2rf <- function(CF) {
 ## Pad\'{e} approximant by picking out the numerator and the denominator
 ## input: two sets of polynomials for numerators and denominators
 ##        the degree m
-## output: rational function approximant or Pad\'{e} approximant
+## output: Pad\'{e} approximant
 rf2rfa <- function(RF, m) {
   return(polylist(RF$A[[m]], RF$B[[m]]))
 }
 
 ## discriminant of the quadratic polynomial, which is
 ## the denominator of the discovery rate at m = 2
+## OBSOLATE 
 discriminant <- function(n) {
   if (max(n[, 1]) < 3) {
     return(NULL)
