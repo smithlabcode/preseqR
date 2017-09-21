@@ -86,3 +86,30 @@ cs.rSAC <- function(n, r=1, k=10) {
   ## estimator
   function(t) {f0 + S  - f0 * ppois(r-1, f1 * t / f0) * exp(f1/f0) }
 }
+
+
+## The following estimator is based on the logseries estimator by Fisher
+## Fisher, R. A., A. Steven Corbet, and C. B. Williams. "The Relation Between
+## the Number of Species and the Number of Individuals in a Random Sample of an
+## Animal Population." Journal of Animal Ecology 12, no. 1 (1943): 42-58.
+## doi:10.2307/1411.
+
+## parametric for the logseries
+fisher.alpha <- function(n) {
+  N <- n[, 1] %*% n[, 2]
+  S <- sum(n[, 2])
+  result <- uniroot(function(x) (exp(x) - 1) / x - N / S, c(0.001, 1e9), 
+                    tol=0.0001, extendInt="upX")
+  alpha <- S / result$root
+  return(alpha)
+}
+
+## logseries estimator for the number of species represented at least r times
+fisher.rSAC <- function(n, r=1) {
+  alpha <- fisher.alpha(n)
+  N <- n[, 1] %*% n[, 2]
+  f.rSAC <- function(t) {sapply(t, function(x) alpha *
+    integrate(function(z) (z^(r-1) / (1 - z)), lower=0, 
+                upper=N*x / (N*x + alpha))$value)}
+  return(f.rSAC)
+}
