@@ -43,8 +43,8 @@ ztp.rSAC <- function(n, r=1)
 bbc.rSAC <- function(n, r=1) {
   S <- sum(n[, 2])
   ## BBC estimator without bias correction
-  tmp <- function(t) {
-            n[, 2] %*% (exp(-n[, 1]) - ppois(r-1, n[, 1] * t)) + S}
+  tmp <- function(t) {sapply(t, function(x) {
+            n[, 2] %*% (exp(-n[, 1]) - ppois(r-1, n[, 1] * x)) + S})}
   ## bias correction
   index.f1 <- which(n[, 1] == 1)
   f1 <- n[index.f1, 2]
