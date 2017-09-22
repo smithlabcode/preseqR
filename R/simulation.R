@@ -17,24 +17,17 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-### Generate histograms through simulation
-### The basic assumption is that the number of each individual sampled follows
-### a poisson process.
-
-### get the expectation of a distribution through Law of Large Number
+## get the expectation of a distribution through Law of Large Number
 get.expectation <- function(FUN) {
   ## magic number
   N <- 1e6
   return(sum(FUN(N)) / N)
 }
 
-### generate the histogram based on the simulation
-### L is the total number of species in a population
-### N is the sample size
-### FUN is an RNG. It must take one argument as the number of random numbers
-### generated and return the number of positive random numbers
-### FUN is defined by users
-### Simulation is based on a mixture of Poisson distributions
+
+## generate histograms based on the mixture of Poisson distributions model
+## L, the total number of species in a population
+## FUN, the RNG used to generate the relative abundance for each species 
 preseqR.simu.hist <- function(L=1e8, N, FUN) {
   if (L <= 0) {
     write("L has to be a positive number", stderr())
@@ -55,7 +48,48 @@ preseqR.simu.hist <- function(L=1e8, N, FUN) {
   return(h)
 }
 
-### simulating an interpolation curve
+
+## simulate a sample in a population
+## L, the total number of species in a population
+## FUN, the RNG used to generate the relative abundance for each species 
+## t, a vector representing relative sample sizes 
+## output 
+## 1. the histogram of the sample
+## 2. the probabilty of a species represented at least r times in a random
+##    sample that is t times the size of the given sample
+preseqR.simu.sc <- function(L=1e8, N, t, r, FUN) {
+  if (L > 1e8) {
+    L <- 1e8
+  } else if (L <= 0) {
+    write("L has to be a positive number", stderr())
+    return(NULL)
+  }
+  L <- as.integer(L)
+  E <- get.expectation(FUN)
+  t0 <- N / (L * E)
+  ## save the Poisson rate for each individual in the population
+  lambda <- FUN(L)
+  ## the number of individuals for each species
+  counts <- rpois(L, lambda * t0)
+  hist.count <- vector(length = max(counts), mode = "numeric")
+  for (freq in counts) {
+    if (freq > 0) {
+      hist.count[freq] <- hist.count[freq] + 1
+    }
+  }
+  nonzero.index <- which(hist.count != 0)
+  nonzero <- hist.count[nonzero.index]
+  n <- matrix(c(nonzero.index, nonzero), ncol = 2)
+  coverage <- sapply(t, function(x) {
+                counts <- rpois(L, lambda * t0 * x)
+                sum(lambda[which(counts >= r)]) / sum(lambda)})
+  return(list(histogram=n, sc=coverage))
+}
+
+
+## simulating an interpolation curve
+## FUN should always generate positive number
+## OBSOLATE
 preseqR.simu.interpolate <- function(L=1e7, ss, max.size, r, FUN) {
   ## too much memory if L is too large
   if (L > 1e8) {
@@ -68,8 +102,7 @@ preseqR.simu.interpolate <- function(L=1e7, ss, max.size, r, FUN) {
   E <- get.expectation(FUN)
   t <- ss / (L * E)
   ## save the poisson parameters for each individual in the population
-  ## assume all items in the library have positive probability to be sampled
-  ## FUN should always generate positive number
+  ## assume all species in the library have positive probability to be sampled
   lambda <- FUN(L)
   
   ## the interpolation curve
