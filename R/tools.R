@@ -113,7 +113,8 @@ lchoose <- function(N, k)
   if (length(index) == 0) {
     result[] <- -Inf }
   else {
-    result[index] <- (lgamma(N + 1) - lgamma(k + 1))[index] - lgamma((N - k + 1)[index])
+    result[index] <- (lgamma(N + 1) - lgamma(k + 1))[index] - 
+                     lgamma((N - k + 1)[index])
     result[-index] <- -Inf
   }
   result
