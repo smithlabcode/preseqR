@@ -94,6 +94,58 @@ rf2rfa <- function(RF, m) {
   return(polylist(RF$A[[m]], RF$B[[m]]))
 }
 
+
+## simplify the rational function, eliminate defects and partial-fraction
+## decompoistion
+rfa.simplify <- function(rfa) {
+  ## solving roots
+  numer.roots <- solve(rfa[[1]])
+  denom.roots <- solve(rfa[[2]])
+
+  ## finite
+  if (any(!is.finite(c(numer.roots, denom.roots))))
+    return(NULL)
+
+  ## identify defects
+  ## the root and the pole is a defect if the difference is less than 
+  ## the predefined precision, which is defined by the variable PRECISION
+  tmp.roots <- c()
+  for (i in 1:length(denom.roots)) {
+    if (length(numer.roots) > 0) {
+      d <- Mod(denom.roots[i] - numer.roots)
+      ind <- which.min(d)
+      if (d[ind] < PRECISION) {
+        numer.roots <- numer.roots[-ind]
+        tmp.roots <- c(tmp.roots, denom.roots[i])
+      }
+    }
+  }
+
+  ## eliminate defects
+  denom.roots <- denom.roots[!denom.roots %in% tmp.roots]
+  ## convert roots from t - 1 to t
+  poles <- denom.roots + 1
+    
+  ## treat both numerator and denuminator in the rational function as
+  ## monic polynomials
+  ## the difference from the original rational function is up to a factor
+  if (length(numer.roots) == 0) {
+    poly.numer <- as.function(polynomial(1))
+  } else {
+    poly.numer <- as.function(poly.from.roots(numer.roots))
+  }
+  l <- length(denom.roots)
+
+  ## coefficients in the partial fraction
+  coefs <- sapply(1:l, function(x) {
+    poly.numer(denom.roots[x]) / prod(denom.roots[x] - denom.roots[-x])})
+  ## calculate the factor
+  C <- coef(rfa[[1]])[length(coef(rfa[[1]]))] / 
+       coef(rfa[[2]])[length(coef(rfa[[2]]))]
+  coefs <- coefs * C
+  return(list(coefs=coefs, poles=poles))
+}
+
 ## discriminant of the quadratic polynomial, which is
 ## the denominator of the discovery rate at m = 2
 ## OBSOLATE 
