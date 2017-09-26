@@ -17,34 +17,31 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-## Two roots are the same if the difference is less than the PRECISION
+## the pair, a pole and a root, is a defect if the distance is less than 
+## the value defined by the variable PRECISION
 PRECISION <- 1e-3
 
-### interpolating for species accumulation curve with minimum count
-### ss step size
-### n two-column histogram
-### r minimum count
-preseqR.interpolate.mincount <- function(ss, n, r=1)
+### interpolating for r-SAC
+### ss, step size
+preseqR.interpolate.rSAC <- function(n, ss, r=1)
 {
   checking.hist(n)
 
   n[, 2] <- as.numeric(n[, 2])
-  ## total individuals captured
-  total.sample <- n[, 1] %*% n[, 2]
-  N <- total.sample
+  ## sample size
+  N <- n[, 1] %*% n[, 2]
 
-  ## total species
+  ## the number of species in the initial sample
   initial.distinct <- sum(n[, 2])
   step.size <- as.double(ss)
 
   ## l is the number of sampled points for interpolation
   l <- N / step.size
 
-  ## if the sample size is larger than the size of experiment or 
-  ## the step size is too small, return NULL
+  ## the step size is too large or too small
   if (l < 1 || ss < 1 || r < 1)
-    return()
-  ## if the sample size is the size of the experiment
+    return(NULL)
+  ## the step size is the sample size
   ## count the number of species observed r or more times
   else if (l == 1) {
     index <- which(n[, 1] >= r)
@@ -56,9 +53,9 @@ preseqR.interpolate.mincount <- function(ss, n, r=1)
   ## explicitly calculating the expected species observed at least r times
   ## based on sampling without replacement
   ## see K.L Heck 1975
-  ## N total individuals
-  ## S the number of species
-  ## size the size of the subsample
+  ## N, the number of individuals in a sample
+  ## S, the number of species in a sample
+  ## size, the size of the subsample
   expect.distinct <- function(n, N, size, S, r) {
     denom <- lchoose(N, size)
     p <- sapply(n[, 1], function(x) {
@@ -66,40 +63,34 @@ preseqR.interpolate.mincount <- function(ss, n, r=1)
     return(S - p %*% n[, 2])
   }
 
-  ## sample sizes
+  ## subsample sizes
   x <- step.size * ( 1:l )
 
-  ## calculate the number of distinct reads based on each sample size
-  yield.estimates <- sapply(x, function(x) {
+  ## the number of species represented at least r times in a subsample
+  yields <- sapply(x, function(x) {
       expect.distinct(n, N, x, initial.distinct, r)})
 
-  ## put size and yield together into a matrix
-  result <- matrix(c(x, yield.estimates), ncol = 2, byrow = FALSE)
+  result <- matrix(c(x, yields), ncol = 2, byrow = FALSE)
   colnames(result) <- c('sample.size', 'interpolation')
 
   return(result)
 }
 
 
-### power series based on count frequencies starting from frequency j
-### when j = 1, it is the power series expansion of E(S_1(t)) / t at t = 1
-### the maximum number of terms
-generating.ps <- function(n, mt, j=1) {
-  if (j >= max(n[, 1])) return(NULL)
+## coefficients for the power series of E(S_1(t)) / t
+discoveryrate.ps <- function(n, mt) {
   ## transform a histogram into a vector of frequencies
   hist.count <- vector(length=max(n[, 1]), mode="numeric")
   hist.count[n[, 1]] <- n[, 2]
-
-  ## shift to required count frequencies
-  hist.count <- hist.count[j: length(hist.count)]
 
   PS.coeffs <- sum(hist.count)
   change.sign <- 0
 
   ## preserve extra precision mt+1
   for (i in 1:(min(mt+1, length(hist.count)))) {
-    PS.coeffs <- c(PS.coeffs, 
-               (-1)^change.sign * hist.count[i] - PS.coeffs[length(PS.coeffs)])
+    PS.coeffs <- c(
+            PS.coeffs, 
+            (-1)^change.sign * hist.count[i] - PS.coeffs[length(PS.coeffs)])
     change.sign <- change.sign + 1
   }
 
@@ -113,180 +104,6 @@ generating.ps <- function(n, mt, j=1) {
 }
 
 
-## species accum curves based on parital fraction expansion
-## the function is used whenever count frequency 1 is unavaible or the sample
-## size is saturated
-## using count frequencies starting from a given count frequency instead of 1
-## when start.freq = 1, it is identical to the function preseqR.pf.mincount
-## CHAO: save for a rainy day
-general.ds.mincount <- function(n, r=1, mt=20, start.freq=1)
-{
-  # check the input format of the histogram
-  checking.hist(n)
-
-  n[, 2] <- as.numeric(n[, 2])
-  ## constructing the power series
-  PS.coeffs <- generating.ps(n, j=start.freq, mt=mt)
-
-  if (is.null(PS.coeffs)) {
-    write("the size of the initial experiment is insufficient", stderr())
-    return(NULL)
-  }
-
-  ## constrain the continued fraction approximation with even degree 
-  ## asymptotically ~ C / t
-  mt <- min(mt, length(PS.coeffs))
-  PS.coeffs <- PS.coeffs[ 1:mt ]
-
-  ## check whether sample size is sufficient
-  if (mt < 2)
-  {
-    m <- paste("max count before zero is les than min required count (2)",
-               " sample not sufficiently deep or duplicates removed", sep = ',')
-    write(m, stderr())
-    return(NULL)
-  }
-
-  ## construct the continued fraction approximation to the power seies
-  cf <- ps2cfa(coef=PS.coeffs, mt=mt)
-  rf <- cfa2rf(CF=cf)
-  ## the length of cf could be less than mt
-  ## even if ps do not have zero terms, coefficients of cf may have
-  mt <- length(cf)
-  ## select rational function approximants [m-1/m] m=mt, mt-2, ..., 2
-  ## asymptotically ~ C / t
-  mt <- mt - (mt %% 2)
-  valid.estimator <- FALSE
-  m <- mt
-  while (valid.estimator == FALSE) {
-
-    rfa <- rf2rfa(RF=rf, m=m)
-    ## solving roots
-    numer.roots <- solve(rfa[[1]])
-    denom.roots <- solve(rfa[[2]])
-    ## seperating roots by their real parts
-    numer.roots.neg <- numer.roots[which(Re(numer.roots) < 0)]
-    numer.roots.pos <- numer.roots[which(Re(numer.roots) >= 0)]
-    denom.roots.neg <- denom.roots[which(Re(denom.roots) < 0)]
-    denom.roots.pos <- denom.roots[which(Re(denom.roots) >= 0)]
-
-    ## record roots in the numerator that are significantly similar to
-    ## roots in the denominator
-    tmp.roots <- c()
-
-    ## simplify the rational function approximation
-    ## two roots are same if the difference is less than the 
-    ## predefined PRECISION
-    if (length(numer.roots.pos) > 0) {
-      for (i in 1:length(numer.roots.pos)) {
-        if (length(denom.roots.pos) > 0) {
-          d <- Mod(denom.roots.pos - numer.roots.pos[i])
-          for (j in 1:length(d)) {
-            if (d[j] < PRECISION) {
-              denom.roots.pos <- denom.roots.pos[-j]
-              tmp.roots <- c(tmp.roots, numer.roots.pos[i])
-              break
-            }
-          }
-        }
-      }
-    }
-
-    ## roots in simplified RFA
-    numer.roots <- numer.roots[!numer.roots %in% tmp.roots]
-    denom.roots <- c(denom.roots.neg, denom.roots.pos)
-
-    ## convert roots from t - 1 to t
-    roots <- denom.roots + 1
-    ## pacman rule checking
-    if (length(which(roots == 0)) || length(which(Re(roots) > 0))) {
-      m <- m - 2
-      next
-    } else {
-      poly.numer <- as.function(poly.from.roots(numer.roots))
-      l <- length(denom.roots)
-      ## treat polynomials in the rational function to be monic
-      ## the difference to the original RFA is a multiplier C
-
-      ## c_i in the estimator
-      coef <- sapply(1:l, function(x) {
-        poly.numer(denom.roots[x]) / prod(denom.roots[x] - denom.roots[-x])})
-      ## calculate the constant C
-      C <- coef(rfa[[1]])[length(coef(rfa[[1]]))] / 
-           coef(rfa[[2]])[length(coef(rfa[[2]]))]
-      ## species accum curves with minimum count r
-      ## using parital fraction expansion
-      denom.roots <- denom.roots + 1
-      coef <- coef * C
-      ## modify the coefficients
-      coef <- coef * (1 - denom.roots)^(start.freq - 1)
-      ## check whether the estimator is non-decreased                             
-      deriv.f <- function(t) {
-        Re(sapply(t, function(x) {-(coef*denom.roots) %*% ( 1 / ((x-denom.roots)^2))}))} 
-      if (length(which( deriv.f(seq(0.05, 100, by=0.05)) < 0 ) != 0)) {
-        m <- m - 2
-        next
-      }
-      f.mincount <- function(t) {
-        sapply(r, function(x) {
-          Re(coef %*% (t / (t - denom.roots))^x)})}
-      f.mincount(1)
-      valid.estimator <- TRUE
-    }
-  }
-  ## remove M, M.adjust in the future
-  list(FUN=f.mincount, M=m / 2, M.adjust=length(denom.roots), 
-       FUN.elements=list(coef=coef, roots=denom.roots))
-}
-
-## nonparametric approach Deng & Smith 2016
-ds.mincount.bootstrap <- function(n, r=1, mt=20, times=100)
-{
-  n[, 2] <- as.numeric(n[, 2])
-  ## total individuals
-  total <- n[, 1] %*% n[, 2]
-
-  ## returned function
-  f.mincount <- vector(length=times, mode="list")
-
-  ds.estimator <- function(n, r, mt, t.scale) {
-    f <- ds.mincount(n, r=r, mt=mt)
-    if (f$M == 1) {
-      f <- ztnb.mincount(n, r=r)
-      function(t) {f(t * t.scale)}
-    } else {
-      function(t) {f$FUN(t * t.scale)}
-    }
-  }
-
-  while (times > 0) {
-    n.bootstrap <- matrix(c(n[, 1], rmultinom(1, sum(n[, 2]), n[, 2])), ncol=2)
-    total.bootstrap <- n.bootstrap[, 1] %*% n.bootstrap[, 2]
-    t.scale <- total / total.bootstrap
-    f <-  ds.estimator(n.bootstrap, r=r, mt=mt, t.scale=t.scale) 
-
-    f.mincount[[times]] <- f
-    ## prevent later binding!!!
-    f.mincount[[times]](1)
-    times <- times - 1
-  }
-  f.estimator <- ds.mincount(n=n, r=r, mt=mt)
-  if (length(r) == 1) {
-    median.estimators <- function(t) {
-      median( sapply(f.mincount, function(x) x(t)) )}
-    var.estimator <- function(t) {var( sapply(f.mincount, function(x) x(t)) )}
-  } else {
-    median.estimators <- function(t) {
-      apply(sapply(f.mincount, function(x) x(t)), FUN=median, MARGIN=1)}
-    var.estimator <- function(t) {
-      apply(sapply(f.mincount, function(x) x(t)), FUN=var, MARGIN=1)}
-  }
-  ## prevent later binding!!!
-  f.estimator$FUN(1); median.estimators(1); var.estimator(1)
-  return(list(FUN.nobootstrap=f.estimator, FUN.bootstrap=median.estimators,
-              var=var.estimator))
-}
-
 ds.mincount <- function(n, r=1, mt=20)
 {
   checking.hist(n)
@@ -294,7 +111,7 @@ ds.mincount <- function(n, r=1, mt=20)
   n[, 2] <- as.numeric(n[, 2])
 
   ## constructing the power series
-  PS.coeffs <- generating.ps(n, mt=mt, j=1)
+  PS.coeffs <- discoveryrate.ps(n, mt=mt)
 
   if (is.null(PS.coeffs)) {
     write("the size of the initial experiment is insufficient", stderr())

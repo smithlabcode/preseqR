@@ -51,7 +51,7 @@ checking.hist <- function(n)
 ## OBSOLATE
 checking.matrix.det <- function(n, m) 
 {
-  ps <- generating.ps(n, j=1, mt=2*m + 1)
+  ps <- discoveryrate.ps(n, mt=2*m + 1)
   ps <- c(0, ps)
   matrix.dets <- vector(length=4, mode="numeric")
   count <- 1

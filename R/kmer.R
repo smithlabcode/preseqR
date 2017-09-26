@@ -28,7 +28,7 @@ kmer.frac <- function(n, r=2, mt=20)
   N <- n[, 1] %*% n[, 2]
   
   ## constructing the power series
-  PS.coeffs <- generating.ps(n, mt=mt, j=1)
+  PS.coeffs <- discoveryrate.ps(n, mt=mt)
 
   if (is.null(PS.coeffs)) {
     write("the size of the initial experiment is insufficient", stderr())
