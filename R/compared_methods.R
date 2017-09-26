@@ -23,6 +23,7 @@
 ztp.rSAC <- function(n, r=1) 
 {
   ## mle based on zero-truncated Poisson
+  n[, 2] <- as.numeric(n[, 2])
   C <- n[, 1] %*% n[, 2] / sum(n[, 2])
   f <- function(x) {x / (1 - exp(-x))}
   result <- uniroot(function(x) f(x) - C, c(0.001, 1e9), tol = 0.0001,
@@ -41,6 +42,7 @@ ztp.rSAC <- function(n, r=1)
 ## function and the number of unseen species in sampling with replacement." 
 ## Journal of the American Statistical Association 93, no. 441 (1998): 372-379.
 bbc.rSAC <- function(n, r=1) {
+  n[, 2] <- as.numeric(n[, 2])
   S <- sum(n[, 2])
   ## BBC estimator without bias correction
   tmp <- function(t) {sapply(t, function(x) {
@@ -68,6 +70,7 @@ bbc.rSAC <- function(n, r=1) {
 ## sampling." Journal of agricultural, biological, and environmental 
 ## statistics 9, no. 3 (2004): 253-269.
 cs.rSAC <- function(n, r=1, k=10) {
+  n[, 2] <- as.numeric(n[, 2])
   S <- sum(n[, 2])
   index.f1 <- which(n[, 1] == 1)
   ## no species observed once
@@ -96,6 +99,7 @@ cs.rSAC <- function(n, r=1, k=10) {
 
 ## parametric for the logseries
 fisher.alpha <- function(n) {
+  n[, 2] <- as.numeric(n[, 2])
   N <- n[, 1] %*% n[, 2]
   S <- sum(n[, 2])
   result <- uniroot(function(x) (exp(x) - 1) / x - N / S, c(0.001, 1e9), 
@@ -106,6 +110,7 @@ fisher.alpha <- function(n) {
 
 ## logseries estimator for the number of species represented at least r times
 fisher.rSAC <- function(n, r=1) {
+  n[, 2] <- as.numeric(n[, 2])
   alpha <- fisher.alpha(n)
   N <- n[, 1] %*% n[, 2]
   f.rSAC <- function(t) {sapply(t, function(x) alpha *

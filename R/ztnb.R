@@ -87,6 +87,7 @@ preseqR.ztnb.em <- function(n, size=SIZE.INIT, mu=MU.INIT)
 {
   checking.hist(n)
 
+  n[, 1] <- as.numeric(n[, 1])
   n[, 2] <- as.numeric(n[, 2])
   zero.prob <- exp(dnbinom(0, size = size, mu = mu, log = TRUE))
 
