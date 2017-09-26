@@ -1,16 +1,16 @@
-\name{ds.mincount.bootstrap}
-\alias{ds.mincount.bootstrap}
+\name{ds.rSAC.bootstrap}
+\alias{ds.rSAC.bootstrap}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
 Estimating the number of species represented r or more times
 }
 \description{
-    The function estimates the expected number of species represented at least r
-    times in a random sample based on the initial sample. The initial sample is
-    bootstrapped to improve the stability of estimates.
+The function estimates the expected number of species represented at least r
+times in a random sample based on the initial sample. The initial sample is
+then bootstrapped to improve the stability of estimates.
 }
 \usage{
-ds.mincount.bootstrap(n, r=1, mt=20, times=100)
+preseqR.rSAC.bootstrap(n, r=1, mt=20, times=100)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -20,18 +20,17 @@ ds.mincount.bootstrap(n, r=1, mt=20, times=100)
     is \eqn{n_j}, the number of species with each species represented \eqn{j}
     times in the initial sample. The first column must be sorted in an
     ascending order.
-}
+  }
   \item{mt}{
-    An positive integer constraining possible rational function
-    approximations. Default is 20.
-}
+    An positive integer to truncate the power series of the average discovery
+    rate. Default is 20.
+  }
   \item{r}{
-    A vector of positive integers. Default is 1.
+    A positive integer. Default is 1.
   }
   \item{times}{
-    An positive integer representing the minimum required number of successful
-    estimation. Default is 100. See detail below.
-}
+    The number of bootstrap samples.
+  }
 }
 \details{
     Under a mixture of Poisson models, the expected number of
@@ -82,20 +81,21 @@ sequencing libraries. Nature methods, 10(4), 325-327.
 ## import data
 #data(FisherButterflyHist)
 
-## estimate the number of species captured at least once, twice or 20 times 
-## as a function of the number of individuals
+## construct the estimator for the number of species represented at least once
+## in a random sample
+# estimator1 = preseqR.rSAC.bootstrap(FisherButterflyHist, r=1)
+## The number of species represented at least once, when the sample size is 
+## 10 or 20 times of the initial sample
+# estimator1$FUN.nobootstrap$FUN(c(10, 20))
 
-# result = ds.mincount.bootstrap(FisherButterflyHist, r=c(1,2, 20), times=10)
+## construct the estimator for the number of species represented at least twice
+## in a random sample
+#estimator2 <- preseqR.rSAC.bootstrap(FisherButterflyHist, r=2)
+## The number of species represented at least twice, when the sample size is 
+## 50 or 100 times of the initial sample
+# estimator2(c(50, 100))
 
-## estimates of the number of unique words appeared at least once, twice or three
-## times when the sample size 10 times the size of the initial sample
-
-## estimates by the function ds.mincount
-# result$FUN.nobootstrap$FUN(10)
-
-## estimates by the bootstrapped estimator
-# result$FUN.bootstrap(10)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-\keyword{ Estimator, At least r times, Bootstrap, RFA}
+\keyword{ Estimator, r-SAC, Bootstrap, Nonparametric}

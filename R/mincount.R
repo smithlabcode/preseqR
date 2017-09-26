@@ -232,3 +232,48 @@ ds.mincount <- function(n, r=1, mt=20)
                 FUN.elements=list(coefs=sum(n[, 2]), roots=0)))
   }
 }
+
+
+## predicting r-SAC with bootstrap
+preseqR.rSAC.bootstrap <- function(n, r=1, mt=20, times=100)
+{
+  n[, 2] <- as.numeric(n[, 2])
+  ## individuals in the sample
+  N <- n[, 1] %*% n[, 2]
+
+  ## returned function
+  f.mincount <- vector(length=times, mode="list")
+
+  ds.estimator <- function(n, r, mt, t.scale) {
+    f <- ds.mincount(n, r=r, mt=mt)
+    if (f$M == 1) {
+      f <- ztnb.rSAC(n, r=r)
+      function(t) {f(t * t.scale)}
+    } else {
+      function(t) {f$FUN(t * t.scale)}
+    }
+  }
+
+  while (times > 0) {
+    n.bootstrap <- matrix(c(n[, 1], rmultinom(1, sum(n[, 2]), n[, 2])), ncol=2)
+    N.bootstrap <- n.bootstrap[, 1] %*% n.bootstrap[, 2]
+    t.scale <- N / N.bootstrap
+    f <-  ds.estimator(n.bootstrap, r=r, mt=mt, t.scale=t.scale) 
+
+    f.mincount[[times]] <- f
+    ## prevent later binding!!!
+    f.mincount[[times]](1)
+    times <- times - 1
+  }
+  f.estimator <- ds.mincount(n=n, r=r, mt=mt)
+  if (length(r) == 1) {
+    median.estimators <- function(t) {median( sapply(f.mincount, function(x) x(t)) )}
+    var.estimator <- function(t) {var( sapply(f.mincount, function(x) x(t)) )}
+  } else {
+    median.estimators <- function(t) {apply(sapply(f.mincount, function(x) x(t)), FUN=median, MARGIN=1)}
+    var.estimator <- function(t) {apply(sapply(f.mincount, function(x) x(t)), FUN=var, MARGIN=1)}
+  }
+  ## prevent later binding!!!
+  f.estimator$FUN(1); median.estimators(1); var.estimator(1)
+  return(list(FUN.nobootstrap=f.estimator, FUN.bootstrap=median.estimators, var=var.estimator))
+}
