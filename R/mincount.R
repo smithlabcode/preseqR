@@ -78,16 +78,20 @@ preseqR.interpolate.rSAC <- function(n, ss, r=1)
 
 
 ## coefficients for the power series of E(S_1(t)) / t
-discoveryrate.ps <- function(n, mt) {
+## return the first mt terms
+discoveryrate.ps <- function(n, mt)
+{
   ## transform a histogram into a vector of frequencies
   hist.count <- vector(length=max(n[, 1]), mode="numeric")
   hist.count[n[, 1]] <- n[, 2]
 
   PS.coeffs <- sum(hist.count)
-  change.sign <- 0
+  if (mt == 1) {
+    return(PS.coeffs)
+  }
 
-  ## preserve extra precision mt+1
-  for (i in 1:(min(mt+1, length(hist.count)))) {
+  change.sign <- 0
+  for (i in 1:(min(mt-1, length(hist.count)))) {
     PS.coeffs <- c(
             PS.coeffs, 
             (-1)^change.sign * hist.count[i] - PS.coeffs[length(PS.coeffs)])
@@ -104,13 +108,13 @@ discoveryrate.ps <- function(n, mt) {
 }
 
 
-ds.mincount <- function(n, r=1, mt=20)
+ds.rSAC <- function(n, r=1, mt=20)
 {
   checking.hist(n)
 
   n[, 2] <- as.numeric(n[, 2])
 
-  ## constructing the power series
+  ## coefficients of average discovery rate for the first mt terms
   PS.coeffs <- discoveryrate.ps(n, mt=mt)
 
   if (is.null(PS.coeffs)) {
@@ -118,7 +122,7 @@ ds.mincount <- function(n, r=1, mt=20)
     return(NULL)
   }
 
-  ## use only the first mt terms in the power series
+  ## use nonzero coefficients
   mt <- min(mt, length(PS.coeffs))
   PS.coeffs <- PS.coeffs[ 1:mt ]
 
@@ -137,100 +141,75 @@ ds.mincount <- function(n, r=1, mt=20)
   ## the length of cf could be less than mt
   ## even if ps do not have zero terms, coefficients of cf may have
   mt <- length(cf)
-  ## select rational function approximants [m-1/m] m=mt, mt-2, ..., 2
-  ## asymptotically ~ C / t
   mt <- mt - (mt %% 2)
   valid.estimator <- FALSE
   m <- mt
   while (valid.estimator == FALSE && m >= 2) {
 
+    ## rational function approximants [m / 2 - 1,  m / 2]
     rfa <- rf2rfa(RF=rf, m=m)
-    ## solving roots
-    numer.roots <- solve(rfa[[1]])
-    denom.roots <- solve(rfa[[2]])
-
-    ## finite
-    if (any(!is.finite(c(numer.roots, denom.roots)))) {
-      m = m - 2
-      next;
+    rfa <- rfa.simplify(rfa)
+    if (is.null(rfa)) {
+      m <- m - 2
+      next
+    }
+    ## check stability
+    if (any(Re(rfa$poles) >= 0)) {
+      m <- m - 2
+      next
     }
 
-    ## record roots in the numerator that are significantly similar to
-    ## roots in the denominator
-    tmp.roots <- c()
-
-    ## simplify the rational function approximation
-    ## two roots are same if the difference is less than the 
-    ## predefined PRECISION
-    if (length(denom.roots) > 0) {
-      for (i in 1:length(denom.roots)) {
-        if (length(numer.roots) > 0) {
-          d <- Mod(denom.roots[i] - numer.roots)
-          ind <- which.min(d)
-          if (d[ind] < PRECISION) {
-            numer.roots <- numer.roots[-ind]
-            tmp.roots <- c(tmp.roots, denom.roots[i])
-          }
-        }
-      }
-    }
-
-    ## roots in simplified RFA
-    denom.roots <- denom.roots[!denom.roots %in% tmp.roots]
-
-    ## convert roots from t - 1 to t
-    roots <- denom.roots + 1
-
-    ## pacman rule checking
-    if (any(Re(roots) >= 0)) {
+    coefs <- rfa$coefs
+    poles <- rfa$poles
+    ## check whether the estimator is non-decreased
+    ## NOTE: it only checks for t >= 1 !!!
+    deriv.f <- function(t) {
+      Re(sapply(t, function(x) {-(coefs*poles) %*% ( 1 / ((x-poles)^2))}))}
+    if (any( deriv.f(seq(1, 100, by=0.05)) < 0 )) {
       m <- m - 2
       next
     } else {
-      if (length(numer.roots) == 0) {
-        poly.numer <- as.function(polynomial(1))
-      } else {
-        poly.numer <- as.function(poly.from.roots(numer.roots))
-      }
-      l <- length(denom.roots)
-      ## treat polynomials in the rational function to be monic
-      ## the difference to the original RFA is a multiplier C
-
-      ## c_i in the estimator
-      coefs <- sapply(1:l, function(x) {
-        poly.numer(denom.roots[x]) / prod(denom.roots[x] - denom.roots[-x])})
-      ## calculate the constant C
-      C <- coef(rfa[[1]])[length(coef(rfa[[1]]))] / 
-           coef(rfa[[2]])[length(coef(rfa[[2]]))]
-      coefs <- coefs * C
-
-      ## check whether the estimator is non-decreased
-      ## NOTE: it only checks for t >= 1 !!!
-
-      deriv.f <- function(t) {
-        Re(sapply(t, function(x) {-(coefs*roots) %*% ( 1 / ((x-roots)^2))}))}
-      if (any( deriv.f(seq(1, 100, by=0.05)) < 0 )) {
-        m <- m - 2
-        next
-      } else {
-        f.mincount <- function(t) {
-          sapply(r, function(x) {
-            Re(coefs %*% (t / (t - roots))^x)})}
-        f.mincount(1)
-        valid.estimator <- TRUE
-      }
+      f.rSAC <- function(t) {
+        sapply(t, function(x) {
+          Re(coefs %*% (x / (x - poles))^r)})}
+      valid.estimator <- TRUE
     }
   }
-  ## remove M, M.adjust in the future
+
   if (valid.estimator == TRUE) {
-    return(list(FUN=f.mincount, M=m / 2, M.adjust=length(roots), 
-                FUN.elements=list(coefs=coefs, roots=roots)))
+    return(f.rSAC)
   } else {
-    ## the case m = 0
-    f.mincount <- function(t) {
-      sapply(r, function(x) sum(n[, 2]))}
-    return(list(FUN=f.mincount, M=1, M.adjust=1, 
-                FUN.elements=list(coefs=sum(n[, 2]), roots=0)))
+    ## the case S1 = S2 where the numbe of species represented exactly once
+    ## is 0
+    return(function(t) {sapply(t, function(x) return(sum(n[, 2])))})
   }
+}
+
+
+## Best practice
+preseqR.rSAC <- function(n, r=1, mt=20, size=SIZE.INIT, mu=MU.INIT) 
+{
+  para <- preseqR.ztnb.em(n)
+  shape <- para$size
+  mu <- para$mu
+  ## the population is heterogeneous
+  ## because the coefficient of variation is large $1 / sqrt(shape)$
+  if (shape <= 1) {
+    f.rSAC <- ds.rSAC(n=n, r=r, mt=mt)
+  } else {
+    ## the population is close to be homogeneous
+    ## the ZTNB approach is applied
+
+    ## the probability of a species observed in the initial sample
+    p <- 1 - dnbinom(0, size = size, mu = mu)
+    ## L is the estimated number of species in total
+    L <- sum(as.numeric(n[, 2])) / p
+    ## ZTNB estimator
+    f.rSAC <- function(t) {
+      L * pnbinom(r - 1, size=size, mu=mu*t, lower.tail=FALSE)
+    }
+  }
+  return(f.rSAC)
 }
 
 
