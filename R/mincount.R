@@ -213,46 +213,32 @@ preseqR.rSAC <- function(n, r=1, mt=20, size=SIZE.INIT, mu=MU.INIT)
 }
 
 
-## predicting r-SAC with bootstrap
-preseqR.rSAC.bootstrap <- function(n, r=1, mt=20, times=100)
+## the bootstrap version of preseqR.rSAC
+## with confidence interval
+preseqR.rSAC.bootstrap <- function(n, r=1, mt=20, 
+                                   size=SIZE.INIT, mu=MU.INIT, times=30)
 {
   n[, 2] <- as.numeric(n[, 2])
   ## individuals in the sample
   N <- n[, 1] %*% n[, 2]
 
   ## returned function
-  f.mincount <- vector(length=times, mode="list")
-
-  ds.estimator <- function(n, r, mt, t.scale) {
-    f <- ds.mincount(n, r=r, mt=mt)
-    if (f$M == 1) {
-      f <- ztnb.rSAC(n, r=r)
-      function(t) {f(t * t.scale)}
-    } else {
-      function(t) {f$FUN(t * t.scale)}
-    }
-  }
+  f.rSACs <- vector(length=times, mode="list")
 
   while (times > 0) {
     n.bootstrap <- matrix(c(n[, 1], rmultinom(1, sum(n[, 2]), n[, 2])), ncol=2)
     N.bootstrap <- n.bootstrap[, 1] %*% n.bootstrap[, 2]
     t.scale <- N / N.bootstrap
-    f <-  ds.estimator(n.bootstrap, r=r, mt=mt, t.scale=t.scale) 
-
-    f.mincount[[times]] <- f
+    f <- preseqR.rSAC(n.bootstrap, r=r, mt=mt, size=SIZE.INIT, mu=MU.INIT) 
+    f.rSACs[[times]] <- function(t) {f(t * t.scale)}
     ## prevent later binding!!!
-    f.mincount[[times]](1)
+    f.rSACs[[times]](1)
     times <- times - 1
   }
-  f.estimator <- ds.mincount(n=n, r=r, mt=mt)
-  if (length(r) == 1) {
-    median.estimators <- function(t) {median( sapply(f.mincount, function(x) x(t)) )}
-    var.estimator <- function(t) {var( sapply(f.mincount, function(x) x(t)) )}
-  } else {
-    median.estimators <- function(t) {apply(sapply(f.mincount, function(x) x(t)), FUN=median, MARGIN=1)}
-    var.estimator <- function(t) {apply(sapply(f.mincount, function(x) x(t)), FUN=var, MARGIN=1)}
-  }
+
+  estimator <- function(t) {median( sapply(f.rSACs, function(f) f(t)) )} 
+  variance <- function(t) {var( sapply(f.rSACs, function(f) f(t)) )}
   ## prevent later binding!!!
-  f.estimator$FUN(1); median.estimators(1); var.estimator(1)
-  return(list(FUN.nobootstrap=f.estimator, FUN.bootstrap=median.estimators, var=var.estimator))
+  estimator(1); variance(1)
+  return(list(f=estimator, v=variance))
 }
