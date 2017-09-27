@@ -229,7 +229,7 @@ preseqR.rSAC.bootstrap <- function(n, r=1, mt=20,
     n.bootstrap <- matrix(c(n[, 1], rmultinom(1, sum(n[, 2]), n[, 2])), ncol=2)
     N.bootstrap <- n.bootstrap[, 1] %*% n.bootstrap[, 2]
     t.scale <- N / N.bootstrap
-    f <- preseqR.rSAC(n.bootstrap, r=r, mt=mt, size=SIZE.INIT, mu=MU.INIT) 
+    f <- preseqR.rSAC(n.bootstrap, r=r, mt=mt, size=size, mu=mu) 
     f.rSACs[[times]] <- function(t) {f(t * t.scale)}
     ## prevent later binding!!!
     f.rSACs[[times]](1)
