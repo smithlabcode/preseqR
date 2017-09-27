@@ -187,7 +187,7 @@ ztnb.rSAC <- function(n, r=1, size=SIZE.INIT, mu=MU.INIT)
   size <- opt$size
   mu <- opt$mu
 
-  ## the probability of a species in the initial sample
+  ## the probability of a species observed in the initial sample
   p <- 1 - dnbinom(0, size = size, mu = mu)
 
   ## L is the estimated number of species in total
