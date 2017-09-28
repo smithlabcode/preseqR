@@ -1,5 +1,5 @@
-\name{ds.rSAC.bootstrap}
-\alias{ds.rSAC.bootstrap}
+\name{preseqR.rSAC.bootstrap}
+\alias{preseqR.rSAC.bootstrap}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
 Estimating the number of species represented r or more times
@@ -33,16 +33,16 @@ preseqR.rSAC.bootstrap(n, r=1, mt=20, times=100)
   }
 }
 \details{
-    Under a mixture of Poisson models, the expected number of
-    species represented at least r times in a random sample 
-    can be expressed as higher derivatives
-    of the expected number of species represented at least once. 
-    We first use rational function approximations to the 
-    modified Good and Toulmin's (1956) non-parametric empirical Bayes power 
-    series to estimate the average discovery rate. By differentiating the
-    rational function approximation, we obtain an estimator 
-    for the number of species represented at least r times in a random
-    sample.
+  Under a mixture of Poisson models, the expected number of
+  species represented at least r times in a random sample 
+  can be expressed as higher derivatives
+  of the expected number of species represented at least once. 
+  We first use rational function approximations to the 
+  modified Good and Toulmin's (1956) non-parametric empirical Bayes power 
+  series to estimate the average discovery rate. By differentiating the
+  rational function approximation, we obtain an estimator 
+  for the number of species represented at least r times in a random
+  sample.
 }
 \value{
   \item{FUN.nobootstrap}{

@@ -240,5 +240,6 @@ preseqR.rSAC.bootstrap <- function(n, r=1, mt=20,
   variance <- function(t) {var( sapply(f.rSACs, function(f) f(t)) )}
   ## prevent later binding!!!
   estimator(1); variance(1)
+  ## TODO: add a confidence interval
   return(list(f=estimator, v=variance))
 }

@@ -1,5 +1,5 @@
-\name{ds.mincount}
-\alias{ds.mincount}
+\name{ds.rSAC}
+\alias{ds.rSAC}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
 Estimating the expected number of species represented r or more times
@@ -9,7 +9,7 @@ The function estimates the expected number of species represented at least
 r times in a random sample based on the initial sample.
 }
 \usage{
-ds.mincount(n, r=1, mt=20)
+ds.rSAC(n, r=1, mt=20)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -19,44 +19,40 @@ ds.mincount(n, r=1, mt=20)
     is \eqn{n_j}, the number of species with each species represented \eqn{j}
     times in the initial sample. The first column must be sorted in an
     ascending order.
-}
+  }
   \item{mt}{
     An positive integer constraining possible rational function
     approximations. Default is 20.
 }
   \item{r}{
-    A vector of positive integers. Default is 1.
+    A positive integer. Default is 1.
   }
 }
 \details{
-The difference between this function and 
-\code{\link{ds.mincount.bootstrap}} is that no bootstrapping for the 
-initial sample. Therefore the function could be less stable than estimates by
-bootstrap.
-However, this function is much faster. In general, we recommand
-\code{\link{ds.mincount.bootstrap}} for estimating the expected number
-of species represented at least r times in a sample. 
+  Under a mixture of Poisson models, the expected number of
+  species represented at least r times in a random sample 
+  can be expressed as higher derivatives
+  of the expected number of species represented at least once per unit of 
+  sampling effort. 
+  We first use rational function approximations to the 
+  modified Good and Toulmin's (1956) non-parametric empirical Bayes power 
+  series to estimate the average discovery rate. By differentiating the
+  rational function approximation, we obtain an estimator 
+  for the number of species represented at least r times in a random
+  sample.
 
-See \code{\link{ds.mincount.bootstrap}} for more information.
+  This function is the fast version of \code{\link{preseqR.rSAC.bootstrap}}.
+  The function does not provide an estimate for the confidence interval.
+  If one needs the confidence interval, use 
+  \code{\link{ds.rSAC.bootstrap}} instead.
 }
 \value{
   \item{FUN}{
     The constructed estimator for the number of species represneted at least r
     times in a sample. The input of the estimator is a vector of sampling efforts
-    t, i.e. the relative sample sizes comparing with the initial sample. For example,
-    t = 2 means the sample is twice the size of the initial sample.
-  }
-  \item{FUN.elements}{
-    A list of two components for the estimator. The estimator can be
-    expressed as \deqn{\hat{E}(S_r(t)) = \sum_{i=1}^l c_i \left(\frac{t}{t - x_i}\right)^r.}
-    PF.elements contains both coefficients \eqn{c_i} and roots \eqn{x_i}.
-  }
-  \item{M}{
-    The number of terms used when applying rational function approximation to 
-    the power series of the average discovery rate.
-  }
-  \item{M.adjust}{
-    The number of terms in the estiamtor, equal to l
+    t, i.e. the relative sample sizes comparing with the initial sample. 
+    For example, t = 2 means the size of the random sample is twice the size of
+    the initial sample.
   }
 }
 \references{
@@ -64,8 +60,11 @@ Kalinin V (1965). Functionals related to the poisson distribution and
 statistical structure of a text. Articles on Mathematical Statistics and
 the Theory of Probability pp. 202-220.
 
-Daley, T., & Smith, A. D. (2013). Predicting the molecular complexity of
+Daley, T and Smith, AD. (2013). Predicting the molecular complexity of
 sequencing libraries. Nature methods, 10(4), 325-327.
+
+Deng, C and Smith, AD (2016). Estimating the number of species to attain 
+sufficient representation in a random sample. arXiv preprint arXiv:1607.02804
 }
 \author{
   Chao Deng
@@ -80,7 +79,7 @@ data(ShakespeareWordHist)
 
 ## construct the estimator for the number of unique word
 ## represented at least once, twice or twenty times in a sample
-estimator = ds.mincount(ShakespeareWordHist, r=c(1,2,20))
+estimator = ds.rSAC(ShakespeareWordHist, r=c(1,2,20))
 
 ## print the elements of the estimator
 estimator$FUN.elements
@@ -91,4 +90,4 @@ estimator$FUN(c(10, 20))
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-\keyword{ Estimator, At least r times, RFA}
+\keyword{ Estimator, r-SAC, RFA, Nonparametric}
