@@ -10,7 +10,8 @@ times in a random sample based on the initial sample. The initial sample is
 then bootstrapped to improve the stability of estimates.
 }
 \usage{
-preseqR.rSAC.bootstrap(n, r=1, mt=20, times=100)
+preseqR.rSAC.bootstrap(n, r=1, mt=20, size=SIZE.INIT, mu=NU.INIT, times=30,
+                       conf=0.95)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -22,8 +23,8 @@ preseqR.rSAC.bootstrap(n, r=1, mt=20, times=100)
     ascending order.
   }
   \item{mt}{
-    An positive integer to truncate the power series of the average discovery
-    rate. Default is 20.
+    An positive integer constraining possible rational function
+    approximations. Default is 20.
   }
   \item{r}{
     A positive integer. Default is 1.
@@ -33,33 +34,37 @@ preseqR.rSAC.bootstrap(n, r=1, mt=20, times=100)
   }
 }
 \details{
-  Under a mixture of Poisson models, the expected number of
-  species represented at least r times in a random sample 
-  can be expressed as higher derivatives
-  of the expected number of species represented at least once. 
-  We first use rational function approximations to the 
-  modified Good and Toulmin's (1956) non-parametric empirical Bayes power 
-  series to estimate the average discovery rate. By differentiating the
-  rational function approximation, we obtain an estimator 
-  for the number of species represented at least r times in a random
-  sample.
+  This is the bootstrap version of \code{\link{preseqR.rSAC}}. The function
+  provides the confidence interval for estiamtes based on
+  \code{\link{preseqR.rSAC}}. The confidence interval is based on the lognormal
+  model proposed by Chao (1987).
 }
 \value{
-  \item{FUN.nobootstrap}{
-    The estimator constructed based on the initial sample by the function. No
-    bootstrap procesure is involved.
+  \item{f}{
+    The estimator for the number of species represented at least r times in 
+    a random sample. The input of the estimator is a vector of sampling 
+    efforts t, i.e. the relative sample sizes comparing with the initial sample.
+    For example, t = 2 means a random sample that is twice the size of the 
+    initial sample.
   }
-  \item{FUN.bootstrap}{
-    The bootstrap samples from an initial sample are used to construct estimators.
-    The median value of these estimators are estimates of the number of species
-    represented at least r times in a sample. 
+  \item{v}{
+    The variance for the estimator. The input is a vector of sampling 
+    efforts t. The variance depends on t.
   }
-  \item{var}{
-    The estimated variance for the estimator \code{FUN.nobootstrap} by bootstrap.
+  \item{lb}{
+    The lower bound of the confidence interval.The input is a vector of sampling 
+    efforts t.
+  }
+  \item{ub}{
+    The upper bound of the confidence interval.The input is a vector of sampling 
+    efforts t.
   }
 }
 
 \references{
+Chao, A. (1987). Estimating the population size for capture-recapture data with
+unequal catchability. Biometrics, 783-791.
+
 Efron, B., & Tibshirani, R. J. (1994). An introduction to the bootstrap. CRC press.
 
 Kalinin V (1965). Functionals related to the poisson distribution and 
@@ -68,6 +73,13 @@ the Theory of Probability pp. 202-220.
 
 Daley, T., & Smith, A. D. (2013). Predicting the molecular complexity of
 sequencing libraries. Nature methods, 10(4), 325-327.
+
+Deng, C., Daley, T., & Smith, A. (2015). Applications of species accumulation
+curves in large-scale biological data analysis. Quantitative Biology, 3(3),
+135-144.
+
+Deng, C and Smith, AD (2016). Estimating the number of species to attain 
+sufficient representation in a random sample. arXiv preprint arXiv:1607.02804
 }
 
 \author{
@@ -83,19 +95,30 @@ sequencing libraries. Nature methods, 10(4), 325-327.
 
 ## construct the estimator for the number of species represented at least once
 ## in a random sample
-# estimator1 = preseqR.rSAC.bootstrap(FisherButterflyHist, r=1)
+# estimator1 <- preseqR.rSAC.bootstrap(FisherButterflyHist, r=1)
 ## The number of species represented at least once, when the sample size is 
 ## 10 or 20 times of the initial sample
-# estimator1$FUN.nobootstrap$FUN(c(10, 20))
+# estimator1$f(c(10, 20))
+## The standard error of the estiamtes
+# sqrt(estimator1$v(c(10, 20)))
+## The confidence interval of the estimates
+# lb <- estimator1$lb(c(10, 20))
+# ub <- estimator1$ub(c(10, 20))
+# matrix(c(lb, ub), byrow=FALSE, ncol=2)
 
 ## construct the estimator for the number of species represented at least twice
 ## in a random sample
-#estimator2 <- preseqR.rSAC.bootstrap(FisherButterflyHist, r=2)
+# estimator2 <- preseqR.rSAC.bootstrap(FisherButterflyHist, r=2)
 ## The number of species represented at least twice, when the sample size is 
 ## 50 or 100 times of the initial sample
 # estimator2(c(50, 100))
-
+## The standard error of the estiamtes
+# sqrt(estimator2$v(c(50, 100)))
+## The confidence interval of the estimates
+# lb <- estimator2$lb(c(50, 100))
+# ub <- estimator2$ub(c(50, 100))
+# matrix(c(lb, ub), byrow=FALSE, ncol=2)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-\keyword{ Estimator, r-SAC, Bootstrap, Nonparametric}
+\keyword{ Estimator, r-SAC, RFA, Bootstrap, Nonparametric}

@@ -187,7 +187,7 @@ ds.rSAC <- function(n, r=1, mt=20)
 
 
 ## Best practice
-preseqR.rSAC <- function(n, r=1, mt=20, size=SIZE.INIT, mu=MU.INIT) 
+preseqR.rSAC <- function(n, r=1, mt=20, size=SIZE.INIT, mu=MU.INIT)
 {
   para <- preseqR.ztnb.em(n)
   shape <- para$size
@@ -216,7 +216,8 @@ preseqR.rSAC <- function(n, r=1, mt=20, size=SIZE.INIT, mu=MU.INIT)
 ## the bootstrap version of preseqR.rSAC
 ## with confidence interval
 preseqR.rSAC.bootstrap <- function(n, r=1, mt=20, 
-                                   size=SIZE.INIT, mu=MU.INIT, times=30)
+                                   size=SIZE.INIT, mu=MU.INIT, times=30,
+                                   conf=0.95)
 {
   n[, 2] <- as.numeric(n[, 2])
   ## individuals in the sample
@@ -225,21 +226,52 @@ preseqR.rSAC.bootstrap <- function(n, r=1, mt=20,
   ## returned function
   f.rSACs <- vector(length=times, mode="list")
 
-  while (times > 0) {
+  f.bootstrap <- function(n, r, mt, size, mu) {
     n.bootstrap <- matrix(c(n[, 1], rmultinom(1, sum(n[, 2]), n[, 2])), ncol=2)
     N.bootstrap <- n.bootstrap[, 1] %*% n.bootstrap[, 2]
+    N <- n[, 1] %*% n[, 2]
     t.scale <- N / N.bootstrap
-    f <- preseqR.rSAC(n.bootstrap, r=r, mt=mt, size=size, mu=mu) 
-    f.rSACs[[times]] <- function(t) {f(t * t.scale)}
+    f <- preseqR.rSAC(n.bootstrap, r=r, mt=mt, size=size, mu=mu)
+    return(function(t) {f(t * t.scale)})
+  }
+
+  while (times > 0) {
+    f.rSACs[[times]] <- f.bootstrap(n=n, r=r, mt=mt, size=size, mu=mu)
     ## prevent later binding!!!
     f.rSACs[[times]](1)
     times <- times - 1
   }
 
-  estimator <- function(t) {median( sapply(f.rSACs, function(f) f(t)) )} 
-  variance <- function(t) {var( sapply(f.rSACs, function(f) f(t)) )}
+  estimator <- function(t) {
+    result <- sapply(f.rSACs, function(f) f(t))
+    if (length(t) == 1) {
+      return(median(result))
+    } else {
+      return(apply(result, FUN=median, MARGIN=1))
+    }
+  }
+
+  variance <- function(t) {
+    result <- sapply(f.rSACs, function(f) f(t))
+    if (length(t) == 1) {
+      return(var(result))
+    } else {
+      return(apply(result, FUN=var, MARGIN=1))
+    }
+  }
+
   ## prevent later binding!!!
-  estimator(1); variance(1)
-  ## TODO: add a confidence interval
-  return(list(f=estimator, v=variance))
+  estimator(1); estimator(1:2)
+  variance(1); variance(1:2)
+  ## confidence interval using lognormal
+  q <- (1 + conf) / 2
+  lb <- function(t) {
+    C <- exp(qnorm(q) * sqrt(log( 1 + variance(t) / (estimator(t)^2) )))
+    return(estimator(t) / C)
+  }
+  ub <- function(t) {
+    C <- exp(qnorm(q) * sqrt(log( 1 + variance(t) / (estimator(t)^2) )))
+    return(estimator(t) * C)
+  }
+  return(list(f=estimator, v=variance, lb=lb, ub=ub))
 }
