@@ -146,6 +146,36 @@ rfa.simplify <- function(rfa) {
   return(list(coefs=coefs, poles=poles))
 }
 
+
+## modified Pad\'{e} approximant
+## close to the average discovery rate and satisfies
+## the sum of estimates of E(S_r(t)) for r >= 1 is equal to Nt
+## require mt to be odd
+rfa.sample.cov <- function(n, mt) {
+  mt <- mt - (mt + 1) %% 2
+  PS.coeffs <- discoveryrate.ps(n, mt)
+  m <- (mt + 1) / 2
+  N <- n[, 1] %*% n[, 2]
+  if (mt == 1) {
+    a = sum(n[, 2])
+    b = c(1, (N - a) / N)
+  } else {
+    ## system equation ax = b
+    A <- t(sapply(1:(m - 1), function(x) PS.coeffs[x:(x + m - 1)]))
+    ## the last equation is adjust to make sure the sum
+    last.eqn.coefs <- N
+    for (i in 1:(m-1))
+      last.eqn.coefs <- c(last.eqn.coefs, PS.coeffs[i] - last.eqn.coefs[length(last.eqn.coefs)])
+    A <- rbind(A, last.eqn.coefs)
+    b0 <- -c(PS.coeffs[(m+1):mt], PS.coeffs[m] - last.eqn.coefs[length(last.eqn.coefs)])
+    b <- solve(A, b0)
+    b <- c(1, rev(b))
+    a <- sapply(1:m, function(x) b[1:x] %*% rev(PS.coeffs[1:x]))
+  }
+  return(polylist(polynomial(a), polynomial(b)))
+}
+
+
 ## discriminant of the quadratic polynomial, which is
 ## the denominator of the discovery rate at m = 2
 ## OBSOLATE 
