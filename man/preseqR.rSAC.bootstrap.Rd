@@ -22,15 +22,26 @@ preseqR.rSAC.bootstrap(n, r=1, mt=20, size=SIZE.INIT, mu=NU.INIT, times=30,
     times in the initial sample. The first column must be sorted in an
     ascending order.
   }
+  \item{r}{
+    A positive integer. Default is 1.
+  }
   \item{mt}{
     An positive integer constraining possible rational function
     approximations. Default is 20.
   }
-  \item{r}{
-    A positive integer. Default is 1.
-  }
   \item{times}{
     The number of bootstrap samples.
+  }
+  \item{size}{
+    A positive double, the initial value of the parameter \code{size} in
+    the negative binomial distribution for the EM algorithm. Default value is 1.
+  }
+  \item{mu}{
+    A positive double, the initial value of the parameter \code{mu} in the
+    negative binomial distribution for the EM algorithm. Default value is 0.5.
+  }
+  \item{conf}{
+    The confidence level. Default is 0.95
   }
 }
 \details{
