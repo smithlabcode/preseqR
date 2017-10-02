@@ -188,9 +188,7 @@ ds.rSAC <- function(n, r=1, mt=20)
 
 ## the bootstrap version of ds.rSAC
 ## with confidence interval
-ds.rSAC.bootstrap <- function(n, r=1, mt=20, 
-                           size=SIZE.INIT, mu=MU.INIT, times=30,
-                           conf=0.95)
+ds.rSAC.bootstrap <- function(n, r=1, mt=20, times=30, conf=0.95)
 {
   n[, 2] <- as.numeric(n[, 2])
   ## individuals in the sample
