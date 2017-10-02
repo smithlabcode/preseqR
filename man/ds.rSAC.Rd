@@ -23,7 +23,7 @@ ds.rSAC(n, r=1, mt=20)
   \item{mt}{
     An positive integer constraining possible rational function
     approximations. Default is 20.
-}
+  }
   \item{r}{
     A positive integer. Default is 1.
   }
@@ -41,19 +41,17 @@ ds.rSAC(n, r=1, mt=20)
   for the number of species represented at least r times in a random
   sample.
 
-  This function is the fast version of \code{\link{preseqR.rSAC.bootstrap}}.
+  This function is the fast version of \code{\link{ds.rSAC.bootstrap}}.
   The function does not provide an estimate for the confidence interval.
-  If one needs the confidence interval, use 
+  If one needs the confidence interval, please use 
   \code{\link{ds.rSAC.bootstrap}} instead.
 }
 \value{
-  \item{FUN}{
-    The constructed estimator for the number of species represneted at least r
-    times in a sample. The input of the estimator is a vector of sampling efforts
-    t, i.e. the relative sample sizes comparing with the initial sample. 
-    For example, t = 2 means the size of the random sample is twice the size of
-    the initial sample.
-  }
+  The estimator for the number of species represented at least r times in 
+  a random sample. The input of the estimator is a vector of sampling 
+  efforts t, i.e. the relative sample sizes comparing with the initial sample.
+  For example, t = 2 means a random sample that is twice the size of the 
+  initial sample.
 }
 \references{
 Kalinin V (1965). Functionals related to the poisson distribution and
@@ -62,6 +60,10 @@ the Theory of Probability pp. 202-220.
 
 Daley, T and Smith, AD. (2013). Predicting the molecular complexity of
 sequencing libraries. Nature methods, 10(4), 325-327.
+
+Deng, C., Daley, T., & Smith, A. (2015). Applications of species accumulation
+curves in large-scale biological data analysis. Quantitative Biology, 3(3),
+135-144.
 
 Deng, C and Smith, AD (2016). Estimating the number of species to attain 
 sufficient representation in a random sample. arXiv preprint arXiv:1607.02804
@@ -75,18 +77,21 @@ sufficient representation in a random sample. arXiv preprint arXiv:1607.02804
 library(preseqR)
 
 ## import data
-data(ShakespeareWordHist)
+data(FisherButterflyHist)
 
-## construct the estimator for the number of unique word
-## represented at least once, twice or twenty times in a sample
-estimator = ds.rSAC(ShakespeareWordHist, r=c(1,2,20))
+## construct the estimator for the number of species represented at least once
+## in a random sample
+ds1 <- ds.rSAC(FisherButterflyHist, r=1)
+## The number of species represented at least once, when the sample size is 
+## 10 or 20 times of the initial sample
+ds1(c(10, 20))
 
-## print the elements of the estimator
-estimator$FUN.elements
-
-## The number of unique words represented at least once, twice or twenty times
-## when the sample size is 10 or 20 times of the initial sample
-estimator$FUN(c(10, 20))
+## construct the estimator for the number of species represented at least twice
+## in a random sample
+ds2 <- ds.rSAC(FisherButterflyHist, r=2)
+## The number of species represented at least twice, when the sample size is 
+## 50 or 100 times of the initial sample
+ds2(c(50, 100))
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
