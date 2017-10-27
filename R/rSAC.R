@@ -280,21 +280,34 @@ preseqR.rSAC.bootstrap <- function(n, r=1, mt=20,
                                    size=SIZE.INIT, mu=MU.INIT, times=30,
                                    conf=0.95)
 {
+  checking.hist(n)
   n[, 2] <- as.numeric(n[, 2])
-  ## individuals in the sample
-  N <- n[, 1] %*% n[, 2]
+
+  para <- preseqR.ztnb.em(n)
+  shape <- para$size
+  mu <- para$mu
+  if (shape <= 1) {
+    f.bootstrap <- function(n, r, mt, size, mu) {
+      n.bootstrap <- matrix(c(n[, 1], rmultinom(1, sum(n[, 2]), n[, 2])), ncol=2)
+      N.bootstrap <- n.bootstrap[, 1] %*% n.bootstrap[, 2]
+      N <- n[, 1] %*% n[, 2]
+      t.scale <- N / N.bootstrap
+      f <- ds.rSAC(n.bootstrap, r=r, mt=mt)
+      return(function(t) {f(t * t.scale)})
+    }
+  } else {
+    f.bootstrap <- function(n, r, mt, size, mu) {
+      n.bootstrap <- matrix(c(n[, 1], rmultinom(1, sum(n[, 2]), n[, 2])), ncol=2)
+      N.bootstrap <- n.bootstrap[, 1] %*% n.bootstrap[, 2]
+      N <- n[, 1] %*% n[, 2]
+      t.scale <- N / N.bootstrap
+      f <- ztnb.rSAC(n.bootstrap, r=r, size=size, mu=mu)
+      return(function(t) {f(t * t.scale)})
+    }
+  }
 
   ## returned function
   f.rSACs <- vector(length=times, mode="list")
-
-  f.bootstrap <- function(n, r, mt, size, mu) {
-    n.bootstrap <- matrix(c(n[, 1], rmultinom(1, sum(n[, 2]), n[, 2])), ncol=2)
-    N.bootstrap <- n.bootstrap[, 1] %*% n.bootstrap[, 2]
-    N <- n[, 1] %*% n[, 2]
-    t.scale <- N / N.bootstrap
-    f <- preseqR.rSAC(n.bootstrap, r=r, mt=mt, size=size, mu=mu)
-    return(function(t) {f(t * t.scale)})
-  }
 
   while (times > 0) {
     f.rSACs[[times]] <- f.bootstrap(n=n, r=r, mt=mt, size=size, mu=mu)
