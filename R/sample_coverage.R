@@ -93,6 +93,62 @@ preseqR.sample.cov <- function(n, r=1, mt=20)
 }
 
 
+preseqR.sample.cov.bootstrap <- function(n, r=1, mt=20, times=30, conf=0.95) {
+
+  f.bootstrap <- function(n, r, mt, size, mu) {
+    n.bootstrap <- matrix(c(n[, 1], rmultinom(1, sum(n[, 2]), n[, 2])), ncol=2)
+    N.bootstrap <- n.bootstrap[, 1] %*% n.bootstrap[, 2]
+    N <- n[, 1] %*% n[, 2]
+    t.scale <- N / N.bootstrap
+    f <- preseqR.sample.cov(n.bootstrap, r=r, mt=mt)
+    return(function(t) {f(t * t.scale)})
+  }
+
+  ## returned function
+  f.sample.cov <- vector(length=times, mode="list")
+
+  while (times > 0) {
+    f.sample.cov[[times]] <- f.bootstrap(n=n, r=r, mt=mt, size=size, mu=mu)
+    ## prevent later binding!!!
+    f.sample.cov[[times]](1)
+    times <- times - 1
+  }
+
+  estimator <- function(t) {
+    result <- sapply(f.sample.cov, function(f) f(t))
+    if (length(t) == 1) {
+      return(median(result))
+    } else {
+      return(apply(result, FUN=median, MARGIN=1))
+    }
+  }
+
+  variance <- function(t) {
+    result <- sapply(f.sample.cov, function(f) f(t))
+    if (length(t) == 1) {
+      return(var(result))
+    } else {
+      return(apply(result, FUN=var, MARGIN=1))
+    }
+  }
+
+  ## prevent later binding!!!
+  estimator(1); estimator(1:2)
+  variance(1); variance(1:2)
+  ## confidence interval using lognormal
+  q <- (1 + conf) / 2
+  lb <- function(t) {
+    C <- exp(qnorm(q) * sqrt(log( 1 + variance(t) / (estimator(t)^2) )))
+    return(estimator(t) / C)
+  }
+  ub <- function(t) {
+    C <- exp(qnorm(q) * sqrt(log( 1 + variance(t) / (estimator(t)^2) )))
+    return(estimator(t) * C)
+  }
+  return(list(f=estimator, v=variance, lb=lb, ub=ub))
+}
+
+
 ## predict the fraction of k-mers represented at least r times in the sample
 kmer.frac <- function(n, r=2, mt=20) {
   return(preseqR.sample.cov(n=n, r=r-1, mt=mt))
@@ -113,5 +169,33 @@ kmer.frac.curve <- function(n, k, read.len, seq.gb, r=2, mt=20) {
   seq.effort <- seq.gb / unit.gb
   result <- matrix(c(seq.gb, f(seq.effort)), ncol=2, byrow=FALSE)
   colnames(result) <- c("bases(GB)", paste("frac(X>=", r, ")", sep=""))
+  return(result)
+}
+
+
+## predict the fraction of k-mers represented at least r times in the sample
+kmer.frac.bootstrap <- function(n, r=2, mt=20, times=30, conf=0.95) {
+  return(preseqR.sample.cov.bootstrap(n=n, r=r-1, mt=mt, times=times, conf=conf))
+}
+
+
+## the fraction of k-mers represented at least r times as a function of 
+## sample sizes
+kmer.frac.curve.bootstrap <- function(n, k, read.len, seq.gb, r=2, mt=20,
+                                      times=30, conf=0.95)
+{
+  f <- kmer.frac.bootstrap(n, r=r, mt=mt, times=times, conf=conf)
+  if (is.null(f))
+    return(NULL)
+  n[, 2] <- as.numeric(n[, 2])
+  N <- n[, 1] %*% n[, 2]
+  ## average number of k-mers per read
+  m <- read.len - k + 1
+  unit.gb <- N / m * read.len / 1e9
+  seq.effort <- seq.gb / unit.gb
+  result <- matrix(c(seq.gb, f$f(seq.effort), f$lb(seq.effort), 
+                     f$ub(seq.effort)), ncol=4, byrow=FALSE)
+  colnames(result) <- c("bases(GB)", paste("frac(X>=", r, ")", sep=""), 
+                        "lb", "ub")
   return(result)
 }
