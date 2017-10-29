@@ -95,7 +95,7 @@ preseqR.sample.cov <- function(n, r=1, mt=20)
 
 preseqR.sample.cov.bootstrap <- function(n, r=1, mt=20, times=30, conf=0.95) {
 
-  f.bootstrap <- function(n, r, mt, size, mu) {
+  f.bootstrap <- function(n, r, mt) {
     n.bootstrap <- matrix(c(n[, 1], rmultinom(1, sum(n[, 2]), n[, 2])), ncol=2)
     N.bootstrap <- n.bootstrap[, 1] %*% n.bootstrap[, 2]
     N <- n[, 1] %*% n[, 2]
@@ -108,7 +108,7 @@ preseqR.sample.cov.bootstrap <- function(n, r=1, mt=20, times=30, conf=0.95) {
   f.sample.cov <- vector(length=times, mode="list")
 
   while (times > 0) {
-    f.sample.cov[[times]] <- f.bootstrap(n=n, r=r, mt=mt, size=size, mu=mu)
+    f.sample.cov[[times]] <- f.bootstrap(n=n, r=r, mt=mt)
     ## prevent later binding!!!
     f.sample.cov[[times]](1)
     times <- times - 1
@@ -139,10 +139,14 @@ preseqR.sample.cov.bootstrap <- function(n, r=1, mt=20, times=30, conf=0.95) {
   q <- (1 + conf) / 2
   lb <- function(t) {
     C <- exp(qnorm(q) * sqrt(log( 1 + variance(t) / (estimator(t)^2) )))
+    ## if var and estimates are 0
+    C[which(!is.finite(C))] = 1
     return(estimator(t) / C)
   }
   ub <- function(t) {
     C <- exp(qnorm(q) * sqrt(log( 1 + variance(t) / (estimator(t)^2) )))
+    ## if var and estimates are 0
+    C[which(!is.finite(C))] = 1
     return(estimator(t) * C)
   }
   return(list(f=estimator, v=variance, lb=lb, ub=ub))
