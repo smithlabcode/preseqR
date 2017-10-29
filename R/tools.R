@@ -48,7 +48,7 @@ checking.hist <- function(n)
 
 
 ### check determinants of matrix M_{m-1,m-1},M_{m-1,m},M_{m,m-1},M_{m,m}
-## OBSOLATE
+## OBSOLETE
 checking.matrix.det <- function(n, m) 
 {
   ps <- discoveryrate.ps(n, mt=2*m + 1)
@@ -105,17 +105,18 @@ preseqR.nonreplace.sampling <- function(n, size)
   matrix(c(which(T != 0), T[which(T != 0)]), byrow = FALSE, ncol=2)
 }
 
+## OBSOLETE
 ## log of N choose k
-lchoose <- function(N, k) 
-{
-  result <- vector(length=max(length(N), length(k)), mode="numeric")
-  index <- which(N - k + 1 > 0)
-  if (length(index) == 0) {
-    result[] <- -Inf }
-  else {
-    result[index] <- (lgamma(N + 1) - lgamma(k + 1))[index] - 
-                     lgamma((N - k + 1)[index])
-    result[-index] <- -Inf
-  }
-  result
-}
+#lchoose <- function(N, k) 
+#{
+#  result <- vector(length=max(length(N), length(k)), mode="numeric")
+#  index <- which(N - k + 1 > 0)
+#  if (length(index) == 0) {
+#    result[] <- -Inf }
+#  else {
+#    result[index] <- (lgamma(N + 1) - lgamma(k + 1))[index] - 
+#                     lgamma((N - k + 1)[index])
+#    result[-index] <- -Inf
+#  }
+#  result
+#}
