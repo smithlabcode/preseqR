@@ -39,11 +39,11 @@ preseqR.interpolate.rSAC <- function(n, ss, r=1)
   l <- N / step.size
 
   ## the step size is too large or too small
-  if (l < 1 || ss < 1 || r < 1)
+  if (l < 1 || ss < 1 || r < 1) {
     return(NULL)
   ## the step size is the sample size
   ## count the number of species observed r or more times
-  else if (l == 1) {
+  }  else if (l == 1) {
     index <- which(n[, 1] >= r)
     result <- matrix(c(step.size, sum(n[index, 2])), ncol = 2, byrow = FALSE)
     colnames(result) <- c('sample.size', 'interpolation')
@@ -64,13 +64,13 @@ preseqR.interpolate.rSAC <- function(n, ss, r=1)
   }
 
   ## subsample sizes
-  x <- step.size * ( 1:l )
+  X <- step.size * ( 1:l )
 
   ## the number of species represented at least r times in a subsample
-  yields <- sapply(x, function(x) {
+  yields <- sapply(X, function(x) {
       expect.distinct(n, N, x, initial.distinct, r)})
 
-  result <- matrix(c(x, yields), ncol = 2, byrow = FALSE)
+  result <- matrix(c(X, yields), ncol = 2, byrow = FALSE)
   colnames(result) <- c('sample.size', 'interpolation')
 
   return(result)
@@ -136,7 +136,7 @@ ds.rSAC <- function(n, r=1, mt=20)
   }
 
   ## construct the continued fraction approximation to the power seies
-  cf <- ps2cfa(coef=PS.coeffs, mt=mt)
+  cf <- ps2cfa(coefs=PS.coeffs, mt=mt)
   rf <- cfa2rf(CF=cf)
   ## the length of cf could be less than mt
   ## even if ps do not have zero terms, coefficients of cf may have
@@ -197,17 +197,17 @@ ds.rSAC.bootstrap <- function(n, r=1, mt=20, times=30, conf=0.95)
   ## returned function
   f.rSACs <- vector(length=times, mode="list")
 
-  f.bootstrap <- function(n, r, mt, size, mu) {
+  f.bootstrap <- function(n, r, mt) {
     n.bootstrap <- matrix(c(n[, 1], rmultinom(1, sum(n[, 2]), n[, 2])), ncol=2)
     N.bootstrap <- n.bootstrap[, 1] %*% n.bootstrap[, 2]
     N <- n[, 1] %*% n[, 2]
     t.scale <- N / N.bootstrap
-    f <- ds.rSAC(n.bootstrap, r=r, mt=mt, size=size, mu=mu)
+    f <- ds.rSAC(n.bootstrap, r=r, mt=mt)
     return(function(t) {f(t * t.scale)})
   }
 
   while (times > 0) {
-    f.rSACs[[times]] <- f.bootstrap(n=n, r=r, mt=mt, size=size, mu=mu)
+    f.rSACs[[times]] <- f.bootstrap(n=n, r=r, mt=mt)
     ## prevent later binding!!!
     f.rSACs[[times]](1)
     times <- times - 1
@@ -341,10 +341,14 @@ preseqR.rSAC.bootstrap <- function(n, r=1, mt=20,
   q <- (1 + conf) / 2
   lb <- function(t) {
     C <- exp(qnorm(q) * sqrt(log( 1 + variance(t) / (estimator(t)^2) )))
+    ## if var and estimates are 0
+    C[which(!is.finite(C))] = 1
     return(estimator(t) / C)
   }
   ub <- function(t) {
     C <- exp(qnorm(q) * sqrt(log( 1 + variance(t) / (estimator(t)^2) )))
+    ## if var and estimates are 0
+    C[which(!is.finite(C))] = 1
     return(estimator(t) * C)
   }
   return(list(f=estimator, v=variance, lb=lb, ub=ub))
