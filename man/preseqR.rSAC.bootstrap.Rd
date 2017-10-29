@@ -10,7 +10,7 @@ times in a random sample based on the initial sample. The initial sample is
 then bootstrapped to improve the stability of estimates.
 }
 \usage{
-preseqR.rSAC.bootstrap(n, r=1, mt=20, size=SIZE.INIT, mu=NU.INIT, times=30,
+preseqR.rSAC.bootstrap(n, r=1, mt=20, size=SIZE.INIT, mu=MU.INIT, times=30,
                        conf=0.95)
 }
 %- maybe also 'usage' for other objects documented here.

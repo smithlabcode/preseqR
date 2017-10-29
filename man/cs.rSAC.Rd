@@ -54,14 +54,14 @@ data(FisherButterflyHist)
 
 ## construct the estimator for the number of species represented at least once
 ## in a random sample
-chao1 <- chao.rSAC(FisherButterflyHist, r=1)
+chao1 <- cs.rSAC(FisherButterflyHist, r=1)
 ## The number of species represented at least once, when the sample size is 
 ## 10 or 20 times of the initial sample
 chao1(c(10, 20))
 
 ## construct the estimator for the number of species represented at least twice
 ## in a random sample
-chao2 <- chao.rSAC(FisherButterflyHist, r=2)
+chao2 <- cs.rSAC(FisherButterflyHist, r=2)
 ## The number of species represented at least twice, when the sample size is 
 ## 50 or 100 times of the initial sample
 chao2(c(50, 100))

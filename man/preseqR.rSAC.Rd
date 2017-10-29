@@ -9,7 +9,7 @@ The function estimates the expected number of species represented at least
 r times in a random sample based on the initial sample.
 }
 \usage{
-preseqR.rSAC(n, r=1, mt=20)
+preseqR.rSAC(n, r=1, mt=20, size=SIZE.INIT, mu=MU.INIT)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -26,6 +26,14 @@ preseqR.rSAC(n, r=1, mt=20)
   }
   \item{r}{
     A positive integer. Default is 1.
+  }
+  \item{size}{
+    A positive double, the initial value of the parameter \code{size} in
+    the negative binomial distribution for the EM algorithm. Default value is 1.
+  }
+  \item{mu}{
+    A positive double, the initial value of the parameter \code{mu} in the
+    negative binomial distribution for the EM algorithm. Default value is 0.5.
   }
 }
 \details{

@@ -59,7 +59,7 @@ fisher1(c(10, 20))
 
 ## construct the estimator for the number of species represented at least twice
 ## in a random sample
-fisher2 <- fisher.rSAC(FisherButterflyHist, r=2)
+fisher2 <- fisher.rSAC(WillButterfly, r=2)
 ## The number of species represented at least twice, when the sample size is 
 ## 50 or 100 times of the initial sample
 fisher2(c(50, 100))
