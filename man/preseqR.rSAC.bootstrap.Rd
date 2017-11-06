@@ -58,9 +58,9 @@ preseqR.rSAC.bootstrap(n, r=1, mt=20, size=SIZE.INIT, mu=MU.INIT, times=30,
     For example, t = 2 means a random sample that is twice the size of the 
     initial sample.
   }
-  \item{v}{
-    The variance for the estimator. The input is a vector of sampling 
-    efforts t. The variance depends on t.
+  \item{se}{
+    The standard error for the estimator. The input is a vector of sampling 
+    efforts t. The standard error depends on t.
   }
   \item{lb}{
     The lower bound of the confidence interval.The input is a vector of sampling 
@@ -111,7 +111,7 @@ sufficient representation in a random sample. arXiv preprint arXiv:1607.02804
 ## 10 or 20 times of the initial sample
 # estimator1$f(c(10, 20))
 ## The standard error of the estiamtes
-# sqrt(estimator1$v(c(10, 20)))
+# estimator1$se(c(10, 20))
 ## The confidence interval of the estimates
 # lb <- estimator1$lb(c(10, 20))
 # ub <- estimator1$ub(c(10, 20))
@@ -122,9 +122,9 @@ sufficient representation in a random sample. arXiv preprint arXiv:1607.02804
 # estimator2 <- preseqR.rSAC.bootstrap(FisherButterflyHist, r=2)
 ## The number of species represented at least twice, when the sample size is 
 ## 50 or 100 times of the initial sample
-# estimator2(c(50, 100))
+# estimator2$f(c(50, 100))
 ## The standard error of the estiamtes
-# sqrt(estimator2$v(c(50, 100)))
+# estimator2$se(c(50, 100))
 ## The confidence interval of the estimates
 # lb <- estimator2$lb(c(50, 100))
 # ub <- estimator2$ub(c(50, 100))
