@@ -132,6 +132,8 @@ preseqR.sample.cov.bootstrap <- function(n, r=1, mt=20, times=30, conf=0.95) {
     }
   }
 
+  se <- function(x) sqrt(variance(x))
+
   ## prevent later binding!!!
   estimator(1); estimator(1:2)
   variance(1); variance(1:2)
@@ -149,5 +151,5 @@ preseqR.sample.cov.bootstrap <- function(n, r=1, mt=20, times=30, conf=0.95) {
     C[which(!is.finite(C))] = 1
     return(estimator(t) * C)
   }
-  return(list(f=estimator, v=variance, lb=lb, ub=ub))
+  return(list(f=estimator, se=se, lb=lb, ub=ub))
 }
