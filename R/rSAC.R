@@ -21,8 +21,8 @@
 ## the value defined by the variable PRECISION
 PRECISION <- 1e-3
 
-### interpolating for r-SAC
-### ss, step size
+## interpolating for r-SAC
+## ss, step size
 preseqR.interpolate.rSAC <- function(n, ss, r=1)
 {
   checking.hist(n)
@@ -59,7 +59,12 @@ preseqR.interpolate.rSAC <- function(n, ss, r=1)
   expect.distinct <- function(n, N, size, S, r) {
     denom <- lchoose(N, size)
     p <- sapply(n[, 1], function(x) {
-       sum(exp(lchoose(N - x, size - 0:(r-1)) + lchoose(x, 0:(r-1)) - denom))})
+      if (x <= r - 1) {
+        return(1)
+      } else {
+        logp = lchoose(N - x, size - 0:(r-1)) + lchoose(x, 0:(r-1)) - denom
+        return(sum(exp(logp)))
+      }})
     return(S - p %*% n[, 2])
   }
 
@@ -75,6 +80,19 @@ preseqR.interpolate.rSAC <- function(n, ss, r=1)
 
   return(result)
 }
+
+## interpolate rSAC based on sampling without replacement
+#preseqR.interpolate.rSAC <- function(n, ss, r=1) {
+#  checking.hist(n)
+#  n[, 2] <- as.double(n[, 2])
+#  N <- n[, 1] %*% n[, 2]
+#  p <- ss / N
+#  i <- dim(n)[1]
+#  frequencies <- lapply(1:i, function(x) rbinom(n[x, 2], n[x, 1], p))
+#  f <- unlist(frequencies)
+#  h <- hist(f, breaks=-1:max(f), plot=FALSE)$counts[-1]
+#  matrix(c(which(h != 0), h[which(h != 0)]), byrow = FALSE, ncol=2) 
+#}
 
 
 ## coefficients for the power series of E(S_1(t)) / t
@@ -230,6 +248,8 @@ ds.rSAC.bootstrap <- function(n, r=1, mt=20, times=30, conf=0.95)
       return(apply(result, FUN=var, MARGIN=1))
     }
   }
+  
+  se <- function(x) sqrt(variance(x))
 
   ## prevent later binding!!!
   estimator(1); estimator(1:2)
@@ -244,7 +264,7 @@ ds.rSAC.bootstrap <- function(n, r=1, mt=20, times=30, conf=0.95)
     C <- exp(qnorm(q) * sqrt(log( 1 + variance(t) / (estimator(t)^2) )))
     return(estimator(t) * C)
   }
-  return(list(f=estimator, v=variance, lb=lb, ub=ub))
+  return(list(f=estimator, se=se, lb=lb, ub=ub))
 }
 
 ## Best practice
@@ -334,6 +354,8 @@ preseqR.rSAC.bootstrap <- function(n, r=1, mt=20,
     }
   }
 
+  se <- function(x) sqrt(variance(x))
+
   ## prevent later binding!!!
   estimator(1); estimator(1:2)
   variance(1); variance(1:2)
@@ -351,5 +373,5 @@ preseqR.rSAC.bootstrap <- function(n, r=1, mt=20,
     C[which(!is.finite(C))] = 1
     return(estimator(t) * C)
   }
-  return(list(f=estimator, v=variance, lb=lb, ub=ub))
+  return(list(f=estimator, se=se, lb=lb, ub=ub))
 }

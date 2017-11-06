@@ -118,3 +118,77 @@ fisher.rSAC <- function(n, r=1) {
                 upper=N*x / (N*x + alpha))$value)}
   return(f.rSAC)
 }
+
+
+## fit a Poisson distribution
+pois.rSAC <- function(n, L, r=1) {
+    lambda <- n[, 1] %*% n[, 2] / L
+    f.rSAC <- function(t) {
+      L * ppois(q=r - 1, lambda=lambda * t, lower.tail=FALSE)
+    }
+    return(f.rSAC)
+}
+
+## estimate the parameter for negative binomial distribuiton
+nb.fitting <- function(n, L, size=SIZE.INIT)
+{
+  n[, 2] <- as.numeric(n[, 2])
+
+  ## the number of unobservations
+  zero.counts <- L - sum(n[, 2])
+
+  ## estimated mean and variance
+  m <- (n[, 1] %*% n[, 2]) / L
+  v <- ( (n[, 1] - m)^2 %*% n[, 2] + m^2 * zero.counts )/(L - 1)
+
+  ## target function f
+  f <- function(x) {
+        return( -nb.loglikelihood(n, zero.counts, size = x, mu = m)/L )
+  }
+
+  ## derivative of f
+  gr <- function(x)
+  {
+    first.term <- ( digamma(x) * zero.counts +
+                    digamma(n[, 1] + x) %*% n[, 2] )/L
+    second.term <- digamma(x)
+    third.term <- log(x) - log(x + m)
+    result <- first.term - second.term + third.term
+    # f is negative loglikelihood
+    return(-result)
+  }
+
+  ## optimization
+  if (v > m) {
+    res <- optim(m^2 / (v - m), f, gr, method = "L-BFGS-B",
+           lower = 0.00001, upper = 100000)
+  } else {
+    res <- optim(size, f, gr, method = "L-BFGS-B",
+           lower = 0.00001, upper = 100000)
+  }
+
+  loglikelihood <- nb.loglikelihood(n, zero.counts, size=res$par, mu=m)
+  ## update parameters
+  size <- res$par
+  mu <- m
+
+  return(list(size = size, mu = mu, loglik = -loglikelihood))
+}
+
+
+## fitting the negative binoimal distribution to the data
+## L is the total number of species
+nb.rSAC <- function(n, L, r=1, size=SIZE.INIT)
+{
+  n[, 2] <- as.numeric(n[, 2])
+
+  ## estimate parameters
+  opt <- nb.fitting(n, L, size=size)
+  size <- opt$size
+  mu <- opt$mu
+
+  f.rSAC <- function(t) {
+    L * pnbinom(r-1, size=size, mu=mu*t, lower.tail=FALSE)
+  }
+  return(f.rSAC)
+}
