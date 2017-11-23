@@ -68,3 +68,88 @@ preseqR.optimal.sequencing <- function(
   t0_ub = max(t1, t2)
   return(c(t0, t0_lb, t0_ub) * N)
 }
+
+
+## the function is designed for EXOME sequencing, where aligned reads that
+## map to the same location are removed to avoid potential duplicate
+preseqR.rSAC.sequencing.rmdup <- function(
+  n_base, n_read, r=1, mt=20, times=100, conf=0.95)
+{
+  checking.hist(n_read)
+  checking.hist(n_base)
+  n_read[, 2] <- as.numeric(n_read[, 2])
+  N <- n_read[, 1] %*% n_read[, 2]
+
+  ## the bootstrappedestiamtor
+  f.bootstrap <- function(n, r, mt) {
+    n.bootstrap <- matrix(c(n[, 1], rmultinom(1, sum(n[, 2]), n[, 2])), ncol=2)
+    N.bootstrap <- n.bootstrap[, 1] %*% n.bootstrap[, 2]
+    N <- n[, 1] %*% n[, 2]
+    t.scale <- N / N.bootstrap
+    f <- ds.rSAC(n.bootstrap, r=r, mt=mt)
+    return(function(t) {f(t * t.scale)})
+  }
+
+  ## returned function
+  f.rSACs <- vector(length=times, mode="list")
+  ## the number of bases with coverage at least r as a function of sequenced
+  ## bases from uniquely aligned reads
+  f.bases <- vector(length=times, mode="list")
+  ## the number of unique reads as a function of the number of reads
+  f.reads <- vector(length=times, mode="list")
+
+  ## the number of nucleotides with coverage at least r based on uniquely 
+  ## aligned reads as a function of sequencing effort
+  f <- function(n_read, f.base, f.read) {
+    N <- sum(as.double(n_read[, 2]))
+    return(function(t) {t0 = f.read(t) / N; f.base(t0)})
+  }
+
+  while (times > 0) {
+    f.bases[[times]] <- f.bootstrap(n=n_base, r=r, mt=mt)
+    f.reads[[times]] <- f.bootstrap(n=n_read, r=1, mt=mt)
+    f.rSACs[[times]] <- f(n_read=n_read, f.base=f.bases[[times]], f.read=f.reads[[times]])
+    ## prevent later binding!!!
+    f.rSACs[[times]](1)
+    times <- times - 1
+  }
+
+  estimator <- function(t) {
+    result <- sapply(f.rSACs, function(f) f(t))
+    if (length(t) == 1) {
+      return(median(result))
+    } else {
+      return(apply(result, FUN=median, MARGIN=1))
+    }
+  }
+
+  variance <- function(t) {
+    result <- sapply(f.rSACs, function(f) f(t))
+    if (length(t) == 1) {
+      return(var(result))
+    } else {
+      return(apply(result, FUN=var, MARGIN=1))
+    }
+  }
+
+  se <- function(x) sqrt(variance(x))
+
+  ## prevent later binding!!!
+  estimator(1); estimator(1:2)
+  variance(1); variance(1:2)
+  ## confidence interval using lognormal
+  q <- (1 + conf) / 2
+  lb <- function(t) {
+    C <- exp(qnorm(q) * sqrt(log( 1 + variance(t) / (estimator(t)^2) )))
+    ## if var and estimates are 0
+    C[which(!is.finite(C))] = 1
+    return(estimator(t) / C)
+  }
+  ub <- function(t) {
+    C <- exp(qnorm(q) * sqrt(log( 1 + variance(t) / (estimator(t)^2) )))
+    ## if var and estimates are 0
+    C[which(!is.finite(C))] = 1
+    return(estimator(t) * C)
+  }
+  return(list(f=estimator, se=se, lb=lb, ub=ub))
+}

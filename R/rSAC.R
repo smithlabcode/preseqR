@@ -296,9 +296,8 @@ preseqR.rSAC <- function(n, r=1, mt=20, size=SIZE.INIT, mu=MU.INIT)
 
 ## the bootstrap version of preseqR.rSAC
 ## with confidence interval
-preseqR.rSAC.bootstrap <- function(n, r=1, mt=20, 
-                                   size=SIZE.INIT, mu=MU.INIT, times=30,
-                                   conf=0.95)
+preseqR.rSAC.bootstrap <- function(n, r=1, mt=20, size=SIZE.INIT, 
+                                   mu=MU.INIT, times=30, conf=0.95)
 {
   checking.hist(n)
   n[, 2] <- as.numeric(n[, 2])
