@@ -1,0 +1,115 @@
+\name{preseqR.sample.cov.bootstrap}
+\alias{preseqR.sample.cov.bootstrap}
+%- Also NEED an '\alias' for EACH other topic documented here.
+\title{
+Estimating the probability of observing a species represented at least r times
+in a random sample
+}
+\description{
+The function estimates the probability of observing a species represented at
+least r times in a random sample
+}
+\usage{
+  preseqR.sample.cov.bootstrap(n, r=1, mt=20, times=30, conf=0.95)
+}
+%- maybe also 'usage' for other objects documented here.
+\arguments{
+  \item{n}{
+    A two-column matrix.  
+    The first column is the frequency \eqn{j = 1,2,\dots}; and the second column
+    is \eqn{n_j}, the number of species with each species represented \eqn{j}
+    times in the initial sample. The first column must be sorted in an
+    ascending order.
+  }
+  \item{r}{
+    A positive integer. Default is 1.
+  }
+  \item{mt}{
+    An positive integer constraining possible rational function
+    approximations. Default is 20.
+  }
+  \item{times}{
+    The number of bootstrap samples.
+  }
+  \item{conf}{
+    The confidence level. Default is 0.95
+  }
+}
+\details{
+  This is the bootstrap version of \code{\link{preseqR.sample.cov}}. The function
+  provides the confidence interval for estiamtes based on
+  \code{\link{preseqR.sample.cov}}. The confidence interval is based on a 
+  lognormal distribution.
+}
+\value{
+  \item{f}{
+  The estimator for the probability of observing a species represented at least
+  r times in a sample as a function of the sample size.
+  The input of the estimator is a vector of sampling 
+  efforts t, i.e. the relative sample sizes comparing with the initial sample.
+  For example, t = 2 means a random sample that is twice the size of the 
+  initial sample.
+  }
+  \item{se}{
+    The standard error for the estimator. The input is a vector of sampling 
+    efforts t. The standard error depends on t.
+  }
+  \item{lb}{
+    The lower bound of the confidence interval.The input is a vector of sampling 
+    efforts t.
+  }
+  \item{ub}{
+    The upper bound of the confidence interval.The input is a vector of sampling 
+    efforts t.
+  }
+}
+
+\references{
+Efron, B., & Tibshirani, R. J. (1994). An introduction to the bootstrap. CRC press.
+
+Deng, C and Smith, AD (2016). Estimating the number of species to attain 
+sufficient representation in a random sample. arXiv preprint arXiv:1607.02804
+}
+
+\author{
+  Chao Deng
+}
+
+\examples{
+## load library
+#library(preseqR)
+
+## import data
+#data(FisherButterflyHist)
+
+## construct the estimator for the sample coverage
+## in a random sample
+# estimator1 <- preseqR.sample.cov.bootstrap(FisherButterflyHist, r=1)
+## Given a sample that is 10 times or 20 times the size of an initial samples,
+## suppose one randomly draws one more individual from the population. The
+## value of the function is the probability that the representing species 
+## has been observed in the sample
+# estimator1$f(c(10, 20))
+## The standard error of the estiamtes
+# estimator1$se(c(10, 20))
+## The confidence interval of the estimates
+# lb <- estimator1$lb(c(10, 20))
+# ub <- estimator1$ub(c(10, 20))
+# matrix(c(lb, ub), byrow=FALSE, ncol=2)
+
+## construct the estimator for the probability of observing a species represented
+## at least r times in a random sample for r = 2
+# estimator2 <- preseqR.rSAC.bootstrap(FisherButterflyHist, r=2)
+## the probability when the sample size is 50 times or 100 times of the initial
+## sample
+# estimator2$f(c(50, 100))
+## The standard error of the estiamtes
+# estimator2$se(c(50, 100))
+## The confidence interval of the estimates
+# lb <- estimator2$lb(c(50, 100))
+# ub <- estimator2$ub(c(50, 100))
+# matrix(c(lb, ub), byrow=FALSE, ncol=2)
+}
+% Add one or more standard keywords, see file 'KEYWORDS' in the
+% R documentation directory.
+\keyword{ Estimator, RFA, Bootstrap, Sample coverage}

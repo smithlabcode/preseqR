@@ -85,14 +85,14 @@ sufficient representation in a random sample. arXiv preprint arXiv:1607.02804
 #library(preseqR)
 
 ## import data
-#data(WGS)
+#data(SRR611492_5M)
 ## the optimal amount of sequencing with the cost-benefit ratio greater than 
 ## 0.05 for r = 4
-#preseqR.optimal.sequencing(n=SRR5365359_5M_base, efficiency=0.05, bin=1e8, r=4)
+#preseqR.optimal.sequencing(n=SRR611492_5M, efficiency=0.05, bin=1e8, r=4)
 ## the optimal amount of sequencing with the cost-benefit ratio greater than 
 ## 0.05 for r = 10
-#preseqR.optimal.sequencing(n=SRR5365359_5M_base, efficiency=0.05, bin=1e8, r=10)
+#preseqR.optimal.sequencing(n=SRR611492_5M, efficiency=0.05, bin=1e8, r=10)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-\keyword{DNA, Optimal amount of sequencing}
+\keyword{DNA, High-throughput sequencing}

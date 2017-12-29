@@ -48,7 +48,7 @@ preseqR.rSAC.bootstrap(n, r=1, mt=20, size=SIZE.INIT, mu=MU.INIT, times=30,
   This is the bootstrap version of \code{\link{preseqR.rSAC}}. The function
   provides the confidence interval for estiamtes based on
   \code{\link{preseqR.rSAC}}. The confidence interval is based on the lognormal
-  model proposed by Chao (1987).
+  distribution.
 }
 \value{
   \item{f}{
