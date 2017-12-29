@@ -1,3 +1,13 @@
+UPDATES TO VERSION 4.0.0
+========================
+1. Improve the user interface for core functions
+2. Add functions to optimize the depth of single-cell whole-genome sequencing
+experiments and whole-exome sequencing experiments
+3. Add functions to predict the sample coverage, which is the probability of
+sampling an observed species from a population
+4. Add functions to predict the fraction of k-mers represented at least r times
+in a sequencing experiment
+
 UPDATES TO VERSION 3.1.2
 ========================
 1. Fix a bug for removing defects
