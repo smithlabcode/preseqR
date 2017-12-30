@@ -1,6 +1,6 @@
 Package: preseqR
 Type: Package
-Title: Predicting the Number of Species Represented at Least r Times in a Random Sample
+Title: Predicting the Number of Species in a Random Sample
 Version: 4.0.0
 Date: 2017-12-26
 Author: Chao Deng, Timothy Daley and Andrew D. Smith

@@ -1,49 +1,38 @@
 \name{preseqR-package}
 \alias{preseqR-package}
-\alias{preseqR}
 \docType{package}
 \title{
-    An R package for estimating the number of species represented at least 
-    r times
+    Predicting species abundances in a random sample
 }
 \description{
-    preseqR provides functions to estimate the number of species represented at
-    least r times in a random sample based on an initial sample. Functions work
-    through rational function approximations to a modified Good and
-    Toulmin's (1956) non-parametric empirical Bayes power series estimator. The
-    rational function approximation is then boosted to an estiamtor for 
-    the number species represented at least r times, based on a
-    relation bewteen the number of species represented at least r times and 
-    the number of species represented at least once.
+    The functionality of this package is to predict the number of species 
+    represented at least \eqn{r} times in a random sample, 
+    based on an initial sample. The prediction is based on an empirical Bayes
+    approach using rational function approximation. The estimator is
+    excellent in accuracy for both large values of \eqn{r} and long-range
+    extrapolations, which are essential to large-scale applications. This 
+    package also generalizes other popular parametric and nonparametric
+    methods that were oringinally designed for estimating the number of 
+    species in a random sample (the case \eqn{r=1}),
+    such as the log series estimator by Fisher and 
+    zero-truncated negative binomial estimator, to address the general problems
+    of predicting the number of species represented at least \eqn{r} times for
+    \eqn{r > 1}.
 }
 \details{
-functions: 
+main functions: 
 
-ds.mincount.bootstrap
+preseqR.rSAC
 
-ds.mincount
+preseqR.rSAC.bootstrap
 
-ztpois.mincount
+preseqR.optimal.sequencing
 
-ztnb.mincount
+preseqR.rSAC.sequencing.rmdup
 
-boneh.mincount
+preseqR.sample.cov
 
-chao.mincount
-
-pois.mincount
-
-nb.mincount
-
-preseqR.ztnb.em
-
-preseqR.simu.hist
-
-preseqR.nonreplace.sampling
-
-preseqR.interpolate.mincount
-
-data: FisherButterflyHist, ShakespeareWordHist
+preseqR.sample.cov.bootstrap
 }
 \author{
 Chao Deng, Timothy Daley, and Andrew D. Smith
@@ -58,9 +47,6 @@ Boneh, S., Boneh, A., & Caron, R. J. (1998). Estimating the prediction function
 and the number of unseen species in sampling with replacement.
 Journal of the American Statistical Association, 93(441), 372-379.
 
-Chao, A. (1987). Estimating the population size for capture-recapture data with
-unequal catchability. Biometrics, 783-791.
-
 Chao, A., & Shen, T. J. (2004). Nonparametric prediction in species sampling.
 Journal of agricultural, biological, and environmental statistics, 9(3), 253-269.
 
@@ -70,9 +56,12 @@ Journal of the American Statistical Association, 55(289), 139-143.
 Daley, T., & Smith, A. D. (2013). Predicting the molecular complexity of
 sequencing libraries. Nature methods, 10(4), 325-327.
 
-Deng C, Daley T and Smith AD (2015). Applications of species accumulation curves
+Deng C, Daley T & Smith AD (2015). Applications of species accumulation curves
 in large-scale biological data analysis. Quantitative Biology, 3(3), 135-144. 
 URL http://dx.doi.org/10.1007/s40484-015-0049-7.
+
+Deng, C & Smith, AD (2016). Estimating the number of species to attain 
+sufficient representation in a random sample. arXiv preprint arXiv:1607.02804.
 
 Efron, B., & Thisted, R. (1976). Estimating the number of unseen species:
 How many words did Shakespeare know?. Biometrika, 63(3), 435-447.
