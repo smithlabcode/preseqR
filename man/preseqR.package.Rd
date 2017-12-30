@@ -7,7 +7,8 @@
 \description{
     The functionality of this package is to predict the number of species 
     represented at least \eqn{r} times in a random sample, 
-    based on an initial sample. The prediction is based on an empirical Bayes
+    based on an initial sample.
+    The prediction is based on an empirical Bayes
     approach using rational function approximation. The estimator is
     excellent in accuracy for both large values of \eqn{r} and long-range
     extrapolations, which are essential to large-scale applications. This 
@@ -18,6 +19,13 @@
     zero-truncated negative binomial estimator, to address the general problems
     of predicting the number of species represented at least \eqn{r} times for
     \eqn{r > 1}.
+
+    For the ease of reference, we call the quantity, the number of species
+    represented at least \eqn{r} times in a sample as a function of the sample
+    size, a \eqn{r}-species accumulation curve (\eqn{r}-SAC). In particular,
+    when \eqn{r = 1}, \eqn{r}-SAC is known as species accmulaton curve (SAC), 
+    which has been widely studied in ecology.
+
 }
 \details{
 main functions: 
