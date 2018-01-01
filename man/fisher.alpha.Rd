@@ -2,11 +2,11 @@
 \alias{fisher.alpha}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-Estimating the parameter alpha in the logseries estimator
+Parameter alpha in the logseries estimator
 }
 \description{
-The function estimates the parameter alpha in the logseries estimator by
-Fisher, R. A., et al. (1943) based on a sample.
+\code{fisher.alpha} estimates the parameter alpha in the logseries estimator by
+Fisher, R. A., et al. (1943) based on an initial sample.
 }
 \usage{
 fisher.alpha(n)
@@ -16,7 +16,7 @@ fisher.alpha(n)
   \item{n}{
     A two-column matrix.  
     The first column is the frequency \eqn{j = 1,2,\dots}; and the second column
-    is \eqn{n_j}, the number of species with each species represented \eqn{j}
+    is \eqn{N_j}, the number of species with each species represented \eqn{j}
     times in the initial sample. The first column must be sorted in an
     ascending order.
 }

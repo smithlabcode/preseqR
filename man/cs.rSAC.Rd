@@ -2,12 +2,13 @@
 \alias{cs.rSAC}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-Estimating the expected number of species represented r or more times
+  CS estimator
 }
 \description{
-The function estimates the expected number of species represented at least 
-r times in a random sample based on the initial sample. The estimator proposed
-by Chao and Shen (2004) for SAC is generalized to estimate r-SAC for r > 1.
+\code{cs.rSAC} predicts the expected number of species represented at least 
+\eqn{r} times in a random sample, based on the initial sample. 
+The estimator was originally proposed by Chao and Shen (2004) for estimating
+the SAC. We generalize this estimator for predicting the \eqn{r}-SAC.
 }
 \usage{
 cs.rSAC(n, r=1, k=10)
@@ -17,7 +18,7 @@ cs.rSAC(n, r=1, k=10)
   \item{n}{
     A two-column matrix.  
     The first column is the frequency \eqn{j = 1,2,\dots}; and the second column
-    is \eqn{n_j}, the number of species with each species represented \eqn{j}
+    is \eqn{N_j}, the number of species with each species represented \eqn{j}
     times in the initial sample. The first column must be sorted in an
     ascending order.
   }
@@ -29,11 +30,10 @@ cs.rSAC(n, r=1, k=10)
   }
 }
 \value{
-  The constructed estimator for the number of species represneted at least r
-  times in a sample. The input of the estimator is a vector of sampling 
-  efforts t, i.e. the relative sample sizes comparing with the initial sample.
-  For example, t = 2 means a random sample that is twice the size of the 
-  initial sample.
+  The estimator for the \eqn{r}-SAC. The input of the estimator is a vector of
+  sampling efforts \eqn{t}, i.e., the relative sample sizes comparing with the initial
+  sample. For example, \eqn{t = 2} means a random sample that is twice the size of
+  the initial sample.
 }
 \author{
   Chao Deng
@@ -50,20 +50,18 @@ Journal of agricultural, biological, and environmental statistics, 9(3), 253-269
 library(preseqR)
 
 ## import data
-data(FisherButterflyHist)
+data(FisherButterfly)
 
-## construct the estimator for the number of species represented at least once
-## in a random sample
-chao1 <- cs.rSAC(FisherButterflyHist, r=1)
-## The number of species represented at least once, when the sample size is 
-## 10 or 20 times of the initial sample
+## construct the estimator for SAC
+chao1 <- cs.rSAC(FisherButterfly, r=1)
+## The number of species represented at least once in a sample, 
+## when the sample size is 10 or 20 times of the initial sample
 chao1(c(10, 20))
 
-## construct the estimator for the number of species represented at least twice
-## in a random sample
-chao2 <- cs.rSAC(FisherButterflyHist, r=2)
-## The number of species represented at least twice, when the sample size is 
-## 50 or 100 times of the initial sample
+## construct the estimator for r-SAC
+chao2 <- cs.rSAC(FisherButterfly, r=2)
+## The number of species represented at least twice in a sample, 
+## when the sample size is 50 or 100 times of the initial sample
 chao2(c(50, 100))
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the

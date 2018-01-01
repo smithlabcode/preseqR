@@ -2,7 +2,7 @@
 \alias{preseqR.nonreplace.sampling}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-    Sampling without replacement
+Sampling
 }
 \description{
     Generating a histogram by subsampling without replacement.
@@ -15,7 +15,7 @@
   \item{n}{
     A two-column matrix.  
     The first column is the frequency \eqn{j = 1,2,\dots}; and the second column
-    is \eqn{n_j}, the number of species represented \eqn{j} times in the initial
+    is \eqn{N_j}, the number of species represented \eqn{j} times in the initial
     sample. The first column must be sorted in an ascending order.
   }
   \item{size}{
@@ -23,13 +23,15 @@
   }
 }
 \details{
-  The function sample() in R is used to implement the function. We wrap up
-  the function sample() in a way such that both input and output are histograms. 
+  \code{preseqR.nonreplace.sampling} generates a subsample by sampling the
+  initial sample without replacement.
+  \code{sample} in \eqn{R} is used to implement the function. We wrap up
+  this function in such a way that both the input and the output are histograms. 
 }
 \value{
   A two-column matrix as a subsample.
   The first column is the frequency \eqn{j = 1,2,\dots}; and the second column
-  is \eqn{n_j}, the number of species represented \eqn{j} times in the subsample. 
+  is \eqn{N_j}, the number of species represented \eqn{j} times in the subsample. 
 }
 \references{
   \url{https://stat.ethz.ch/R-manual/R-patched/library/base/html/sample.html}
@@ -44,10 +46,10 @@
 ## load library
 library(preseqR)
 ## import data
-data(FisherButterflyHist)
+data(FisherButterfly)
 ## generate a subsample of size 1000.
-preseqR.nonreplace.sampling(n=FisherButterflyHist, size=1000)
+preseqR.nonreplace.sampling(n=FisherButterfly, size=1000)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-\keyword{sampling, histogram}
+\keyword{Sampling}

@@ -2,12 +2,13 @@
 \alias{fisher.rSAC}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-Estimating the expected number of species represented r or more times
+  Logseries estimator
 }
 \description{
-The function estimates the expected number of species represented at least 
-r times in a random sample based on the initial sample using a parametric
-approach by Fisher et al. (1943).
+\code{fisher.rSAC} estimates the expected number of species represented at least 
+\eqn{r} times in a random sample, based on the initial sample.
+The estimator was originally proposed by Fisher et al. (1943) for estimating
+the SAC. We generalize this estimator for predicting the \eqn{r}-SAC.
 }
 \usage{
 fisher.rSAC(n, r=1)
@@ -17,7 +18,7 @@ fisher.rSAC(n, r=1)
   \item{n}{
     A two-column matrix.  
     The first column is the frequency \eqn{j = 1,2,\dots}; and the second column
-    is \eqn{n_j}, the number of species with each species represented \eqn{j}
+    is \eqn{N_j}, the number of species with each species represented \eqn{j}
     times in the initial sample. The first column must be sorted in an
     ascending order.
   }
@@ -26,11 +27,10 @@ fisher.rSAC(n, r=1)
   }
 }
 \value{
-  The constructed estimator for the number of species represneted at least r
-  times in a sample. The input of the estimator is a vector of sampling 
-  efforts t, i.e. the relative sample sizes comparing with the initial sample.
-  For example, t = 2 means a random sample that is twice the size of the 
-  initial sample.
+  The estimator for the \eqn{r}-SAC. The input of the estimator is a vector of
+  sampling efforts \eqn{t}, i.e., the relative sample sizes comparing with the initial
+  sample. For example, \eqn{t = 2} means a random sample that is twice the size of
+  the initial sample.
 }
 \author{
   Chao Deng
@@ -50,18 +50,16 @@ library(preseqR)
 ## import data
 data(WillButterfly)
 
-## construct the estimator for the number of species represented at least once
-## in a random sample
+## construct the estimator for SAC
 fisher1 <- fisher.rSAC(WillButterfly, r=1)
-## The number of species represented at least once, when the sample size is 
-## 10 or 20 times of the initial sample
+## The number of species represented at least once in a sample, 
+## when the sample size is 10 or 20 times of the initial sample
 fisher1(c(10, 20))
 
-## construct the estimator for the number of species represented at least twice
-## in a random sample
+## construct the estimator for r-SAC
 fisher2 <- fisher.rSAC(WillButterfly, r=2)
-## The number of species represented at least twice, when the sample size is 
-## 50 or 100 times of the initial sample
+## The number of species represented at least twice in a sample, 
+## when the sample size is 50 or 100 times of the initial sample
 fisher2(c(50, 100))
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the

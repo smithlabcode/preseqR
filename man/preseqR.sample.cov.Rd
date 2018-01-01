@@ -77,11 +77,11 @@ sufficient representation in a random sample. arXiv preprint arXiv:1607.02804
 library(preseqR)
 
 ## import data
-data(FisherButterflyHist)
+data(FisherButterfly)
 
 ## construct the estimator for the sample coverage
 ## in a random sample
-estimator1 <- preseqR.sample.cov(FisherButterflyHist, r=1) 
+estimator1 <- preseqR.sample.cov(FisherButterfly, r=1) 
 ## Given a sample that is 10 times or 20 times the size of an initial samples,
 ## suppose one randomly draws one more individual from the population. The
 ## value of the function is the probability that the representing species 
@@ -90,7 +90,7 @@ estimator1(c(10, 20))
 
 ## construct the estimator for the probability of observing a species represented
 ## at least r times in a random sample for r = 2
-estimator2 <- preseqR.sample.cov(FisherButterflyHist, r=2)
+estimator2 <- preseqR.sample.cov(FisherButterfly, r=2)
 ## the probability when the sample size is 50 times or 100 times of the initial
 ## sample
 estimator2(c(50, 100))

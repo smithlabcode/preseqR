@@ -56,18 +56,18 @@ distribution." Biometrics 16, no. 2 (1960): 203-211.
 library(preseqR)
 
 ## import data
-data(FisherButterflyHist)
+data(FisherButterfly)
 
 ## construct the estimator for the number of species represented at least once
 ## in a random sample
-ztp1 <- ztp.rSAC(FisherButterflyHist, r=1)
+ztp1 <- ztp.rSAC(FisherButterfly, r=1)
 ## The number of species represented at least once, when the sample size is 
 ## 10 or 20 times of the initial sample
 ztp1(c(10, 20))
 
 ## construct the estimator for the number of species represented at least twice
 ## in a random sample
-ztp2 <- ztp.rSAC(FisherButterflyHist, r=2)
+ztp2 <- ztp.rSAC(FisherButterfly, r=2)
 ## The number of species represented at least twice, when the sample size is 
 ## 50 or 100 times of the initial sample
 ztp2(c(50, 100))

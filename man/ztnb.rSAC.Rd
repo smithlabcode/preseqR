@@ -71,18 +71,18 @@ sequencing libraries. Nature methods, 10(4), 325-327.
 library(preseqR)
 
 ## import data
-data(FisherButterflyHist)
+data(FisherButterfly)
 
 ## construct the estimator for the number of species represented at least once
 ## in a random sample
-ztnb1 <- ztnb.rSAC(FisherButterflyHist, r=1)
+ztnb1 <- ztnb.rSAC(FisherButterfly, r=1)
 ## The number of species represented at least once, when the sample size is 
 ## 10 or 20 times of the initial sample
 ztnb1(c(10, 20))
 
 ## construct the estimator for the number of species represented at least twice
 ## in a random sample
-ztnb2 <- ztnb.rSAC(FisherButterflyHist, r=2)
+ztnb2 <- ztnb.rSAC(FisherButterfly, r=2)
 ## The number of species represented at least twice, when the sample size is 
 ## 50 or 100 times of the initial sample
 ztnb2(c(50, 100))

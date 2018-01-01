@@ -2,12 +2,12 @@
 \alias{kmer.frac.curve}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-Estimating the expected fraction of k-mers observed at least \eqn{r} times 
-in a random sample
+Fraction of \eqn{k}-mers observed at least \eqn{r} times 
 }
 \description{
-Estimating the expected fraction of k-mers observed at least \eqn{r} times in
-a random sample as a function of sample size
+\code{kmer.frac.curve} predicts the expected fraction of \eqn{k}-mers observed at
+least \eqn{r} times in a high-throughput sequencing experiment given the 
+amount of sequencing
 }
 \usage{
   kmer.frac.curve(n, k, read.len, seq.gb, r=2, mt=20)
@@ -17,12 +17,12 @@ a random sample as a function of sample size
   \item{n}{
     A two-column matrix.  
     The first column is the frequency \eqn{j = 1,2,\dots}; and the second column
-    is \eqn{N_j}, the number of k-mers observed exactly \eqn{j}
+    is \eqn{N_j}, the number of \eqn{k}-mers observed exactly \eqn{j}
     times in the initial experiment. The first column must be sorted in an
     ascending order.
   }
   \item{k}{
-    The number of nucleotides in a k-mer.
+    The number of nucleotides in a \eqn{k}-mer.
   }
   \item{read.len}{
     The average length of a read.
@@ -39,18 +39,18 @@ a random sample as a function of sample size
   }
 }
 \details{
-  \eqn{kmer.frac.curve} is designed to estimate sequence coverage based on
-  k-mer counts.
+  \code{kmer.frac.curve} is mainly designed for metagenomics to evaluate how 
+  saturated a metagenomic data is.
 
-  This function is the fast version of \code{\link{kmer.frac.curve.bootstrap}}.
-  The function does not provide an estimate for the confidence interval.
-  If one needs the confidence interval, please use 
-  \code{\link{kmer.frac.curve.bootstrap}} instead.
+  \code{kmer.frac.curve} is the fast version of \code{\link{kmer.frac.curve.bootstrap}}.
+  The function does not provide the confidence interval. To obtain the
+  confidence interval along with the estimates, one should use the function
+  \code{\link{kmer.frac.curve.bootstrap}}.
 }
 \value{
   A two-column matrix. The first column is the amount of sequencing in an 
   experiment. The value is specified by the variable \eqn{seq.gb}. 
-  The second column is the estimate of the fraction of k-mers observed at least
+  The second column is the estimate of the fraction of \eqn{k}-mers observed at least
   \eqn{r} times in the experiment.
 }
 \references{
@@ -74,4 +74,4 @@ kmer.frac.curve(n=SRR061157_k31, k=31, read.len=200, seq.gb=10^(6:12), r=2, mt=2
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-\keyword{k-mer, Sample coverage, High-throughput sequencing}
+\keyword{\eqn{k}-mer, Sample coverage, High-throughput, Metagenomics}

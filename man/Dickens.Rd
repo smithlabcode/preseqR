@@ -8,7 +8,7 @@
 \details{
     A two-column matrix.  
     The first column is the frequency \eqn{j = 1,2,\dots}; and the second column
-    is \eqn{n_j}, the number of unique words appeared \eqn{j}
+    is \eqn{N_j}, the number of unique words appeared \eqn{j}
     times in a collection of Charles Dickens.
 }
 
@@ -24,4 +24,4 @@ library(preseqR)
 data(Dickens)
 }
 
-\keyword{ data }
+\keyword{ datasets }

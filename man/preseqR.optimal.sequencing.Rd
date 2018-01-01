@@ -2,13 +2,11 @@
 \alias{preseqR.optimal.sequencing}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-Predicting the optimal amount of sequencing in a single-cell whole-genome
-sequencing (scWGS) experiment
+Optimal amount of sequencing for scWGS
 }
 \description{
-The function predicts the optimal amount of sequencing in a scWGS experiment
-based on the cost-benefit ratio. The term optimal is interpreted as the maximum 
-amount of sequencing with its cost-benefit ratio greater than a given threshold.
+\code{preseqR.optimal.sequencing} predicts the optimal amount of sequencing in
+a single-cell whole-genome sequencing (scWGS) experiment based on a shallow sequencing experiment.
 }
 \usage{
 preseqR.optimal.sequencing(n, efficiency=0.05, bin=1e8, r=1, mt=20, 
@@ -52,18 +50,20 @@ preseqR.optimal.sequencing(n, efficiency=0.05, bin=1e8, r=1, mt=20,
   }
 }
 \details{
-  The cost-benefit ratio is defined as the probability of a new position in the
-  genome represented at least r times when one more base is sequenced. In order
-  to improve the numeric stability, we use the mean of new positions 
-  with coverage at least r in one unit of sequencing effort to approximate the
+  \code{preseqR.optimal.sequencing} predicts the optimal amount of sequencing
+  in a scWGS experiment. The term optimal is interpreted as the maximum 
+  amount of sequencing with its cost-benefit ratio greater than a given threshold.
+  The cost-benefit ratio is defined as the probability of a new nucleotide in the
+  genome represented at least \eqn{r} times when one more base is sequenced. 
+  In order to improve the numeric stability, we use the mean of new nucleotdies
+  with coverage at least \eqn{r} in one unit of sequencing effort to approximate the
   ratio. The amount of sequences in one unit of sequencing effort is defined by
   the variable \code{bin}.
-  The function predicts the maximum amount of
-  sequencing such that the cost-benefit ratio is greater than a predefined value. 
+
   Note that the cost-benefit ratio is not monotonic. The ratio first increases
-  and then decrease as the amount of sequencing increase. For predicting the
-  optimal amount of sequencing, we consider only the part where the ratio starts
-  to decrease.
+  and then decrease as the amount of sequencing increase. To predicte the
+  optimal amount of sequencing, we consider only the areas after the peak, where
+  the ratio starts to decrease.
 }
 \value{
   A vector of three dimensions. The first coordinate is the optimal amount of
@@ -95,4 +95,4 @@ sufficient representation in a random sample. arXiv preprint arXiv:1607.02804
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-\keyword{DNA, High-throughput sequencing}
+\keyword{WGS, High-throughput, Cost-benefit}

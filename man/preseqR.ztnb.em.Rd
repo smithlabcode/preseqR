@@ -60,10 +60,10 @@ preseqR.ztnb.em(n, size = SIZE.INIT, mu = MU.INIT)
 library(preseqR)
 
 ## import data
-data(FisherButterflyHist)
+data(FisherButterfly)
 
 ## print the parameters of a fitting negative binomial distribution
-preseqR.ztnb.em(FisherButterflyHist)
+preseqR.ztnb.em(FisherButterfly)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

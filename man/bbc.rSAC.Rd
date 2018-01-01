@@ -28,8 +28,8 @@ bbc.rSAC(n, r=1)
 }
 \value{
   The estimator for the \eqn{r}-SAC. The input of the estimator is a vector of
-  sampling efforts t, i.e., the relative sample sizes comparing with the initial
-  sample. For example, t = 2 means a random sample that is twice the size of
+  sampling efforts \eqn{t}, i.e., the relative sample sizes comparing with the initial
+  sample. For example, \eqn{t = 2} means a random sample that is twice the size of
   the initial sample.
 }
 \author{
@@ -48,16 +48,16 @@ Journal of the American Statistical Association, 93(441), 372-379.
 library(preseqR)
 
 ## import data
-data(FisherButterflyHist)
+data(FisherButterfly)
 
 ## construct the estimator for SAC
-bbc1 <- bbc.rSAC(FisherButterflyHist, r=1)
+bbc1 <- bbc.rSAC(FisherButterfly, r=1)
 ## The number of species represented at least once in a sample, 
 ## when the sample size is 10 or 20 times of the initial sample
 bbc1(c(10, 20))
 
 ## construct the estimator for r-SAC
-bbc2 <- bbc.rSAC(FisherButterflyHist, r=2)
+bbc2 <- bbc.rSAC(FisherButterfly, r=2)
 ## The number of species represented at least twice in a sample, 
 ## when the sample size is 50 or 100 times of the initial sample
 bbc2(c(50, 100))
