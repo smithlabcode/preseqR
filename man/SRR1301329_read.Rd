@@ -1,8 +1,8 @@
 \name{SRR1301329_read}
 \alias{SRR1301329_read}
 \docType{data}
-\title{Read counts of an exome sequencing data}
-\description{The read counts are based on an exome sequencing data from
+\title{Read counts of a WES data}
+\description{The read counts are based on a whole-exome sequencing data from
 Simons Foundation Autism Research Initiative with the accession number
 SRR1301329. Only forward reads are used to generate the read counts.}
 \references{

@@ -56,12 +56,12 @@ determination of sufficient sample size. Ecology, 1459-1461.
 library(preseqR)
 
 ## import data
-data(ShakespeareWordHist)
+data(Shakespeare)
 
 ## The expected number of distinct words represented twice or more in the
 ## subsample 
-preseqR.interpolate.rSAC(n=ShakespeareWordHist, ss=1e5, r=2)
+preseqR.interpolate.rSAC(n=Shakespeare, ss=1e5, r=2)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-\keyword{ Interpolation, r-SAC}
+\keyword{ interpolation, r-SAC}

@@ -2,12 +2,11 @@
 \alias{ztnb.rSAC}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-Estimating the expected number of species represented r or more times
+  ZTNB estimator
 }
 \description{
-The function estimates the expected number of species represented at least 
-r times in a random sample based on the initial sample using zero-truncated
-negative binomial (ZTNB) model.
+\code{ztnb.rSAC} predicts the expected number of species represented at least 
+\eqn{r} times in a random sample, based on the initial sample. 
 }
 \usage{
 ztnb.rSAC(n, r=1, size=SIZE.INIT, mu=MU.INIT)
@@ -17,7 +16,7 @@ ztnb.rSAC(n, r=1, size=SIZE.INIT, mu=MU.INIT)
   \item{n}{
     A two-column matrix.  
     The first column is the frequency \eqn{j = 1,2,\dots}; and the second column
-    is \eqn{n_j}, the number of species with each species represented \eqn{j}
+    is \eqn{N_j}, the number of species with each species represented \eqn{j}
     times in the initial sample. The first column must be sorted in an
     ascending order.
   }
@@ -46,11 +45,10 @@ ztnb.rSAC(n, r=1, size=SIZE.INIT, mu=MU.INIT)
   Daley T. and Smith AD. (2013).
 }
 \value{
-  The constructed estimator for the number of species represneted at least r
-  times in a sample. The input of the estimator is a vector of sampling 
-  efforts t, i.e. the relative sample sizes comparing with the initial sample.
-  For example, t = 2 means a random sample that is twice the size of the 
-  initial sample.
+  The estimator for the \eqn{r}-SAC. The input of the estimator is a vector of
+  sampling efforts \eqn{t}, i.e., the relative sample sizes comparing with the initial
+  sample. For example, \eqn{t = 2} means a random sample that is twice the size of
+  the initial sample.
 }
 \author{
   Chao Deng
@@ -73,20 +71,18 @@ library(preseqR)
 ## import data
 data(FisherButterfly)
 
-## construct the estimator for the number of species represented at least once
-## in a random sample
+## construct the estimator for SAC
 ztnb1 <- ztnb.rSAC(FisherButterfly, r=1)
-## The number of species represented at least once, when the sample size is 
-## 10 or 20 times of the initial sample
+## The number of species represented at least once in a sample, 
+## when the sample size is 10 or 20 times of the initial sample
 ztnb1(c(10, 20))
 
-## construct the estimator for the number of species represented at least twice
-## in a random sample
+## construct the estimator for r-SAC
 ztnb2 <- ztnb.rSAC(FisherButterfly, r=2)
-## The number of species represented at least twice, when the sample size is 
-## 50 or 100 times of the initial sample
+## The number of species represented at least twice in a sample, 
+## when the sample size is 50 or 100 times of the initial sample
 ztnb2(c(50, 100))
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-\keyword{ Estimator, r-SAC, Parametric }
+\keyword{ estimator, r-SAC, parametric, negative binomial}

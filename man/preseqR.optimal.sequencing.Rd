@@ -95,4 +95,4 @@ sufficient representation in a random sample. arXiv preprint arXiv:1607.02804
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-\keyword{WGS, High-throughput, Cost-benefit}
+\keyword{WGS, high-throughput, cost-benefit}

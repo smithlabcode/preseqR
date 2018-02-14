@@ -2,12 +2,11 @@
 \alias{preseqR.sample.cov}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-Estimating the probability of observing a species represented at least r times
-in a random sample
+  Predicting generalized sample coverage
 }
 \description{
-The function estimates the probability of observing a species represented at
-least r times in a random sample
+  \code{preseqR.sample.cov} predicts the probability of observing a species
+  represented at least \eqn{r} times in a random sample.
 }
 \usage{
   preseqR.sample.cov(n, r=1, mt=20)
@@ -17,7 +16,7 @@ least r times in a random sample
   \item{n}{
     A two-column matrix.  
     The first column is the frequency \eqn{j = 1,2,\dots}; and the second column
-    is \eqn{n_j}, the number of species with each species represented \eqn{j}
+    is \eqn{N_j}, the number of species with each species represented \eqn{j}
     times in the initial sample. The first column must be sorted in an
     ascending order.
   }
@@ -25,38 +24,39 @@ least r times in a random sample
     A positive integer. Default is 1.
   }
   \item{mt}{
-    An positive integer constraining possible rational function
+    A positive integer constraining possible rational function
     approximations. Default is 20.
   }
 }
 \details{
   Suppose a sample is given and one more individual is randomly drawn from the
-  population. The function estimates the probability of the species, which 
-  represents the individual, has been observed at least \eqn{r} times in the
+  population. \code{preseqR.sample.cov} estimates the probability of the
+  species, which represents the individual, has been observed at least
+  \eqn{r} times in the
   sample. When \eqn{r = 1}, the probability is called the sample coverage.
 
   Let \eqn{N_j} be the number of species represented exactly \eqn{j} times in 
   a sample. The probability of observing a species represented at
   least \eqn{r} times in the sample is estimated as 
   \eqn{\sum_{j=r+1}^\infty jN_j / \sum_{j=1}^\infty jN_j}. The theory is
-  described in Mao and Lindsay (2002). For a random sample
+  described by Mao and Lindsay (2002). For a random sample
   where \eqn{N_j} is unknown, a modified rational function approximation is
   first used to predict the value of \eqn{N_j}. Then the estimates are
   substituted to obtain an estimator for the probability of observing a species
   represented at least \eqn{r} times in the sample.
 
   This function is the fast version of \code{\link{preseqR.sample.cov.bootstrap}}.
-  The function does not provide an estimate for the confidence interval.
-  If one needs the confidence interval, please use 
-  \code{\link{preseqR.sample.cov.bootstrap}} instead.
+  The function does not provide the confidence interval. To obtain the
+  confidence interval along with the estimates, one should use the function
+  \code{\link{preseqR.sample.cov.bootstrap}}.
 }
 \value{
   The estimator for the probability of observing a species represented at least
-  r times in a sample as a function of the sample size.
-  The input of the estimator is a vector of sampling 
-  efforts t, i.e. the relative sample sizes comparing with the initial sample.
-  For example, t = 2 means a random sample that is twice the size of the 
-  initial sample.
+  \eqn{r} times in a random sample.
+  The input of the estimator is a vector of sampling efforts \eqn{t}, i.e.,
+  the relative sample sizes comparing with the initial sample. 
+  For example, \eqn{t = 2} means a random sample that is twice the size of
+  the initial sample.
 }
 \references{
 Good, I. J. (1953). The population frequencies of species and the estimation of
@@ -80,7 +80,6 @@ library(preseqR)
 data(FisherButterfly)
 
 ## construct the estimator for the sample coverage
-## in a random sample
 estimator1 <- preseqR.sample.cov(FisherButterfly, r=1) 
 ## Given a sample that is 10 times or 20 times the size of an initial samples,
 ## suppose one randomly draws one more individual from the population. The
@@ -88,13 +87,12 @@ estimator1 <- preseqR.sample.cov(FisherButterfly, r=1)
 ## has been observed in the sample
 estimator1(c(10, 20))
 
-## construct the estimator for the probability of observing a species represented
-## at least r times in a random sample for r = 2
+## construct the estimator
 estimator2 <- preseqR.sample.cov(FisherButterfly, r=2)
-## the probability when the sample size is 50 times or 100 times of the initial
-## sample
+## the probability a species represented at least twice when the sample size
+## is 50 times or 100 times of the initial sample
 estimator2(c(50, 100))
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-\keyword{ Estimator, RFA, Sample coverage}
+\keyword{ estimator, RFA, sample coverage}

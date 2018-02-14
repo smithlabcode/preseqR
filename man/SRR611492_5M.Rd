@@ -1,11 +1,13 @@
 \name{SRR611492_5M}
 \alias{SRR611492_5M}
 \docType{data}
-\title{Coverage histogram of a single-cell whole-genome sequencing data}
-\description{The coverage histogram is based on a single-cell whole-genome
-sequencing data through MALBAK protocol. The accession number of the raw data
-is SRR1301329. Five million reads are randomly sampled from the raw data to
-generate this coverage histogram.}
+\title{Coverage histogram of a scWGS data}
+\description{
+The coverage histogram is based on a single-cell whole-genome
+sequencing (scWGS) data through MALBAK protocol. The accession number of the
+raw data is SRR1301329. Five million reads are randomly sampled from the raw
+data to generate this coverage histogram.
+}
 \references{
   Zong, C., Lu, S., Chapman, A. R., & Xie, X. S. (2012). Genome-wide detection
   of single-nucleotide and copy-number variations of a single human cell.

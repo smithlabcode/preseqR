@@ -52,4 +52,4 @@ preseqR.nonreplace.sampling(n=FisherButterfly, size=1000)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-\keyword{Sampling}
+\keyword{sampling}

@@ -5,8 +5,8 @@
 Fitting a zero-truncated negative binomial distribution
 }
 \description{
-This function fits a zero-truncated negative binomial (ZTNB) distribution
-to the initial sample.
+\code{preseqR.ztnb.em} fits a zero-truncated negative binomial (ZTNB)
+distribution to the initial sample.
 Since the species with zero observations are missed in the sample, an
 EM algorithm is used to estimate the parameters assuming the number of
 individuals for each species follows a Negative Binomial distribution
@@ -20,7 +20,7 @@ preseqR.ztnb.em(n, size = SIZE.INIT, mu = MU.INIT)
   \item{n}{
     A two-column matrix.  
     The first column is the frequency \eqn{j = 1,2,\dots}; and the second column
-    is \eqn{n_j}, the number of species with each species represented \eqn{j}
+    is \eqn{N_j}, the number of species with each species represented \eqn{j}
     times in the initial sample. The first column must be sorted in an
     ascending order.
 }
@@ -67,4 +67,4 @@ preseqR.ztnb.em(FisherButterfly)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-\keyword{ Zero truncated negative binomial, EM}
+\keyword{ negative binomial, EM}

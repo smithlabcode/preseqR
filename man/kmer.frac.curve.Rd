@@ -74,4 +74,4 @@ kmer.frac.curve(n=SRR061157_k31, k=31, read.len=200, seq.gb=10^(6:12), r=2, mt=2
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-\keyword{\eqn{k}-mer, Sample coverage, High-throughput, Metagenomics}
+\keyword{k-mer, sample coverage, high-throughput, metagenomics}

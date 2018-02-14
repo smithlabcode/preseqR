@@ -5,7 +5,7 @@
   Best practice for \eqn{r}-SAC -- a fast version
 }
 \description{
-\eqn{preseqR.rSAC} predicts the expected number of species represented at least 
+\code{preseqR.rSAC} predicts the expected number of species represented at least 
 \eqn{r} times in a random sample based on the initial sample.
 }
 \usage{
@@ -21,7 +21,7 @@ preseqR.rSAC(n, r=1, mt=20, size=SIZE.INIT, mu=MU.INIT)
     ascending order.
   }
   \item{mt}{
-    An positive integer constraining possible rational function
+    A positive integer constraining possible rational function
     approximations. Default is 20.
   }
   \item{r}{
@@ -85,4 +85,4 @@ estimator2(c(50, 100))
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-\keyword{ Estimator, r-SAC, RFA, ZTNB, Best practice}
+\keyword{ estimator, r-SAC, RFA, ZTNB, best practice}

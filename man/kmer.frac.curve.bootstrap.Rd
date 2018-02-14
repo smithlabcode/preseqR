@@ -86,4 +86,4 @@ kmer.frac.curve.bootstrap(n=SRR061157_k31, k=31, read.len=200,
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-\keyword{\eqn{k}-mer, Sample coverage, Bootstrap, High-throughput, Metagenomics}
+\keyword{k-mer, sample coverage, bootstrap, high-throughput, Metagenomics}

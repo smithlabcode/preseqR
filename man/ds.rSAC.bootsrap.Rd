@@ -46,7 +46,7 @@ ds.rSAC.bootstrap(n, r=1, mt=20, times=30, conf=0.95)
 }
 \value{
   \item{f}{
-    The estimator for the number of species represented at least r times in 
+    The estimator for the number of species represented at least \eqn{r} times in 
     a random sample. The input of the estimator is a vector of sampling 
     efforts t, i.e. the relative sample sizes comparing with the initial sample.
     For example, t = 2 means a random sample that is twice the size of the 
@@ -110,4 +110,4 @@ sufficient representation in a random sample. arXiv preprint arXiv:1607.02804
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-\keyword{ Estimator, r-SAC, RFA, Bootstrap, Nonparametric}
+\keyword{ estimator, r-SAC, RFA, bootstrap, nonparametric}

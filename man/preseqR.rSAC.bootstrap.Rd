@@ -117,4 +117,4 @@ sufficient representation in a random sample. arXiv preprint arXiv:1607.02804
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-\keyword{ Estimator, r-SAC, Bootstrap, Best practice}
+\keyword{ estimator, r-SAC, bootstrap, best practice}

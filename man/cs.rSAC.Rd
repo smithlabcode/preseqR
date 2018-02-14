@@ -66,4 +66,4 @@ chao2(c(50, 100))
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-\keyword{ Estimator, r-SAC, Nonparametric }
+\keyword{ estimator, r-SAC, nonparametric }

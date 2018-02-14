@@ -1,9 +1,9 @@
 \name{SRR1301329_1M_base}
 \alias{SRR1301329_1M_base}
 \docType{data}
-\title{Coverage histogram of an exome sequencing data}
-\description{The coverage histogram is based on an exome sequencing data from
-Simons Foundation Autism Research Initiative with the accession number
+\title{Coverage histogram of a WES data}
+\description{The coverage histogram is based on an whole-exome sequencing (WES) 
+data from Simons Foundation Autism Research Initiative with the accession number
 SRR1301329. One million reads are randomly sampled from the raw data to
 generate this coverage histogram.}
 \references{

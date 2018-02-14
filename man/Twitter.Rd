@@ -22,4 +22,4 @@ library(preseqR)
 data(Twitter)
 }
 
-\keyword{ data }
+\keyword{ datasets }

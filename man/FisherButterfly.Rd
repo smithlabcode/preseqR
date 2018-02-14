@@ -25,4 +25,4 @@ library(preseqR)
 data(FisherButterfly)
 }
 
-\keyword{ data }
+\keyword{ datasets }

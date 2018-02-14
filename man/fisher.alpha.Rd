@@ -47,4 +47,4 @@ fisher.alpha <- fisher.alpha(WillButterfly)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-\keyword{ Parameter, Parametric }
+\keyword{ parametric }
