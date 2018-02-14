@@ -2,7 +2,7 @@
 \alias{SRR1301329_1M_read}
 \docType{data}
 \title{Read counts of a WES data}
-\description{The read counts are based on an whole-exome sequencing (WES) data
+\description{The read counts are based on a whole-exome sequencing (WES) data
 from Simons Foundation Autism Research Initiative with the accession number
 SRR1301329. One million reads are randomly sampled from the raw data to
 generate the read counts.}
