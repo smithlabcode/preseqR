@@ -13,7 +13,7 @@ Animal Population, Journal of Animal Ecology, 12, 42-58, Table 3.
 \details{
     A two-column matrix.  
     The first column is the frequency \eqn{j = 1,2,\dots}; and the second column
-    is \eqn{n_j}, the number of butterflies captured \eqn{j}
+    is \eqn{n_j}, the number of butterflies captured exactly \eqn{j}
     times in the sample.
 }  
 

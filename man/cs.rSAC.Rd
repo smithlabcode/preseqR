@@ -18,7 +18,7 @@ cs.rSAC(n, r=1, k=10)
   \item{n}{
     A two-column matrix.  
     The first column is the frequency \eqn{j = 1,2,\dots}; and the second column
-    is \eqn{N_j}, the number of species with each species represented \eqn{j}
+    is \eqn{N_j}, the number of species with each species represented exactly \eqn{j}
     times in the initial sample. The first column must be sorted in an
     ascending order.
   }
@@ -43,6 +43,10 @@ cs.rSAC(n, r=1, k=10)
 \references{
 Chao, A., & Shen, T. J. (2004). Nonparametric prediction in species sampling.       
 Journal of agricultural, biological, and environmental statistics, 9(3), 253-269.
+
+Deng, C., Daley, T., Calabrese, P., Ren, J., & Smith, A.D. (2016). Estimating
+the number of species to attain sufficient representation in a random sample.
+arXiv preprint arXiv:1607.02804v3.
 }
 
 \examples{

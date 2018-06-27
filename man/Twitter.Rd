@@ -7,7 +7,7 @@
 \details{
     A two-column matrix.  
     The first column is the frequency \eqn{j = 1,2,\dots}; and the second column
-    is \eqn{n_j}, the number of users with \eqn{j} followers.
+    is \eqn{n_j}, the number of users with exactly \eqn{j} followers.
 }
 
 \references{

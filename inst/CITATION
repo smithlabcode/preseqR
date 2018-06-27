@@ -19,14 +19,14 @@ citEntry(entry = "article",
 
 citEntry(entry = "article",
   title        = "Estimating the number of species to attain sufficient representation in a random sample",
-  author       = personList(as.person("Chao Deng"), as.person("Andrew D. Smith")),
+  author       = personList(as.person("Chao Deng"), as.person("Timothy Daley"), as.person("Peter Calabrese"), as.person("Jie Ren"), as.person("Andrew D. Smith")),
   journal      = "arXiv",
-  year         = "2016",
-  url          = "https://arxiv.org/abs/1607.02804v2",
+  year         = "2018",
+  url          = "https://arxiv.org/abs/1607.02804v3",
 
   textVersion  =
-  paste("Deng C and Smith AD (2016).",
+  paste("Deng C, Daley T, Calabrese P, Ren J and Smith AD (2018).",
         "Estimating the number of species to attain sufficient representation in a random sample.",
         "arXiv preprint.",
-        "URL https://arxiv.org/abs/1607.02804v2.")
+        "URL https://arxiv.org/abs/1607.02804v3.")
 )

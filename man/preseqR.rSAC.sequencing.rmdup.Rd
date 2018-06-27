@@ -10,7 +10,7 @@
   experiment, based on a shallow sequencing experiment.
 }
 \usage{
-preseqR.rSAC.sequencing.rmdup(n_base, n_read, r=1, mt=20, times=100, conf=0.95)
+preseqR.rSAC.sequencing.rmdup(n_base, n_read, r=1, mt=20, times=30, conf=0.95)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -24,7 +24,7 @@ preseqR.rSAC.sequencing.rmdup(n_base, n_read, r=1, mt=20, times=100, conf=0.95)
   \item{n_read}{
     A two-column matrix.  
     The first column is the frequency \eqn{j = 1,2,\dots}; and the second column
-    is \eqn{N'_j}, the number of distinct reads with \eqn{j} duplicates
+    is \eqn{N'_j}, the number of distinct reads with exactly \eqn{j} duplicates
     in the initial experiment. The first column must be sorted in an
     ascending order.
   }
@@ -36,7 +36,7 @@ preseqR.rSAC.sequencing.rmdup(n_base, n_read, r=1, mt=20, times=100, conf=0.95)
     approximations. Default is 20.
   }
   \item{times}{
-    The number of bootstrap samples.
+    The number of bootstrap samples. Default is 30.
   }
   \item{conf}{
     The confidence level. Default is 0.95
@@ -74,8 +74,9 @@ preseqR.rSAC.sequencing.rmdup(n_base, n_read, r=1, mt=20, times=100, conf=0.95)
 }
 
 \references{
-Deng, C and Smith, AD (2016). Estimating the number of species to attain 
-sufficient representation in a random sample. arXiv preprint arXiv:1607.02804
+Deng, C., Daley, T., Calabrese, P., Ren, J., & Smith, A.D. (2016). Estimating
+the number of species to attain sufficient representation in a random sample.
+arXiv preprint arXiv:1607.02804v3.
 }
 
 \author{
@@ -87,8 +88,8 @@ sufficient representation in a random sample. arXiv preprint arXiv:1607.02804
 #library(preseqR)
 
 ## import data
-#data(SRR1301329_1M_base)
-#data(SRR1301329_1M_read)
+# data(SRR1301329_1M_base)
+# data(SRR1301329_1M_read)
 # construct the estimator
 # estimator1 <- preseqR.rSAC.sequencing.rmdup(
 #                 n_base=SRR1301329_1M_base, n_read=SRR5365359_5M_read, 

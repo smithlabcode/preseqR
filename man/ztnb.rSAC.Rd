@@ -16,7 +16,7 @@ ztnb.rSAC(n, r=1, size=SIZE.INIT, mu=MU.INIT)
   \item{n}{
     A two-column matrix.  
     The first column is the frequency \eqn{j = 1,2,\dots}; and the second column
-    is \eqn{N_j}, the number of species with each species represented \eqn{j}
+    is \eqn{N_j}, the number of species with each species represented exactly \eqn{j}
     times in the initial sample. The first column must be sorted in an
     ascending order.
   }
@@ -62,6 +62,9 @@ ztnb.rSAC(n, r=1, size=SIZE.INIT, mu=MU.INIT)
 \references{
 Daley, T., & Smith, A. D. (2013). Predicting the molecular complexity of
 sequencing libraries. Nature methods, 10(4), 325-327.
+
+Deng C, Daley T & Smith AD (2015). Applications of species accumulation curves
+in large-scale biological data analysis. Quantitative Biology, 3(3), 135-144. 
 }
 
 \examples{

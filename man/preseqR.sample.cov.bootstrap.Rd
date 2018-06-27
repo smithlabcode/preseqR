@@ -16,7 +16,7 @@
   \item{n}{
     A two-column matrix.  
     The first column is the frequency \eqn{j = 1,2,\dots}; and the second column
-    is \eqn{N_j}, the number of species with each species represented \eqn{j}
+    is \eqn{N_j}, the number of species with each species represented exactly \eqn{j}
     times in the initial sample. The first column must be sorted in an
     ascending order.
   }
@@ -69,8 +69,9 @@
 \references{
 Efron, B., & Tibshirani, R. J. (1994). An introduction to the bootstrap. CRC press.
 
-Deng, C and Smith, AD (2016). Estimating the number of species to attain 
-sufficient representation in a random sample. arXiv preprint arXiv:1607.02804
+Deng, C., Daley, T., Calabrese, P., Ren, J., & Smith, A.D. (2016). Estimating
+the number of species to attain sufficient representation in a random sample.
+arXiv preprint arXiv:1607.02804v3.
 }
 
 \author{

@@ -17,7 +17,7 @@ ds.rSAC.bootstrap(n, r=1, mt=20, times=30, conf=0.95)
   \item{n}{
     A two-column matrix.  
     The first column is the frequency \eqn{j = 1,2,\dots}; and the second column
-    is \eqn{N_j}, the number of species with each species represented \eqn{j}
+    is \eqn{N_j}, the number of species with each species represented exactly \eqn{j}
     times in the initial sample. The first column must be sorted in an
     ascending order.
   }
@@ -29,7 +29,7 @@ ds.rSAC.bootstrap(n, r=1, mt=20, times=30, conf=0.95)
     approximations. Default is 20.
   }
   \item{times}{
-    The number of bootstrap samples.
+    The number of bootstrap samples. Default is 30.
   }
   \item{conf}{
     The confidence level. Default is 0.95
@@ -69,8 +69,9 @@ ds.rSAC.bootstrap(n, r=1, mt=20, times=30, conf=0.95)
 \references{
 Efron, B., & Tibshirani, R. J. (1994). An introduction to the bootstrap. CRC press.
 
-Deng, C & Smith, AD (2016). Estimating the number of species to attain 
-sufficient representation in a random sample. arXiv preprint arXiv:1607.02804
+Deng, C., Daley, T., Calabrese, P., Ren, J., & Smith, A.D. (2016). Estimating
+the number of species to attain sufficient representation in a random sample.
+arXiv preprint arXiv:1607.02804v3.
 }
 
 \author{
@@ -102,7 +103,7 @@ sufficient representation in a random sample. arXiv preprint arXiv:1607.02804
 ## when the sample size is 50 or 100 times of the initial sample
 # ds2$f(c(50, 100))
 ## The standard error of the estiamtes
-# ds2$se(c(50, 100)))
+# ds2$se(c(50, 100))
 ## The confidence interval of the estimates
 # lb <- ds2$lb(c(50, 100))
 # ub <- ds2$ub(c(50, 100))

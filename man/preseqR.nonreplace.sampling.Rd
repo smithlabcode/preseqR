@@ -15,7 +15,7 @@ Sampling
   \item{n}{
     A two-column matrix.  
     The first column is the frequency \eqn{j = 1,2,\dots}; and the second column
-    is \eqn{N_j}, the number of species represented \eqn{j} times in the initial
+    is \eqn{N_j}, the number of species represented exactly \eqn{j} times in the initial
     sample. The first column must be sorted in an ascending order.
   }
   \item{size}{

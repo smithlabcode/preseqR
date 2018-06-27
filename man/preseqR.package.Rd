@@ -2,30 +2,18 @@
 \alias{preseqR-package}
 \docType{package}
 \title{
-    Predicting species abundances in a random sample
+    Predicting \eqn{r}-species accumulation curves
 }
 \description{
-    The functionality of this package is to predict the number of species 
-    represented at least \eqn{r} times in a random sample, 
-    based on an initial sample.
-    The prediction is based on an empirical Bayes
-    approach using rational function approximation. The estimator is
+    The functionality of this package is to predict \eqn{r}-species
+    accumulaiton curves. The method is based on a nonparametric empirical Bayes approach
+    with rational function approximation. The estimator is
     excellent in accuracy for both large values of \eqn{r} and long-range
-    extrapolations, which are essential to large-scale applications. This 
-    package also generalizes other popular parametric and nonparametric
-    methods that were oringinally designed for estimating the number of 
-    species in a random sample (the case \eqn{r=1}),
-    such as the log series estimator by Fisher and 
-    zero-truncated negative binomial estimator, to address the general problems
-    of predicting the number of species represented at least \eqn{r} times for
-    \eqn{r > 1}.
-
-    For the ease of reference, we call the quantity, the number of species
-    represented at least \eqn{r} times in a sample as a function of the sample
-    size, a \eqn{r}-species accumulation curve (\eqn{r}-SAC). In particular,
-    when \eqn{r = 1}, \eqn{r}-SAC is known as species accmulaton curve (SAC), 
-    which has been widely studied in ecology.
-
+    extrapolations, which are essential to large-scale applications. Some
+    examples are predicting the molecular complexity of sequencing
+    libraries, estimating the minimum sufficient sequencing depths for
+    whole-exome sequencing experiments and optimizing depths for single-cell
+    whole-genome sequencing experiments. 
 }
 \details{
 main functions: 
@@ -68,8 +56,9 @@ Deng C, Daley T & Smith AD (2015). Applications of species accumulation curves
 in large-scale biological data analysis. Quantitative Biology, 3(3), 135-144. 
 URL http://dx.doi.org/10.1007/s40484-015-0049-7.
 
-Deng, C & Smith, AD (2016). Estimating the number of species to attain 
-sufficient representation in a random sample. arXiv preprint arXiv:1607.02804.
+Deng, C., Daley, T., Calabrese, P., Ren, J., & Smith, A.D. (2016). Estimating
+the number of species to attain sufficient representation in a random sample.
+arXiv preprint arXiv:1607.02804v3.
 
 Efron, B., & Thisted, R. (1976). Estimating the number of unseen species:
 How many words did Shakespeare know?. Biometrika, 63(3), 435-447.

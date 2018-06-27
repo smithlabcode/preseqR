@@ -1,11 +1,11 @@
 Package: preseqR
 Type: Package
-Title: Predicting the Number of Species in a Random Sample
+Title: Predicting Species Accumulation Curves
 Version: 4.0.0
-Date: 2017-12-26
+Date: 2018-06-27
 Author: Chao Deng, Timothy Daley and Andrew D. Smith
 Maintainer: Chao Deng <chaodeng@usc.edu>
-Description: The relation between the number of species and the number of individuals in a random sample is a classic problem back to Fisher (1943) <doi:10.2307/1411>. We generalize this problem to predict the number of species represented at least r times in a random sample. In particular when r=1, it becomes the classic problem. We use a mixture of Poisson processes to model sampling procedures and apply an empirical Bayes approach to obtain a rational function estimator. The approach can be applied to assess the quality of DNA sequencing libraries and optimize depths of sequencing experiments. For more information on 'preseqR', see Deng C, Daley T and Smith AD (2015) <doi:10.1007/s40484-015-0049-7> and Deng C and Smith AD (2016) <arXiv:1607.02804v2>.
+Description: Originally as an R version of Preseq <doi:10.1038/nmeth.2375>, the package has extended its functionality to predict the r-species accumulation curve (r-SAC), which is the number of species represented at least r times as a function of the sampling effort. When r = 1, the curve is known as the species accumulation curve, or the library complexity curve in high-throughput genomic sequencing. The package includes both parametric and nonparametric methods, as described by Deng C, et al. (2018) <arXiv:1607.02804v3>. 
 License: GPL-3
 Imports:
   polynom, graphics, stats

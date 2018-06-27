@@ -20,8 +20,7 @@
 
 ## predict the optimal number of sequenced bases using cost-benefit ratio
 preseqR.optimal.sequencing <- function(
-  n, efficiency=0.05, bin=1e8, r=1, mt=20, size=SIZE.INIT,
-  mu=MU.INIT, times=30, conf=0.95)
+  n, efficiency=0.05, bin=1e8, r=1, mt=20, times=30, conf=0.95)
 {
   find.start <- function(f, N, bin, efficiency) {
     y = sapply(1:100, function(x) (f(x + bin / N) - f(x)) / bin - efficiency)
@@ -36,8 +35,8 @@ preseqR.optimal.sequencing <- function(
   N <- n[, 1] %*% n[, 2]
 
   ## r-species accumulation curve as a function of relative sample size
-  f.rSAC <- preseqR.rSAC.bootstrap(
-    n=n, r=r, mt=mt, size=size, mu=mu,times=times, conf=conf)
+  f.rSAC <- ds.rSAC.bootstrap(
+    n=n, r=r, mt=mt, times=times, conf=conf)
 
   ## hint: using r-SAC as a function of the number of sequenced bases
   f <- f.rSAC$f
@@ -73,7 +72,7 @@ preseqR.optimal.sequencing <- function(
 ## the function is designed for EXOME sequencing, where aligned reads that
 ## map to the same location are removed to avoid potential duplicate
 preseqR.rSAC.sequencing.rmdup <- function(
-  n_base, n_read, r=1, mt=20, times=100, conf=0.95)
+  n_base, n_read, r=1, mt=20, times=30, conf=0.95)
 {
   checking.hist(n_read)
   checking.hist(n_base)

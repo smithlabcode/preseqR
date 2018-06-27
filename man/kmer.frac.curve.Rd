@@ -10,7 +10,7 @@ least \eqn{r} times in a high-throughput sequencing experiment given the
 amount of sequencing
 }
 \usage{
-  kmer.frac.curve(n, k, read.len, seq.gb, r=2, mt=20)
+  kmer.frac.curve(n, k, read.len, seq, r=2, mt=20)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -27,8 +27,8 @@ amount of sequencing
   \item{read.len}{
     The average length of a read.
   }
-  \item{seq.gb}{
-    The amount of sequencing in billions.
+  \item{seq}{
+    The amount of nucleotides sequenced..
   }
   \item{r}{
     A positive integer. Default is 1.
@@ -49,8 +49,7 @@ amount of sequencing
 }
 \value{
   A two-column matrix. The first column is the amount of sequencing in an 
-  experiment. The value is specified by the variable \eqn{seq.gb}. 
-  The second column is the estimate of the fraction of \eqn{k}-mers observed at least
+  experiment. The second column is the estimate of the fraction of \eqn{k}-mers observed at least
   \eqn{r} times in the experiment.
 }
 \references{
@@ -68,9 +67,9 @@ library(preseqR)
 ## import data
 data(SRR061157_k31)
 
-## the fraction of 31-mers represented at least twice in an experiment when
+## the fraction of 31-mers represented at least 10 times in an experiment when
 ## sequencing 1M, 10M, 100M, 1G, 10G, 100G, 1T nucleotides
-kmer.frac.curve(n=SRR061157_k31, k=31, read.len=200, seq.gb=10^(6:12), r=2, mt=20) 
+kmer.frac.curve(n=SRR061157_k31, k=31, read.len=100, seq=10^(6:12), r=10, mt=20) 
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

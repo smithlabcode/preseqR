@@ -36,7 +36,7 @@
 \value{
     A two-column matrix.  
     The first column is the frequency \eqn{j = 1,2,\dots}; and the second column
-    is \eqn{N_j}, the number of species with each species represented \eqn{j}
+    is \eqn{N_j}, the number of species with each species represented exactly \eqn{j}
     times in the initial sample. The first column must be sorted in an
     ascending order.
 }
@@ -52,8 +52,8 @@ library(preseqR)
 f <- function(n) {
   rgamma(n, shape=0.5, scale=1)
 }
-
-preseqR.simu.hist(L=1e5, N=1, f)
+## sample 10,000 individuals
+preseqR.simu.hist(L=1e5, N=10000, f)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

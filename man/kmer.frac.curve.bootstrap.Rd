@@ -10,7 +10,7 @@ least \eqn{r} times in a high-throughput sequencing experiment given the
 amount of sequencing
 }
 \usage{
-kmer.frac.curve.bootstrap(n, k, read.len, seq.gb, r=2, mt=20, times=30, conf=0.95)
+kmer.frac.curve.bootstrap(n, k, read.len, seq, r=2, mt=20, times=30, conf=0.95)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -27,8 +27,8 @@ kmer.frac.curve.bootstrap(n, k, read.len, seq.gb, r=2, mt=20, times=30, conf=0.9
   \item{read.len}{
     The average length of a read.
   }
-  \item{seq.gb}{
-    The amount of sequencing in billions.
+  \item{seq}{
+    The amount of nucleotides sequenced.
   }
   \item{r}{
     A positive integer. Default is 1.
@@ -55,7 +55,7 @@ kmer.frac.curve.bootstrap(n, k, read.len, seq.gb, r=2, mt=20, times=30, conf=0.9
 }
 \value{
   A four-column matrix. The first column is the amount of sequencing in an 
-  experiment. The value is specified by the variable \eqn{seq.gb}. 
+  experiment.
   The second column is the estimate of the fraction of \eqn{k}-mers observed at least
   \eqn{r} times in the experiment. The third and fourth columns are the lower
   bounds and the upper bounds of the confidence intervals.
@@ -64,8 +64,9 @@ kmer.frac.curve.bootstrap(n, k, read.len, seq.gb, r=2, mt=20, times=30, conf=0.9
 \references{
 Efron, B., & Tibshirani, R. J. (1994). An introduction to the bootstrap. CRC press.
 
-Deng, C and Smith, AD (2016). Estimating the number of species to attain 
-sufficient representation in a random sample. arXiv preprint arXiv:1607.02804
+Deng, C., Daley, T., Calabrese, P., Ren, J., & Smith, A.D. (2016). Estimating
+the number of species to attain sufficient representation in a random sample.
+arXiv preprint arXiv:1607.02804v3.
 }
 
 \author{
@@ -74,15 +75,15 @@ sufficient representation in a random sample. arXiv preprint arXiv:1607.02804
 
 \examples{
 ## load library
-library(preseqR)
+# library(preseqR)
 
 ## import data
-data(SRR061157_k31)
+# data(SRR061157_k31)
 
-## the fraction of 31-mers represented at least twice in an experiment when
+## the fraction of 31-mers represented at least 10 times in an experiment when
 ## sequencing 1M, 10M, 100M, 1G, 10G, 100G, 1T nucleotides
-kmer.frac.curve.bootstrap(n=SRR061157_k31, k=31, read.len=200, 
-                          seq.gb=10^(6:12), r=2, mt=20) 
+# kmer.frac.curve.bootstrap(n=SRR061157_k31, k=31, read.len=100, 
+#                          seq=10^(6:12), r=10, mt=20) 
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

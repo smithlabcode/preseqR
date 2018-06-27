@@ -26,7 +26,7 @@ kmer.frac <- function(n, r=2, mt=20) {
 
 ## the fraction of k-mers represented at least r times as a function of 
 ## sample sizes
-kmer.frac.curve <- function(n, k, read.len, seq.gb, r=2, mt=20) {
+kmer.frac.curve <- function(n, k, read.len, seq, r=2, mt=20) {
   f <- kmer.frac(n, r=r, mt=mt)
   if (is.null(f))
     return(NULL)
@@ -34,10 +34,10 @@ kmer.frac.curve <- function(n, k, read.len, seq.gb, r=2, mt=20) {
   N <- n[, 1] %*% n[, 2]
   ## average number of k-mers per read
   m <- read.len - k + 1
-  unit.gb <- N / m * read.len / 1e9
-  seq.effort <- seq.gb / unit.gb
-  result <- matrix(c(seq.gb, f(seq.effort)), ncol=2, byrow=FALSE)
-  colnames(result) <- c("bases(GB)", paste("frac(X>=", r, ")", sep=""))
+  unit <- N / m * read.len
+  seq.effort <- seq / unit
+  result <- matrix(c(seq, f(seq.effort)), ncol=2, byrow=FALSE)
+  colnames(result) <- c("bases", paste("frac(X>=", r, ")", sep=""))
   return(result)
 }
 
@@ -50,7 +50,7 @@ kmer.frac.bootstrap <- function(n, r=2, mt=20, times=30, conf=0.95) {
 
 ## the fraction of k-mers represented at least r times as a function of 
 ## sample sizes
-kmer.frac.curve.bootstrap <- function(n, k, read.len, seq.gb, r=2, mt=20,
+kmer.frac.curve.bootstrap <- function(n, k, read.len, seq, r=2, mt=20,
                                       times=30, conf=0.95)
 {
   f <- kmer.frac.bootstrap(n, r=r, mt=mt, times=times, conf=conf)
@@ -60,11 +60,11 @@ kmer.frac.curve.bootstrap <- function(n, k, read.len, seq.gb, r=2, mt=20,
   N <- n[, 1] %*% n[, 2]
   ## average number of k-mers per read
   m <- read.len - k + 1
-  unit.gb <- N / m * read.len / 1e9
-  seq.effort <- seq.gb / unit.gb
-  result <- matrix(c(seq.gb, f$f(seq.effort), f$lb(seq.effort), 
+  unit <- N / m * read.len
+  seq.effort <- seq / unit
+  result <- matrix(c(seq, f$f(seq.effort), f$lb(seq.effort), 
                      f$ub(seq.effort)), ncol=4, byrow=FALSE)
-  colnames(result) <- c("bases(GB)", paste("frac(X>=", r, ")", sep=""), 
+  colnames(result) <- c("bases", paste("frac(X>=", r, ")", sep=""), 
                         "lb", "ub")
   return(result)
 }
