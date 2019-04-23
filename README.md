@@ -73,12 +73,12 @@ INSTALLATION
    >install.packages("preseqR")
    ```
 
-2. The following instructions are for installing the package from the source.
-Assume the source code of preseqR has been pulled from the git repo and it is
-under the current directory. Open an R shell and type:
-
-   ``>install.packages("polynom")``
-
-   ``>install.packages("preseqR", repos=NULL, type="source")``
-
+2. The following instructions are for installing the package from the
+   source.  Assume the source code of preseqR has been pulled from the
+   git repo and it is under the current directory. Open an R shell and
+   type:
+   ```R
+   install.packages("polynom")
+   install.packages("preseqR", repos=NULL, type="source")
+   ```
    Note that the package polynom is required by preseqR.
