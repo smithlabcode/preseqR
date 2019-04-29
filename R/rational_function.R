@@ -132,7 +132,7 @@ rfa.simplify <- function(rfa) {
   if (length(numer.roots) == 0) {
     poly.numer <- as.function(polynomial(1))
   } else {
-    poly.numer <- as.function(poly.from.roots(numer.roots))
+    poly.numer <- suppressWarnings(as.function(poly.from.roots(numer.roots)))
   }
   l <- length(denom.roots)
 
