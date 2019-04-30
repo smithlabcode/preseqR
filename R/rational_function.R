@@ -132,7 +132,14 @@ rfa.simplify <- function(rfa) {
   if (length(numer.roots) == 0) {
     poly.numer <- as.function(polynomial(1))
   } else {
-    poly.numer <- suppressWarnings(as.function(poly.from.roots(numer.roots)))
+    ## construct polynomials using all the roots
+    p <- 1
+    for (x in numer.roots) {
+      p <- c(0, p) - c(x * p, 0)
+    }
+    ## in theory coefficients p of the polynomial should be real numbers
+    ## Re(p) == p
+    poly.numer <- as.function(polynomial(Re(p)))
   }
   l <- length(denom.roots)
 
