@@ -221,7 +221,7 @@ ds.rSAC.bootstrap <- function(n, r=1, mt=20, times=30, conf=0.95)
     N <- n[, 1] %*% n[, 2]
     t.scale <- N / N.bootstrap
     f <- ds.rSAC(n.bootstrap, r=r, mt=mt)
-    return(function(t) {f(t * t.scale)})
+    return(function(t) {f(t * as.vector(t.scale))})
   }
 
   while (times > 0) {
@@ -312,7 +312,7 @@ preseqR.rSAC.bootstrap <- function(n, r=1, mt=20, size=SIZE.INIT,
       N <- n[, 1] %*% n[, 2]
       t.scale <- N / N.bootstrap
       f <- ds.rSAC(n.bootstrap, r=r, mt=mt)
-      return(function(t) {f(t * t.scale)})
+      return(function(t) {f(t * as.vector(t.scale))})
     }
   } else {
     f.bootstrap <- function(n, r, mt, size, mu) {
@@ -321,7 +321,7 @@ preseqR.rSAC.bootstrap <- function(n, r=1, mt=20, size=SIZE.INIT,
       N <- n[, 1] %*% n[, 2]
       t.scale <- N / N.bootstrap
       f <- ztnb.rSAC(n.bootstrap, r=r, size=size, mu=mu)
-      return(function(t) {f(t * t.scale)})
+      return(function(t) {f(t * as.vector(t.scale))})
     }
   }
 

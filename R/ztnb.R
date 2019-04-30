@@ -100,7 +100,7 @@ preseqR.ztnb.em <- function(n, size=SIZE.INIT, mu=MU.INIT)
 
   ## estimated mean and variance
   m <- (n[, 1] %*% n[, 2]) / L
-  v <- ( (n[, 1] - m)^2 %*% n[, 2] + m^2 * zero.counts )/(L - 1)
+  v <- ( (n[, 1] - as.vector(m))^2 %*% n[, 2] + m^2 * zero.counts )/(L - 1)
 
   ## target function f
   f <- function(x) {
@@ -156,7 +156,7 @@ preseqR.ztnb.em <- function(n, size=SIZE.INIT, mu=MU.INIT)
     L <- S / ( 1 - zero.prob )
     zero.counts <- L * zero.prob
     m <- (n[, 1] %*% n[, 2])/L
-    v <- ( (n[, 1] - m)^2 %*% n[, 2] + m^2 * zero.counts )/(L - 1)
+    v <- ( (n[, 1] - as.vector(m))^2 %*% n[, 2] + m^2 * zero.counts )/(L - 1)
 
 ### M step: estimate the parameters size and mu
 
