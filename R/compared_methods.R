@@ -85,8 +85,10 @@ cs.rSAC <- function(n, r=1, k=10) {
   gamma.rare <- max(S.rare / C.rare * 
     ((n[index.rare, 1] * (n[index.rare, 1] - 1)) %*% n[index.rare, 2]) /
     (n[index.rare, 1] %*% n[index.rare, 2])^2 - 1, 0)
-  f0 = S.rare / C.rare + f1 / C.rare * gamma.rare - S.rare
+  f0 <- S.rare / C.rare + f1 / C.rare * gamma.rare - S.rare
   ## estimator
+  # consistent type for estimator arithmetic to avoid warnings
+  f0 <- as.numeric(f0)
   function(t) {f0 + S  - f0 * ppois(r-1, f1 * t / f0) * exp(f1/f0) }
 }
 
