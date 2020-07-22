@@ -33,6 +33,8 @@ preseqR.optimal.sequencing <- function(
 
   n[, 2] <- as.numeric(n[, 2])
   N <- n[, 1] %*% n[, 2]
+  # consistent vector-vector arithmetic
+  N <- as.numeric(N)
 
   ## r-species accumulation curve as a function of relative sample size
   f.rSAC <- ds.rSAC.bootstrap(
@@ -79,13 +81,15 @@ preseqR.rSAC.sequencing.rmdup <- function(
   n_read[, 2] <- as.numeric(n_read[, 2])
   N <- n_read[, 1] %*% n_read[, 2]
 
-  ## the bootstrappedestiamtor
+  ## the bootstrapped estimator
   f.bootstrap <- function(n, r, mt) {
     n.bootstrap <- matrix(c(n[, 1], rmultinom(1, sum(n[, 2]), n[, 2])), ncol=2)
     N.bootstrap <- n.bootstrap[, 1] %*% n.bootstrap[, 2]
     N <- n[, 1] %*% n[, 2]
     t.scale <- N / N.bootstrap
     f <- ds.rSAC(n.bootstrap, r=r, mt=mt)
+    # consistent vector-vector arithmetic
+    t.scale <- as.numeric(t.scale)
     return(function(t) {f(t * t.scale)})
   }
 

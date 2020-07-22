@@ -186,6 +186,8 @@ ztnb.rSAC <- function(n, r=1, size=SIZE.INIT, mu=MU.INIT)
   opt <- preseqR.ztnb.em(n, size, mu)
   size <- opt$size
   mu <- opt$mu
+  # consistent vector-vector arithmetic
+  mu <- as.numeric(mu)
 
   ## the probability of a species observed in the initial sample
   p <- 1 - dnbinom(0, size = size, mu = mu)

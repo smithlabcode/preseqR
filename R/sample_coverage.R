@@ -100,6 +100,8 @@ preseqR.sample.cov.bootstrap <- function(n, r=1, mt=20, times=30, conf=0.95) {
     N.bootstrap <- n.bootstrap[, 1] %*% n.bootstrap[, 2]
     N <- n[, 1] %*% n[, 2]
     t.scale <- N / N.bootstrap
+    # consistent vector-vector arithmetic
+    t.scale <- as.numeric(t.scale)
     f <- preseqR.sample.cov(n.bootstrap, r=r, mt=mt)
     return(function(t) {f(t * t.scale)})
   }

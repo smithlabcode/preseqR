@@ -62,6 +62,8 @@ preseqR.interpolate.rSAC <- function(n, ss, r=1)
       if (x <= r - 1) {
         return(1)
       } else {
+	# consistent vector-vector arithmetic
+	denom <- as.numeric(denom)
         logp = lchoose(N - x, size - 0:(r-1)) + lchoose(x, 0:(r-1)) - denom
         return(sum(exp(logp)))
       }})

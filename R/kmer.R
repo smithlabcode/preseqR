@@ -35,6 +35,8 @@ kmer.frac.curve <- function(n, k, read.len, seq, r=2, mt=20) {
   ## average number of k-mers per read
   m <- read.len - k + 1
   unit <- N / m * read.len
+  # consistent vector-vector arithmetic
+  unit <- as.numeric(unit)
   seq.effort <- seq / unit
   result <- matrix(c(seq, f(seq.effort)), ncol=2, byrow=FALSE)
   colnames(result) <- c("bases", paste("frac(X>=", r, ")", sep=""))
@@ -61,6 +63,8 @@ kmer.frac.curve.bootstrap <- function(n, k, read.len, seq, r=2, mt=20,
   ## average number of k-mers per read
   m <- read.len - k + 1
   unit <- N / m * read.len
+  # consistent vector-vector arithmetic
+  unit <- as.numeric(unit)
   seq.effort <- seq / unit
   result <- matrix(c(seq, f$f(seq.effort), f$lb(seq.effort), 
                      f$ub(seq.effort)), ncol=4, byrow=FALSE)
