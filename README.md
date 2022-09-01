@@ -24,7 +24,8 @@ five ways this is supposed to work:
 5.  Extra functions are provided to estimate the number of species
     represented at least r times in a random sample.
 
-See <https://cran.r-project.org/package=preseqR> for details.
+See the [preseqR](https://cran.r-project.org/package=preseqR) package
+on CRAN for details
 
 UPDATE HISTORY
 ==============
@@ -88,3 +89,26 @@ INSTALLATION
    >install.packages("preseqR", repos=NULL, type="source")
    ```
    Note that the package `polynom` is required by `preseqR`.
+
+CONTACTS AND BUG REPORTS
+========================
+
+Andrew D. Smith
+andrewds@usc.edu
+
+COPYRIGHT AND LICENSE INFORMATION
+=================================
+
+Copyright (C) 2017-2022 Chao Deng and Andrew D. Smith
+
+Authors: Chao Deng and Andrew D. Smith
+
+This is free software: you can redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free
+Software Foundation, either version 3 of the License, or (at your
+option) any later version.
+
+This software is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+General Public License for more details.
