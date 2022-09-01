@@ -1,31 +1,30 @@
-#    Copyright (C) 2016 University of Southern California and
-#             Chao Deng and Andrew D. Smith and Timothy Daley
+# Copyright (C) 2016-2022 University of Southern California and
+#          Chao Deng and Andrew D. Smith and Timothy Daley
 #
-#    Authors: Chao Deng
+# Authors: Chao Deng
 #
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU General Public License as published by
-#    the Free Software Foundation, either version 3 of the License, or
-#    (at your option) any later version.
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
 #
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU General Public License for more details.
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# General Public License for more details.
 #
-#    You should have received a copy of the GNU General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 
 ### check the input histogram in an appropriate format
-checking.hist <- function(n) 
+checking.hist <- function(n)
 {
   if (ncol(n)!=2 || is.numeric(n[,1])==FALSE || is.numeric(n[,2])==FALSE) {
     stop("Input must be a two-column matrix")
   }
   ## the first column is the frequency i
-  ## the second column is the number of species represented i times 
+  ## the second column is the number of species represented i times
   ## in the sample
   freq <- n[, 1]
   num <- n[, 2]
@@ -49,7 +48,7 @@ checking.hist <- function(n)
 
 ### check determinants of matrix M_{m-1,m-1},M_{m-1,m},M_{m,m-1},M_{m,m}
 ## OBSOLETE
-checking.matrix.det <- function(n, m) 
+checking.matrix.det <- function(n, m)
 {
   ps <- discoveryrate.ps(n, mt=2*m + 1)
   ps <- c(0, ps)
@@ -107,14 +106,14 @@ preseqR.nonreplace.sampling <- function(n, size)
 
 ## OBSOLETE
 ## log of N choose k
-#lchoose <- function(N, k) 
+#lchoose <- function(N, k)
 #{
 #  result <- vector(length=max(length(N), length(k)), mode="numeric")
 #  index <- which(N - k + 1 > 0)
 #  if (length(index) == 0) {
 #    result[] <- -Inf }
 #  else {
-#    result[index] <- (lgamma(N + 1) - lgamma(k + 1))[index] - 
+#    result[index] <- (lgamma(N + 1) - lgamma(k + 1))[index] -
 #                     lgamma((N - k + 1)[index])
 #    result[-index] <- -Inf
 #  }

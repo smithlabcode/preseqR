@@ -1,22 +1,20 @@
-#    Copyright (C) 2016 University of Southern California and
-#             Chao Deng and Andrew D. Smith and Timothy Daley
+# Copyright (C) 2016-2022 University of Southern California and
+#                         Chao Deng and Andrew D. Smith and Timothy Daley
 #
-#    Authors: Chao Deng
+# Authors: Chao Deng
 #
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU General Public License as published by
-#    the Free Software Foundation, either version 3 of the License, or
-#    (at your option) any later version.
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
 #
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU General Public License for more details.
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# General Public License for more details.
 #
-#    You should have received a copy of the GNU General Public License
-#    along with this program. If not, see <http://www.gnu.org/licenses/>.
-#
-
+# You should have received a copy of the GNU General Public License
+# along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 ## predict the fraction of k-mers represented at least r times in the sample
 kmer.frac <- function(n, r=2, mt=20) {
@@ -24,7 +22,7 @@ kmer.frac <- function(n, r=2, mt=20) {
 }
 
 
-## the fraction of k-mers represented at least r times as a function of 
+## the fraction of k-mers represented at least r times as a function of
 ## sample sizes
 kmer.frac.curve <- function(n, k, read.len, seq, r=2, mt=20) {
   f <- kmer.frac(n, r=r, mt=mt)
@@ -50,7 +48,7 @@ kmer.frac.bootstrap <- function(n, r=2, mt=20, times=30, conf=0.95) {
 }
 
 
-## the fraction of k-mers represented at least r times as a function of 
+## the fraction of k-mers represented at least r times as a function of
 ## sample sizes
 kmer.frac.curve.bootstrap <- function(n, k, read.len, seq, r=2, mt=20,
                                       times=30, conf=0.95)
@@ -66,9 +64,9 @@ kmer.frac.curve.bootstrap <- function(n, k, read.len, seq, r=2, mt=20,
   # consistent vector-vector arithmetic
   unit <- as.numeric(unit)
   seq.effort <- seq / unit
-  result <- matrix(c(seq, f$f(seq.effort), f$lb(seq.effort), 
+  result <- matrix(c(seq, f$f(seq.effort), f$lb(seq.effort),
                      f$ub(seq.effort)), ncol=4, byrow=FALSE)
-  colnames(result) <- c("bases", paste("frac(X>=", r, ")", sep=""), 
+  colnames(result) <- c("bases", paste("frac(X>=", r, ")", sep=""),
                         "lb", "ub")
   return(result)
 }

@@ -1,25 +1,24 @@
-#    Copyright (C) 2016 University of Southern California and
-#             Chao Deng and Andrew D. Smith and Timothy Daley
+# Copyright (C) 2016 University of Southern California and
+#          Chao Deng and Andrew D. Smith and Timothy Daley
 #
-#    Authors: Chao Deng
+# Authors: Chao Deng
 #
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU General Public License as published by
-#    the Free Software Foundation, either version 3 of the License, or
-#    (at your option) any later version.
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
 #
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU General Public License for more details.
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# General Public License for more details.
 #
-#    You should have received a copy of the GNU General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 ## continued fraction approximant to a power series based on
 ## QD algorithm
-## coefs, coefficients of the power series; 
+## coefs, coefficients of the power series;
 ## mt, the number of terms in the power series used for constructing
 ## the continued fraction approximation
 ## ref pp. 131, 147 and 148 in the book Pad\'{e} Approximants 2ed
@@ -47,12 +46,12 @@ ps2cfa <- function(coefs, mt) {
     n <- mt + 1 - i
     if (i %% 2 == 1) {
       ## number of entries in the column
-      qd.table[1:n, i] <- qd.table[2:(n+1), i-1] - qd.table[1:n, i-1] + 
+      qd.table[1:n, i] <- qd.table[2:(n+1), i-1] - qd.table[1:n, i-1] +
                           qd.table[2:(n+1), i-2]
-      if (!is.finite(qd.table[1, i]) || qd.table[1, i] == 0) 
+      if (!is.finite(qd.table[1, i]) || qd.table[1, i] == 0)
         return(c(coefs[1], -qd.table[1, 2:(i-1)]))
     } else {
-      qd.table[1:n, i] <- qd.table[2:(n+1), i-1] / qd.table[1:n, i-1] * 
+      qd.table[1:n, i] <- qd.table[2:(n+1), i-1] / qd.table[1:n, i-1] *
                           qd.table[2:(n+1), i-2]
       if (!is.finite(qd.table[1, i]) || qd.table[1, i] == 0)
         return(c(coefs[1], -qd.table[1, 2:(i-1)]))
@@ -107,7 +106,7 @@ rfa.simplify <- function(rfa) {
     return(NULL)
 
   ## identify defects
-  ## the root and the pole is a defect if the difference is less than 
+  ## the root and the pole is a defect if the difference is less than
   ## the predefined precision, which is defined by the variable PRECISION
   tmp.roots <- c()
   for (i in 1:length(denom.roots)) {
@@ -125,7 +124,7 @@ rfa.simplify <- function(rfa) {
   denom.roots <- denom.roots[!denom.roots %in% tmp.roots]
   ## convert roots from t - 1 to t
   poles <- denom.roots + 1
-    
+
   ## treat both numerator and denuminator in the rational function as
   ## monic polynomials
   ## the difference from the original rational function is up to a factor
@@ -147,7 +146,7 @@ rfa.simplify <- function(rfa) {
   coefs <- sapply(1:l, function(x) {
     poly.numer(denom.roots[x]) / prod(denom.roots[x] - denom.roots[-x])})
   ## calculate the factor
-  C <- coef(rfa[[1]])[length(coef(rfa[[1]]))] / 
+  C <- coef(rfa[[1]])[length(coef(rfa[[1]]))] /
        coef(rfa[[2]])[length(coef(rfa[[2]]))]
   coefs <- coefs * C
   return(list(coefs=coefs, poles=poles))
@@ -185,7 +184,7 @@ rfa.sample.cov <- function(n, mt) {
 
 ## discriminant of the quadratic polynomial, which is
 ## the denominator of the discovery rate at m = 2
-## OBSOLATE 
+## OBSOLATE
 discriminant <- function(n) {
   if (max(n[, 1]) < 3) {
     return(NULL)
@@ -195,17 +194,17 @@ discriminant <- function(n) {
   if (length(which(n[, 1] == 1))) {
     S2 <- S1 - n[which(n[, 1] == 1), 2]
   } else {
-  	S2 <- S1
+        S2 <- S1
   }
   if (length(which(n[, 1] == 2))) {
     S3 <- S2 - n[which(n[, 1] == 2), 2]
   } else {
-  	S3 <- S2
+        S3 <- S2
   }
   if (length(which(n[, 1] == 3))) {
     S4 <- S3 - n[which(n[, 1] == 3), 2]
   } else {
-  	S4 <- S3
+        S4 <- S3
   }
   a <- S2*S4 - S3^2
   b <- S1*S4 - S2*S3

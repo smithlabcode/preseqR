@@ -1,23 +1,22 @@
-#    Copyright (C) 2016 University of Southern California and
+# Copyright (C) 2016-2022 University of Southern California and
 #             Chao Deng and Andrew D. Smith and Timothy Daley
 #
-#    Authors: Chao Deng
+# Authors: Chao Deng
 #
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU General Public License as published by
-#    the Free Software Foundation, either version 3 of the License, or
-#    (at your option) any later version.
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
 #
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU General Public License for more details.
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# General Public License for more details.
 #
-#    You should have received a copy of the GNU General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-## the pair, a pole and a root, is a defect if the distance is less than 
+## the pair, a pole and a root, is a defect if the distance is less than
 ## the value defined by the variable PRECISION
 PRECISION <- 1e-3
 
@@ -62,8 +61,8 @@ preseqR.interpolate.rSAC <- function(n, ss, r=1)
       if (x <= r - 1) {
         return(1)
       } else {
-	# consistent vector-vector arithmetic
-	denom <- as.numeric(denom)
+        # consistent vector-vector arithmetic
+        denom <- as.numeric(denom)
         logp = lchoose(N - x, size - 0:(r-1)) + lchoose(x, 0:(r-1)) - denom
         return(sum(exp(logp)))
       }})
@@ -93,7 +92,7 @@ preseqR.interpolate.rSAC <- function(n, ss, r=1)
 #  frequencies <- lapply(1:i, function(x) rbinom(n[x, 2], n[x, 1], p))
 #  f <- unlist(frequencies)
 #  h <- hist(f, breaks=-1:max(f), plot=FALSE)$counts[-1]
-#  matrix(c(which(h != 0), h[which(h != 0)]), byrow = FALSE, ncol=2) 
+#  matrix(c(which(h != 0), h[which(h != 0)]), byrow = FALSE, ncol=2)
 #}
 
 
@@ -113,7 +112,7 @@ discoveryrate.ps <- function(n, mt)
   change.sign <- 0
   for (i in 1:(min(mt-1, length(hist.count)))) {
     PS.coeffs <- c(
-            PS.coeffs, 
+            PS.coeffs,
             (-1)^change.sign * hist.count[i] - PS.coeffs[length(PS.coeffs)])
     change.sign <- change.sign + 1
   }
@@ -250,7 +249,7 @@ ds.rSAC.bootstrap <- function(n, r=1, mt=20, times=30, conf=0.95)
       return(apply(result, FUN=var, MARGIN=1))
     }
   }
-  
+
   se <- function(x) sqrt(variance(x))
 
   ## prevent later binding!!!
@@ -298,7 +297,7 @@ preseqR.rSAC <- function(n, r=1, mt=20, size=SIZE.INIT, mu=MU.INIT)
 
 ## the bootstrap version of preseqR.rSAC
 ## with confidence interval
-preseqR.rSAC.bootstrap <- function(n, r=1, mt=20, size=SIZE.INIT, 
+preseqR.rSAC.bootstrap <- function(n, r=1, mt=20, size=SIZE.INIT,
                                    mu=MU.INIT, times=30, conf=0.95)
 {
   checking.hist(n)
