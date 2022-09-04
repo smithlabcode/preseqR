@@ -18,15 +18,17 @@ citEntry(entry = "article",
 )
 
 citEntry(entry = "article",
-  title        = "Estimating the number of species to attain sufficient representation in a random sample",
+  title        = "Predicting the Number of Bases to Attain Sufficient Coverage in High-Throughput Sequencing Experiments",
   author       = personList(as.person("Chao Deng"), as.person("Timothy Daley"), as.person("Peter Calabrese"), as.person("Jie Ren"), as.person("Andrew D. Smith")),
-  journal      = "arXiv",
-  year         = "2018",
-  url          = "https://arxiv.org/abs/1607.02804v3",
+  journal      = "Journal of Computational Biology",
+  year         = "2022",
+  volume       = 27,
+  number       = 7,
+  pages        = "1130--1143",
+  url          = "https://www.liebertpub.com/doi/abs/10.1089/cmb.2019.0264",
 
   textVersion  =
-  paste("Deng C, Daley T, Calabrese P, Ren J and Smith AD (2018).",
-        "Estimating the number of species to attain sufficient representation in a random sample.",
-        "arXiv preprint.",
-        "URL https://arxiv.org/abs/1607.02804v3.")
+      paste("Deng, C., Daley, T., Calabrese, P., Ren, J., & Smith, A. D. (2020)."
+            "Predicting the Number of Bases to Attain Sufficient Coverage in High-Throughput Sequencing Experiments."
+            "Journal of Computational Biology, 27(7), 1130-1143.")
 )
