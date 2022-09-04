@@ -1,11 +1,29 @@
 Package: preseqR
 Type: Package
 Title: Predicting Species Accumulation Curves
-Version: 4.0.0
-Date: 2018-06-27
-Author: Chao Deng, Timothy Daley and Andrew D. Smith
-Maintainer: Chao Deng <chaodeng@usc.edu>
-Description: Originally as an R version of Preseq <doi:10.1038/nmeth.2375>, the package has extended its functionality to predict the r-species accumulation curve (r-SAC), which is the number of species represented at least r times as a function of the sampling effort. When r = 1, the curve is known as the species accumulation curve, or the library complexity curve in high-throughput genomic sequencing. The package includes both parametric and nonparametric methods, as described by Deng C, et al. (2018) <arXiv:1607.02804v3>. 
+Version: 4.0.1
+Date: 2022-09-05
+
+Authors@R:
+  c(person("Andrew", "Smith", email="andrewds@usc.edu", role=c("cre","aut")),
+    person("Chao", "Deng", email="chaodeng@usc.edu", role="aut"),
+    person("Timothy", "Daley", email="timy.pdaley@gmail.com", role="aut"))
+
+Description: Originally an R version of Preseq
+  <doi:10.1038/nmeth.2375>, this package now has extended
+  functionality to predict the r-species accumulation curve (r-SAC),
+  which is the number of species represented at least r times as a
+  function of the sampling effort. When r = 1, the curve is known as
+  the species accumulation curve, or the library complexity curve in
+  high-throughput genomic sequencing. The package includes both
+  parametric and nonparametric methods, as described by Deng et
+  al. (2018) <arXiv:1607.02804v3>.
+
 License: GPL-3
+
+URL: https://github.com/smithlabcode/preseqR
+
+BugReports: https://github.com/smithlabcode/preseqR/issues
+
 Imports:
   polynom, graphics, stats
