@@ -94,7 +94,7 @@ data(SRR1301329_1M_read)
 ## construct the estimator
 estimator1 <- preseqR.rSAC.sequencing.rmdup(
                 n_base=SRR1301329_1M_base,
-                n_read=SRR5365359_5M_read,
+                n_read=SRR1301329_1M_read,
                 r=4, mt=20, times=100, conf=0.95)
 
 ## The number of nucleotides in the genome covered at least 4 times,
@@ -113,7 +113,7 @@ matrix(c(lb, ub), byrow=FALSE, ncol=2)
 # construct the estimator
 estimator2 <- preseqR.rSAC.sequencing.rmdup(
                 n_base=SRR1301329_1M_base,
-                n_read=SRR5365359_5M_read,
+                n_read=SRR1301329_1M_read,
                 r=10, mt=20, times=100, conf=0.95)
 
 ## The number of nucleotides in the genome covered at least 10 times,
