@@ -30,6 +30,10 @@ on CRAN for details
 UPDATE HISTORY
 ==============
 
+Updates in version 4.1.0
+------------------------
+1. This release exists to try and fix issues in CRAN
+
 Updates in version 4.0.0
 ------------------------
 1. Improve the user interface for core functions
@@ -99,7 +103,7 @@ andrewds@usc.edu
 COPYRIGHT AND LICENSE INFORMATION
 =================================
 
-Copyright (C) 2017-2022 Chao Deng and Andrew D. Smith
+Copyright (C) 2017-2026 Chao Deng and Andrew D. Smith
 
 Authors: Chao Deng and Andrew D. Smith
 
